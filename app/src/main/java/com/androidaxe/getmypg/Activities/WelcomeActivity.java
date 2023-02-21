@@ -21,6 +21,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         FirebaseAuth auth = FirebaseAuth.getInstance();
+
         if(auth.getCurrentUser() != null){
             final int[] user = {-1};
             FirebaseDatabase.getInstance().getReference().child("PGUser").child(auth.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
