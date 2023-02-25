@@ -131,7 +131,7 @@ public class UserSetProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         progressDialog.dismiss();
-                        startActivity(new Intent(UserSetProfileActivity.this, MainActivity.class));
+                        startActivity(new Intent(UserSetProfileActivity.this, UserMainActivity.class));
                         Toast.makeText(UserSetProfileActivity.this, "Profile Info update successfully", Toast.LENGTH_SHORT).show();
                         finishAffinity();
                     }
@@ -175,7 +175,7 @@ public class UserSetProfileActivity extends AppCompatActivity {
                         ref.child(pgUser.getuId()).updateChildren(pgUserMap);
 
                         progressDialog.dismiss();
-                        startActivity(new Intent(UserSetProfileActivity.this, MainActivity.class));
+                        startActivity(new Intent(UserSetProfileActivity.this, UserMainActivity.class));
                         Toast.makeText(UserSetProfileActivity.this, "Profile Info update successfully", Toast.LENGTH_SHORT).show();
                         finishAffinity();
                     } else {

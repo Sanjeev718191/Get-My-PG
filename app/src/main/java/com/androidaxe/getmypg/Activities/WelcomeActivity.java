@@ -3,6 +3,7 @@ package com.androidaxe.getmypg.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,12 +24,38 @@ public class WelcomeActivity extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         if(auth.getCurrentUser() != null){
-            final int[] user = {-1};
-            FirebaseDatabase.getInstance().getReference().child("PGUser").child(auth.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Checking Info...");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+
+            FirebaseDatabase.getInstance().getReference("PGUser").child(auth.getCurrentUser().getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        user[0] = 1;
+                    if(snapshot.getValue(String.class) != null){
+                        progressDialog.dismiss();
+                        Intent intent = new Intent(WelcomeActivity.this, UserMainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        FirebaseDatabase.getInstance().getReference("PGOwner").child(auth.getCurrentUser().getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.getValue(String.class) != null){
+                                    progressDialog.dismiss();
+                                    Intent intent = new Intent(WelcomeActivity.this, OwnerMainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    progressDialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
 
@@ -37,31 +64,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 }
             });
-            FirebaseDatabase.getInstance().getReference().child("PGOwner").child(auth.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        user[0] = 2;
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-            if(user[0] == -1) {
-                auth.signOut();
-                Intent intent = new Intent(WelcomeActivity.this, SelectUserActivity.class);
-                startActivity(intent);
-            } else if(user[0] == 1) {
-                Intent intent = new Intent(WelcomeActivity.this, UserMainActivity.class);
-                startActivity(intent);
-            } else if(user[0] == 2) {
-                Intent intent = new Intent(WelcomeActivity.this, OwnerMainActivity.class);
-                startActivity(intent);
-            }
-
         }
         findViewById(R.id.getStartButton).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -116,7 +116,7 @@ public class UserLoginActivity extends AppCompatActivity {
                                                         });
                                             } else {
                                                 progressDialog.dismiss();
-                                                startActivity(new Intent(UserLoginActivity.this, MainActivity.class));
+                                                startActivity(new Intent(UserLoginActivity.this, UserMainActivity.class));
                                                 finishAffinity();
                                             }
                                         }

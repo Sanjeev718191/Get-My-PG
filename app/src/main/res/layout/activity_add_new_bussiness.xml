@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.AddNewBussinessActivity">
+
+    <TextView
+        android:id="@+id/nb_select_businessText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Select Type"
+        android:textColor="@color/primary_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/select_business_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/input_backround_highlighted"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nb_select_businessText" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/PGCardView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_business_spinner"
+        app:cardCornerRadius="20dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/addPGHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PG/Hostel Details"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/primary_dark"
+                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"/>
+
+            <ScrollView
+                android:id="@+id/pgDetailScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_below="@id/addPGHeading"
+                android:layout_above="@+id/AddPGButton">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/addPGImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:background="@drawable/input_background"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/add_image"
+                        android:padding="10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Name of PG / Hostel"/>
+
+                        <EditText
+                            android:id="@+id/PGNameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Name of PG/Hostel"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Description"/>
+
+                        <EditText
+                            android:id="@+id/PGDescriptionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Details"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Address with pin code"/>
+
+                        <EditText
+                            android:id="@+id/PGAddressEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Address"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rent(1-Seater) per Month"/>
+
+                        <EditText
+                            android:id="@+id/PG1seaterEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Enter Price(If not available - 0)"
+                            android:inputType="number"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rent(2-Seater) per Month"/>
+
+                        <EditText
+                            android:id="@+id/PG2seaterEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Enter Price(If not available - 0)"
+                            android:inputType="number"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rent(3-Seater) per Month"/>
+
+                        <EditText
+                            android:id="@+id/PG3seaterEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Enter Price(If not available - 0)"
+                            android:inputType="number"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Electricity Bill"/>
+
+                        <Spinner
+                            android:id="@+id/PGeleBillSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Enter Price(If not available - 0)"
+                            android:inputType="number"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/AddPGButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add PG/Hostal"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_medium"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:layout_margin="8dp"
+                android:background="@drawable/button_background"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+<!--    =============================================================================================-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/MessCardView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/select_business_spinner"
+        app:cardCornerRadius="20dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/addMessHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mess Details"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/primary_dark"
+                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"/>
+
+            <ScrollView
+                android:id="@+id/MessDetailScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_below="@id/addMessHeading"
+                android:layout_above="@+id/AddMessButton">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/addMessImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:background="@drawable/input_background"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/add_image"
+                        android:padding="10dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Name of Mess"/>
+
+                        <EditText
+                            android:id="@+id/MessNameEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Name of Mess"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Description"/>
+
+                        <EditText
+                            android:id="@+id/MessDescriptionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Details"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Address with pin code"/>
+
+                        <EditText
+                            android:id="@+id/MessAddressEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Address"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rent(1-Seater) per Month"/>
+
+                        <EditText
+                            android:id="@+id/MessMonthlyEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Enter Price(If not available - 0)"
+                            android:inputType="number"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/AddMessButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add and edit Mess Menu"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_medium"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:layout_margin="8dp"
+                android:background="@drawable/button_background"
+                android:layout_alignParentBottom="true"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

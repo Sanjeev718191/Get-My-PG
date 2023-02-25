@@ -15,33 +15,49 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.EditMessMenuActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.AddNewBussinessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activities.UserMainActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_user_main"
             android:theme="@style/Theme.GetMyPG.NoActionBar" />
         <activity
             android:name=".Activities.OwnerMainActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_owner_main"
             android:theme="@style/Theme.GetMyPG.NoActionBar" />
         <activity
             android:name=".Activities.OwnerSetProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.UserSetProfileActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.OwnerLoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.UserLoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.SelectUserActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.WelcomeActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

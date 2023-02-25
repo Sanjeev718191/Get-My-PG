@@ -63,7 +63,8 @@ tools:context=".Activities.OwnerSetProfileActivity">
     android:background="@drawable/button_background"
     android:layout_marginBottom="100dp"
     android:layout_marginLeft="40dp"
-    android:layout_marginRight="40dp"/>
+    android:layout_marginRight="40dp"
+    />
 
 
 </RelativeLayout>
