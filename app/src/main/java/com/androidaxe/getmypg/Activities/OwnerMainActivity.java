@@ -79,7 +79,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             }
         });
         DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
+        NavigationView navigationView = binding.navViewOwner;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -192,6 +192,14 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
+        navigationView.getMenu().findItem(R.id.add_business).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -201,12 +209,12 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         return true;
     }
 
-   /* @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }*/
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
+//        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+//                || super.onSupportNavigateUp();
+//    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

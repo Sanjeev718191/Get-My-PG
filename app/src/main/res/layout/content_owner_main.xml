@@ -35,16 +35,16 @@
                 android:text="Hostels / PG"
                 android:textStyle="bold"
                 android:textColor="@color/primary_dark"
-                android:layout_margin="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/com_PG_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:scrollbars="vertical"/>
 
             <TextView
                 android:id="@+id/com_Mess_text"
@@ -53,8 +53,8 @@
                 android:text="Mess"
                 android:textStyle="bold"
                 android:textColor="@color/primary_dark"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"/>
 
@@ -62,10 +62,7 @@
                 android:id="@+id/com_Mess_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:scrollbars="vertical"/>
 
         </LinearLayout>
 

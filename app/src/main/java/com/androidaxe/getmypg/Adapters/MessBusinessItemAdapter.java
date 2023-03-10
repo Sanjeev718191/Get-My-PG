@@ -5,6 +5,7 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,7 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
         holder.precentage.setText(percentage+"%");
         holder.progressBar.setMax(100);
         holder.progressBar.setProgress(percentage);
+        Picasso.get().load(mess.getImage()).into(holder.mainImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,6 +77,7 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
 
         private TextView businessName, totalCustomers, netRevenue, precentage;
         private ProgressBar progressBar;
+        private ImageView mainImage;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             businessName = itemView.findViewById(R.id.ob_recycler_heading);
@@ -81,6 +85,7 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
             netRevenue = itemView.findViewById(R.id.ob_recycler_revenue);
             precentage = itemView.findViewById(R.id.ob_recycler_percentage);
             progressBar = itemView.findViewById(R.id.progressbar);
+            mainImage = itemView.findViewById(R.id.ob_recycler_image);
         }
     }
 
