@@ -10,6 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Adapters.MessBusinessItemAdapter;
+import com.androidaxe.getmypg.Adapters.PGBusinessItemAdapter;
+import com.androidaxe.getmypg.Module.OwnerMess;
+import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerMainBinding;
@@ -23,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
@@ -31,6 +36,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.security.acl.Owner;
 
@@ -43,14 +50,27 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     private ActivityOwnerMainBinding binding;
     FirebaseAuth auth;
     FirebaseDatabase database;
+    PGBusinessItemAdapter pgAdapter;
+    MessBusinessItemAdapter messAdapter;
+    RecyclerView pgRecycler;
+    RecyclerView messRecycler;
+    TextView pgtext;
+    TextView messtext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityOwnerMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarOwnerMain.toolbar);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, binding.drawerLayout, binding.appBarOwnerMain.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
+        binding.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         binding.appBarOwnerMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,17 +83,31 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.add_business, R.id.edit_profile_owner, R.id.owner_logout, R.id.share_owner, R.id.about_up_owner)
                 .setOpenableLayout(drawer)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
+//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+//        NavigationUI.setupWithNavController(navigationView, navController);
 
         //My Code============================================================================================================
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+
+        pgAdapter = new PGBusinessItemAdapter(this);
+        messAdapter = new MessBusinessItemAdapter(this);
+
+        pgtext = findViewById(R.id.com_PG_text);
+        pgtext.setVisibility(View.GONE);
+        messtext = findViewById(R.id.com_Mess_text);
+        messtext.setVisibility(View.GONE);
+
+        pgRecycler = findViewById(R.id.com_PG_Recycler);
+        pgRecycler.setVisibility(View.GONE);
+        messRecycler = findViewById(R.id.com_Mess_Recycler);
+        messRecycler.setVisibility(View.GONE);
+
         checkData();
 
         View headerView = navigationView.getHeaderView(0);
@@ -87,6 +121,69 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 Glide.with(OwnerMainActivity.this)
                         .load(curr.getProfile())
                         .into(OwnerImage);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        pgRecycler.setAdapter(pgAdapter);
+        pgRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        database.getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                pgAdapter.clear();
+                if(snapshot.getChildrenCount() > 0) {
+                    pgtext.setVisibility(View.VISIBLE);
+                    pgRecycler.setVisibility(View.VISIBLE);
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String pgid = ds.getValue(String.class);
+                        FirebaseDatabase.getInstance().getReference("PGs").child(pgid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                OwnerPG pg = snapshot.getValue(OwnerPG.class);
+                                Toast.makeText(OwnerMainActivity.this, pg.getName(), Toast.LENGTH_SHORT).show();
+                                if(pg != null) pgAdapter.add(pg);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {}
+                        });
+                    }
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        messRecycler.setAdapter(messAdapter);
+        messRecycler.setLayoutManager(new LinearLayoutManager(this));
+
+        database.getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                messAdapter.clear();
+                if(snapshot.getChildrenCount() > 0){
+                    messtext.setVisibility(View.VISIBLE);
+                    messRecycler.setVisibility(View.VISIBLE);
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String messid = ds.getValue(String.class);
+                        FirebaseDatabase.getInstance().getReference("Mess").child(messid).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                OwnerMess mess = snapshot.getValue(OwnerMess.class);
+                                if(mess != null) messAdapter.add(mess);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
             }
 
             @Override
@@ -104,12 +201,12 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         return true;
     }
 
-    @Override
+   /* @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -121,14 +218,26 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
         int id = item.getItemId();
         if(id == R.id.nav_home){
+
             binding.drawerLayout.closeDrawer(GravityCompat.START);
-        }else if(id == R.id.manage_mess){
 
-        } else if(id == R.id.manage_pg){
+        } else if(id == R.id.add_business){
 
-        }else if(id == R.id.add_business){
+            //binding.drawerLayout.closeDrawer(GravityCompat.START);
             startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
-        }else if(id == R.id.share_owner){
+
+        } else if(id == R.id.edit_profile_owner){
+
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
+            startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
+
+        } else if(id == R.id.owner_logout){
+
+            auth.signOut();
+            startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
+            finishAffinity();
+
+        } else if(id == R.id.share_owner){
 
         } else if(id == R.id.about_up_owner){
 

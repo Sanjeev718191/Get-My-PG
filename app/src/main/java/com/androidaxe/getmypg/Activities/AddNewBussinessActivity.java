@@ -187,12 +187,18 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         HashMap<String, Object> pgUserMap = new HashMap<>();
                         pgUserMap.put("name",binding.PGNameEditText.getText().toString());
                         pgUserMap.put("description",binding.PGDescriptionEditText.getText().toString());
-                        pgUserMap.put("address",binding.PGAddressEditText.getText().toString());
-                        pgUserMap.put("1seater",binding.PG1seaterEditText.getText().toString());
-                        pgUserMap.put("2seater",binding.PG2seaterEditText.getText().toString());
-                        pgUserMap.put("3seater",binding.PG3seaterEditText.getText().toString());
+                        pgUserMap.put("locality",binding.PGAddressLocalityEditText.getText().toString());
+                        pgUserMap.put("city",binding.PGAddressCityEditText.getText().toString());
+                        pgUserMap.put("state",binding.PGAddressStateEditText.getText().toString());
+                        pgUserMap.put("pin",binding.PGAddressPinCodeEditText.getText().toString());
+                        pgUserMap.put("seater1",binding.PG1seaterEditText.getText().toString());
+                        pgUserMap.put("seater2",binding.PG2seaterEditText.getText().toString());
+                        pgUserMap.put("seater3",binding.PG3seaterEditText.getText().toString());
                         pgUserMap.put("image",myUrl);
                         pgUserMap.put("electricityBill",selectedBill);
+                        pgUserMap.put("totalUsers","0");
+                        pgUserMap.put("paidUsers","0");
+                        pgUserMap.put("revenue","0");
 
                         ref.child(newPGID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -259,9 +265,15 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         HashMap<String, Object> pgUserMap = new HashMap<>();
                         pgUserMap.put("name",binding.MessNameEditText.getText().toString());
                         pgUserMap.put("description",binding.MessDescriptionEditText.getText().toString());
-                        pgUserMap.put("address",binding.MessAddressEditText.getText().toString());
-                        pgUserMap.put("Fee Monthly",binding.MessMonthlyEditText.getText().toString());
+                        pgUserMap.put("locality",binding.MessAddressLocalityEditText.getText().toString());
+                        pgUserMap.put("city",binding.MessAddressCityEditText.getText().toString());
+                        pgUserMap.put("state",binding.MessAddressStateEditText.getText().toString());
+                        pgUserMap.put("pin",binding.MessAddressPinCodeEditText.getText().toString());
+                        pgUserMap.put("feeMonthly",binding.MessMonthlyEditText.getText().toString());
                         pgUserMap.put("image",myUrl);
+                        pgUserMap.put("totalUsers","0");
+                        pgUserMap.put("paidUsers","0");
+                        pgUserMap.put("revenue","0");
 
                         ref.child(MessID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -302,16 +314,31 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     private void addMYPG(){
         if(binding.PGNameEditText.getText().toString().equals("")){
             binding.PGNameEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter name of PG/Hostel", Toast.LENGTH_SHORT).show();
         } else if(binding.PGDescriptionEditText.getText().toString().equals("")){
             binding.PGDescriptionEditText.setError("Field can't be empty");
-        } else if(binding.PGAddressEditText.getText().toString().equals("")){
-            binding.PGAddressEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Description", Toast.LENGTH_SHORT).show();
+        } else if(binding.PGAddressLocalityEditText.getText().toString().equals("")){
+            binding.PGAddressLocalityEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Locality", Toast.LENGTH_SHORT).show();
+        } else if(binding.PGAddressCityEditText.getText().toString().equals("")){
+            binding.PGAddressCityEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter City", Toast.LENGTH_SHORT).show();
+        } else if(binding.PGAddressStateEditText.getText().toString().equals("")){
+            binding.PGAddressStateEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter State", Toast.LENGTH_SHORT).show();
+        } else if(binding.PGAddressPinCodeEditText.getText().toString().equals("")){
+            binding.PGAddressPinCodeEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Pin Code", Toast.LENGTH_SHORT).show();
         } else if(binding.PG1seaterEditText.getText().toString().equals("")){
             binding.PG1seaterEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter 1 seater fee", Toast.LENGTH_SHORT).show();
         } else if(binding.PG2seaterEditText.getText().toString().equals("")){
             binding.PG2seaterEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter 2 seater fee", Toast.LENGTH_SHORT).show();
         } else if(binding.PG3seaterEditText.getText().toString().equals("")){
             binding.PG3seaterEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter 3 seater fee", Toast.LENGTH_SHORT).show();
         } else {
             String newPGID = database.getReference().push().getKey();
             if(Clicked.equals("PG")){
@@ -328,11 +355,17 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 HashMap<String, Object> pgUserMap = new HashMap<>();
                 pgUserMap.put("name",binding.PGNameEditText.getText().toString());
                 pgUserMap.put("description",binding.PGDescriptionEditText.getText().toString());
-                pgUserMap.put("address",binding.PGAddressEditText.getText().toString());
-                pgUserMap.put("1seater",binding.PG1seaterEditText.getText().toString());
-                pgUserMap.put("2seater",binding.PG2seaterEditText.getText().toString());
-                pgUserMap.put("3seater",binding.PG3seaterEditText.getText().toString());
+                pgUserMap.put("locality",binding.PGAddressLocalityEditText.getText().toString());
+                pgUserMap.put("city",binding.PGAddressCityEditText.getText().toString());
+                pgUserMap.put("state",binding.PGAddressStateEditText.getText().toString());
+                pgUserMap.put("pin",binding.PGAddressPinCodeEditText.getText().toString());
+                pgUserMap.put("seater1",binding.PG1seaterEditText.getText().toString());
+                pgUserMap.put("seater2",binding.PG2seaterEditText.getText().toString());
+                pgUserMap.put("seater3",binding.PG3seaterEditText.getText().toString());
                 pgUserMap.put("electricityBill",selectedBill);
+                pgUserMap.put("totalUsers","0");
+                pgUserMap.put("paidUsers","0");
+                pgUserMap.put("revenue","0");
 
                 ref.child(newPGID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -361,12 +394,25 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     private void addMyMess(){
         if(binding.MessNameEditText.getText().toString().equals("")){
             binding.MessNameEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Name of Mess", Toast.LENGTH_SHORT).show();
         } else if(binding.MessDescriptionEditText.getText().toString().equals("")){
             binding.MessDescriptionEditText.setError("Field can't be empty");
-        } else if(binding.MessAddressEditText.getText().toString().equals("")){
-            binding.MessAddressEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Description", Toast.LENGTH_SHORT).show();
+        } else if(binding.MessAddressLocalityEditText.getText().toString().equals("")){
+            binding.MessAddressLocalityEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Locality", Toast.LENGTH_SHORT).show();
+        } else if(binding.MessAddressCityEditText.getText().toString().equals("")){
+            binding.MessAddressCityEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter City", Toast.LENGTH_SHORT).show();
+        } else if(binding.MessAddressStateEditText.getText().toString().equals("")){
+            binding.MessAddressStateEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter State", Toast.LENGTH_SHORT).show();
+        } else if(binding.MessAddressPinCodeEditText.getText().toString().equals("")){
+            binding.MessAddressPinCodeEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Pin Code", Toast.LENGTH_SHORT).show();
         } else if(binding.MessMonthlyEditText.getText().toString().equals("")){
             binding.MessMonthlyEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter Monthly fee", Toast.LENGTH_SHORT).show();
         } else {
             String newMessID = database.getReference().push().getKey();
             if(Clicked.equals("Mess")){
@@ -383,8 +429,14 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 HashMap<String, Object> pgUserMap = new HashMap<>();
                 pgUserMap.put("name",binding.MessNameEditText.getText().toString());
                 pgUserMap.put("description",binding.MessDescriptionEditText.getText().toString());
-                pgUserMap.put("address",binding.MessAddressEditText.getText().toString());
-                pgUserMap.put("Fee Monthly",binding.MessMonthlyEditText.getText().toString());
+                pgUserMap.put("locality",binding.MessAddressLocalityEditText.getText().toString());
+                pgUserMap.put("city",binding.MessAddressCityEditText.getText().toString());
+                pgUserMap.put("state",binding.MessAddressStateEditText.getText().toString());
+                pgUserMap.put("pin",binding.MessAddressPinCodeEditText.getText().toString());
+                pgUserMap.put("feeMonthly",binding.MessMonthlyEditText.getText().toString());
+                pgUserMap.put("totalUsers","0");
+                pgUserMap.put("paidUsers","0");
+                pgUserMap.put("revenue","0");
 
                 ref.child(newMessID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

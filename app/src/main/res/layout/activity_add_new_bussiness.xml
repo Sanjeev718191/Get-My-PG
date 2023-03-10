@@ -41,8 +41,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/select_business_spinner"
-        app:cardCornerRadius="20dp"
-        android:visibility="gone">
+        app:cardCornerRadius="20dp">
+<!--        android:visibility="gone">-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -130,6 +130,16 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address details"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/primary_dark"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -139,20 +149,102 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Address with pin code"/>
+                            android:text="Locality"/>
 
                         <EditText
-                            android:id="@+id/PGAddressEditText"
+                            android:id="@+id/PGAddressLocalityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
-                            android:hint="Address"
+                            android:hint="Locality"
                             android:padding="14dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginLeft="8dp"/>
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="City"/>
+
+                        <EditText
+                            android:id="@+id/PGAddressCityEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="City"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="State"/>
+
+                        <EditText
+                            android:id="@+id/PGAddressStateEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="State"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Pin code"/>
+
+                        <EditText
+                            android:id="@+id/PGAddressPinCodeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Pin Code"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fed details"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/primary_dark"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -377,6 +469,16 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address details"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/primary_dark"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -386,15 +488,15 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Address with pin code"/>
+                            android:text="Locality"/>
 
                         <EditText
-                            android:id="@+id/MessAddressEditText"
+                            android:id="@+id/MessAddressLocalityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
-                            android:hint="Address"
+                            android:hint="Locality"
                             android:padding="14dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginLeft="8dp"/>
@@ -410,7 +512,90 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Rent(1-Seater) per Month"/>
+                            android:text="City"/>
+
+                        <EditText
+                            android:id="@+id/MessAddressCityEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="City"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="State"/>
+
+                        <EditText
+                            android:id="@+id/MessAddressStateEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="State"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Pin code"/>
+
+                        <EditText
+                            android:id="@+id/MessAddressPinCodeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="number"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:hint="Pin Code"
+                            android:padding="14dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fee details"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:textColor="@color/primary_dark"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Price per Month"/>
 
                         <EditText
                             android:id="@+id/MessMonthlyEditText"
