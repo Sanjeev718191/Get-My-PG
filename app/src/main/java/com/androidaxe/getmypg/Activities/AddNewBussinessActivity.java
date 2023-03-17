@@ -199,6 +199,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("totalUsers","0");
                         pgUserMap.put("paidUsers","0");
                         pgUserMap.put("revenue","0");
+                        pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase());
+                        pgUserMap.put("id", newPGID);
 
                         ref.child(newPGID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -274,6 +276,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("totalUsers","0");
                         pgUserMap.put("paidUsers","0");
                         pgUserMap.put("revenue","0");
+                        pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase());
+                        pgUserMap.put("id", MessID);
 
                         ref.child(MessID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -366,6 +370,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("totalUsers","0");
                 pgUserMap.put("paidUsers","0");
                 pgUserMap.put("revenue","0");
+                pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase());
+                pgUserMap.put("id", newPGID);
 
                 ref.child(newPGID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -437,6 +443,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("totalUsers","0");
                 pgUserMap.put("paidUsers","0");
                 pgUserMap.put("revenue","0");
+                pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase());
+                pgUserMap.put("id", newMessID);
 
                 ref.child(newMessID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

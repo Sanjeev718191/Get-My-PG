@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.MessBusinessItemAdapter;
 import com.androidaxe.getmypg.Adapters.PGBusinessItemAdapter;
@@ -56,7 +55,6 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     RecyclerView messRecycler;
     TextView pgtext;
     TextView messtext;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +126,9 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         });
 
         pgRecycler.setAdapter(pgAdapter);
-        pgRecycler.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager pgLayoutManager = new LinearLayoutManager(this);
+        pgLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        pgRecycler.setLayoutManager(pgLayoutManager);
 
         database.getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -143,7 +143,6 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 OwnerPG pg = snapshot.getValue(OwnerPG.class);
-                                Toast.makeText(OwnerMainActivity.this, pg.getName(), Toast.LENGTH_SHORT).show();
                                 if(pg != null) pgAdapter.add(pg);
                             }
 
@@ -159,7 +158,9 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         });
 
         messRecycler.setAdapter(messAdapter);
-        messRecycler.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager messLayoutManager = new LinearLayoutManager(this);
+        messLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        messRecycler.setLayoutManager(messLayoutManager);
 
         database.getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -192,6 +193,16 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
+        // Setting navigation drawer buttons ==========================================================================================================
+
+        navigationView.getMenu().findItem(R.id.nav_home).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+
         navigationView.getMenu().findItem(R.id.add_business).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -199,6 +210,37 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 return true;
             }
         });
+        navigationView.getMenu().findItem(R.id.edit_profile_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.owner_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                auth.signOut();
+                startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
+                finishAffinity();
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.share_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.about_up_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
+                return true;
+            }
+        });
+
 
     }
 

@@ -1,12 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class OwnerMess {
-    String name, description, locality, city, state, pin, feeMonthly, image, totalUsers, paidUsers, revenue;
+    String name, description, locality, city, state, pin, feeMonthly, image, totalUsers, paidUsers, revenue, search, id;
 
     public OwnerMess() {
     }
 
-    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String totalUsers, String paidUsers, String revenue) {
+    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String totalUsers, String paidUsers, String revenue, String search, String id) {
         this.name = name;
         this.description = description;
         this.locality = locality;
@@ -18,6 +18,8 @@ public class OwnerMess {
         this.totalUsers = totalUsers;
         this.paidUsers = paidUsers;
         this.revenue = revenue;
+        this.search = search;
+        this.id = id;
     }
 
     public String getName() {
@@ -106,5 +108,21 @@ public class OwnerMess {
 
     public void setRevenue(String revenue) {
         this.revenue = revenue;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
