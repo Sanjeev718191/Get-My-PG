@@ -63,4 +63,16 @@ dependencies {
 
     //search bar
     implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
+
+    //zoom in and zoom out image
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
+
+    //why not image carousel
+    // Material Components for Android. Replace the version with the latest version of Material Components library.
+    implementation 'com.google.android.material:material:1.5.0'
+    // Circle Indicator (To fix the xml preview "Missing classes" error)
+    implementation 'me.relex:circleindicator:2.1.6'
+    implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
+    //why not image carousel
+
 }

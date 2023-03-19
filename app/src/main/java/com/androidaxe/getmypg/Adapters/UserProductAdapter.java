@@ -52,7 +52,7 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
             Glide.with(context).load(pg.getImage()).into(holder.binding.userProductImage);
             holder.binding.userProductLabel.setText(pg.getName());
             holder.binding.userProductType.setText("Hostel/PG");
-            holder.binding.userProductPrice.setText("Rs. "+pg.getSeater2()+" (Single seater)");
+            holder.binding.userProductPrice.setText("Rs. "+pg.getSeater1()+" (Single seater)");
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -2,12 +2,12 @@ package com.androidaxe.getmypg.Module;
 
 public class OwnerPG {
 
-    String name, description, locality, city, state, pin, seater1, seater2, seater3, image, electricityBill, totalUsers, paidUsers, revenue, search, id;
+    String name, description, locality, city, state, pin, seater1, seater2, seater3, image, electricityBill, totalUsers, paidUsers, revenue, search, id, oid;
 
     public OwnerPG() {
     }
 
-    public OwnerPG(String name, String description, String locality, String city, String state, String pin, String seater1, String seater2, String seater3, String image, String electricityBill, String totalUsers, String paidUsers, String revenue, String search, String id) {
+    public OwnerPG(String name, String description, String locality, String city, String state, String pin, String seater1, String seater2, String seater3, String image, String electricityBill, String totalUsers, String paidUsers, String revenue, String search, String id, String oid) {
         this.name = name;
         this.description = description;
         this.locality = locality;
@@ -24,6 +24,7 @@ public class OwnerPG {
         this.revenue = revenue;
         this.search = search;
         this.id = id;
+        this.oid = oid;
     }
 
     public String getName() {
@@ -152,5 +153,13 @@ public class OwnerPG {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOid() {
+        return oid;
+    }
+
+    public void setOid(String oid) {
+        this.oid = oid;
     }
 }

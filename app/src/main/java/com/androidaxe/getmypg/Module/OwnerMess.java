@@ -1,12 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class OwnerMess {
-    String name, description, locality, city, state, pin, feeMonthly, image, totalUsers, paidUsers, revenue, search, id;
+    String name, description, locality, city, state, pin, feeMonthly, image, menu, totalUsers, paidUsers, revenue, search, id, oid;
 
     public OwnerMess() {
     }
 
-    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String totalUsers, String paidUsers, String revenue, String search, String id) {
+    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String menu, String totalUsers, String paidUsers, String revenue, String search, String id, String oid) {
         this.name = name;
         this.description = description;
         this.locality = locality;
@@ -15,11 +15,21 @@ public class OwnerMess {
         this.pin = pin;
         this.feeMonthly = feeMonthly;
         this.image = image;
+        this.menu = menu;
         this.totalUsers = totalUsers;
         this.paidUsers = paidUsers;
         this.revenue = revenue;
         this.search = search;
         this.id = id;
+        this.oid = oid;
+    }
+
+    public String getMenu() {
+        return menu;
+    }
+
+    public void setMenu(String menu) {
+        this.menu = menu;
     }
 
     public String getName() {
@@ -124,5 +134,13 @@ public class OwnerMess {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOid() {
+        return oid;
+    }
+
+    public void setOid(String oid) {
+        this.oid = oid;
     }
 }
