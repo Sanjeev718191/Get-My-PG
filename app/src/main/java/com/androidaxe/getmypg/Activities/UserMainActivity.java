@@ -5,14 +5,24 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserMainBinding;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,6 +34,10 @@ public class UserMainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserMainBinding binding;
+
+    FirebaseAuth auth;
+    FirebaseDatabase database;
+    PGUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +64,107 @@ public class UserMainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.user_nav_home, R.id.user_edit_profile, R.id.user_pg, R.id.user_mess, R.id.user_my_requests, R.id.user_logout, R.id.share_user, R.id.about_up_user)
                 .setOpenableLayout(drawer)
                 .build();
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_user_main);
 //        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 //        NavigationUI.setupWithNavController(navigationView, navController);
 
+        // my code ==============================================================================================================================================================================================================
 
+        auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView userName = headerView.findViewById(R.id.UserNavigationBarName);
+        TextView userEmail = headerView.findViewById(R.id.UserNavigationBarEmail);
+        TextView userContact = headerView.findViewById(R.id.UserNavigationBarContactNumber);
+        userEmail.setText(auth.getCurrentUser().getEmail());
+        ImageView userImage = headerView.findViewById(R.id.UserNavigationBarImage);
+        database.getReference("PGUser").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                currentUser =snapshot.getValue(PGUser.class);
+                userName.setText(currentUser.getName());
+                userContact.setText("Contact : "+currentUser.getContact());
+                Glide.with(UserMainActivity.this).load(currentUser.getProfile()).into(userImage);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Setting navigation drawer buttons ======================================================================================================================================================================================================================================
+
+        navigationView.getMenu().findItem(R.id.user_nav_home).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.user_edit_profile).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(UserMainActivity.this, UserSetProfileActivity.class));
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.user_pg).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                Intent intent = new Intent(UserMainActivity.this, UserProductListActivity.class);
+                intent.putExtra("productType", "pg");
+                startActivity(intent);
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.user_mess).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                Intent intent = new Intent(UserMainActivity.this, UserProductListActivity.class);
+                intent.putExtra("productType", "mess");
+                startActivity(intent);
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.user_my_requests).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(UserMainActivity.this, UserRequestsActivity.class));
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.user_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                auth.signOut();
+                startActivity(new Intent(UserMainActivity.this, WelcomeActivity.class));
+                finishAffinity();
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.share_user).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.about_up_user).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(UserMainActivity.this, AboutUsActivity.class));
+                return true;
+            }
+        });
 
     }
 

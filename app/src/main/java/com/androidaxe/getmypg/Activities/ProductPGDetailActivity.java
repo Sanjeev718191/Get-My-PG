@@ -44,6 +44,7 @@ public class ProductPGDetailActivity extends AppCompatActivity {
                 binding.productPgTripleSeaterPrice.setText("Rs. "+pg.getSeater3());
                 binding.productPgElectricity.setText(pg.getElectricityBill());
                 binding.productPgLocation.setText(pg.getLocality()+", "+pg.getCity()+", "+pg.getState()+" "+pg.getPin());
+                binding.productPgOwnerContact.setText(pg.getContact());
             }
 
             @Override

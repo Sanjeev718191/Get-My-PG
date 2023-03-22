@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
+import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityCheckOutBinding;
@@ -154,22 +155,36 @@ public class CheckOutActivity extends AppCompatActivity {
                     requestMap.put("roomType", roomType);
                     requestMap.put("status", "Pending");
                     requestMap.put("date", date);
+                    requestMap.put("businessName", pg.getName());
+                    requestMap.put("userContact", currentUser.getContact());
+                    requestMap.put("ownerContact", mess.getContact());
+                    requestMap.put("userImage", currentUser.getProfile());
+                    requestMap.put("businessImage", pg.getImage());
+                    requestMap.put("price", total);
 
-                    database.getReference("PGRequests").child(requestId).updateChildren(requestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    database.getReference("Requests").child("PGRequests").child(requestId).updateChildren(requestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
                             HashMap<String, Object> ownerRequestMap = new HashMap<>();
-                            ownerRequestMap.put("requestId", requestId);
-                            database.getReference("OwnerPGRequests").child(pg.getOid()).child(requestId).updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            ownerRequestMap.put(requestId, requestId);
+                            database.getReference("Requests").child("OwnerPGRequests").child(pg.getOid()).child("requestIds").updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    database.getReference("UserPGRequests").child(currentUser.getuId()).child(requestId).updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    database.getReference("Requests").child("UserPGRequests").child(currentUser.getuId()).child("requestIds").updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(CheckOutActivity.this, "Request Send Successfully Check status in Request tab", Toast.LENGTH_SHORT).show();
-                                            binding.checkoutPgPaynowButton.setEnabled(false);
-                                            binding.checkoutPgPaynowButton.setBackgroundDrawable(getDrawable(R.drawable.button_background_grey));
+                                            HashMap<String, Object> NewRequestMap = new HashMap<>();
+                                            NewRequestMap.put("NewRequest", "Yes");
+                                            database.getReference("Requests").child("OwnerPGRequests").child(pg.getOid()).child("newRequest").updateChildren(NewRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(CheckOutActivity.this, "Request Send Successfully Check status in Request tab", Toast.LENGTH_SHORT).show();
+                                                    binding.checkoutPgPaynowButton.setEnabled(false);
+                                                    binding.checkoutPgPaynowButton.setBackgroundDrawable(getDrawable(R.drawable.button_background_grey));
+                                                }
+                                            });
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -211,6 +226,7 @@ public class CheckOutActivity extends AppCompatActivity {
                 binding.checkoutMessLocation.setText(mess.getLocality()+", "+mess.getCity()+", "+mess.getState()+" "+mess.getPin());
                 binding.checkoutMessTotal.setText("Rs. "+mess.getFeeMonthly());
                 getSupportActionBar().setTitle("Subscribe "+mess.getName());
+                total = mess.getFeeMonthly();
             }
 
             @Override
@@ -244,22 +260,35 @@ public class CheckOutActivity extends AppCompatActivity {
                 requestMap.put("roomType", "na");
                 requestMap.put("status", "Pending");
                 requestMap.put("date", date);
+                requestMap.put("businessName", mess.getName());
+                requestMap.put("userContact", currentUser.getContact());
+                requestMap.put("ownerContact", mess.getContact());
+                requestMap.put("userImage", currentUser.getProfile());
+                requestMap.put("businessImage", mess.getImage());
+                requestMap.put("price", total);
 
-                database.getReference("MessRequests").child(requestId).updateChildren(requestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                database.getReference("Requests").child("MessRequests").child(requestId).updateChildren(requestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         HashMap<String, Object> ownerRequestMap = new HashMap<>();
-                        ownerRequestMap.put("requestId", requestId);
-                        database.getReference("OwnerMessRequests").child(mess.getOid()).child(requestId).updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        ownerRequestMap.put(requestId, requestId);
+                        database.getReference("Requests").child("OwnerMessRequests").child(mess.getOid()).child("requestIds").updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                database.getReference("UserMessRequests").child(currentUser.getuId()).child(requestId).updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                database.getReference("Requests").child("UserMessRequests").child(currentUser.getuId()).child("requestIds").updateChildren(ownerRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(CheckOutActivity.this, "Request Send Successfully Check status in Request tab", Toast.LENGTH_SHORT).show();
-                                        binding.checkoutMessPaynowButton.setEnabled(false);
-                                        binding.checkoutMessPaynowButton.setBackgroundDrawable(getDrawable(R.drawable.button_background_grey));
+                                        HashMap<String, Object> NewRequestMap = new HashMap<>();
+                                        NewRequestMap.put("NewRequest", "Yes");
+                                        database.getReference("Requests").child("OwnerMessRequests").child(mess.getOid()).child("newRequest").updateChildren(NewRequestMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(CheckOutActivity.this, "Request Send Successfully Check status in Request tab", Toast.LENGTH_SHORT).show();
+                                                binding.checkoutMessPaynowButton.setEnabled(false);
+                                                binding.checkoutMessPaynowButton.setBackgroundDrawable(getDrawable(R.drawable.button_background_grey));
+                                            }
+                                        });
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

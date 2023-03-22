@@ -1,9 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class Request {
-    String uid, oid, pqid, requestId, userName, type, roomType, status, date;
+    String uid, oid, pqid, requestId, userName, type, roomType, status, date, businessName, userContact, ownerContact, userImage, businessImage, price;
 
-    public Request(String uid, String oid, String pqid, String requestId, String userName, String type, String roomType, String status, String date) {
+    public Request() {
+    }
+
+    public Request(String uid, String oid, String pqid, String requestId, String userName, String type, String roomType, String status, String date, String businessName, String userContact, String ownerContact, String userImage, String businessImage, String price) {
         this.uid = uid;
         this.oid = oid;
         this.pqid = pqid;
@@ -13,6 +16,12 @@ public class Request {
         this.roomType = roomType;
         this.status = status;
         this.date = date;
+        this.businessName = businessName;
+        this.userContact = userContact;
+        this.ownerContact = ownerContact;
+        this.userImage = userImage;
+        this.businessImage = businessImage;
+        this.price = price;
     }
 
     public String getUid() {
@@ -85,5 +94,53 @@ public class Request {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getUserContact() {
+        return userContact;
+    }
+
+    public void setUserContact(String userContact) {
+        this.userContact = userContact;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    public String getBusinessImage() {
+        return businessImage;
+    }
+
+    public void setBusinessImage(String businessImage) {
+        this.businessImage = businessImage;
+    }
+
+    public String getOwnerContact() {
+        return ownerContact;
+    }
+
+    public void setOwnerContact(String ownerContact) {
+        this.ownerContact = ownerContact;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

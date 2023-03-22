@@ -110,12 +110,16 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
         View headerView = navigationView.getHeaderView(0);
         TextView ownerName = headerView.findViewById(R.id.OwnerNavigationBarName);
+        TextView ownerEmail = headerView.findViewById(R.id.OwnerNavigationBarEmail);
+        TextView ownerContact = headerView.findViewById(R.id.OwnerNavigationBarContactNumber);
+        ownerEmail.setText(auth.getCurrentUser().getEmail());
         CircleImageView OwnerImage = headerView.findViewById(R.id.OwnerNavigationBarImageView);
         database.getReference("PGOwner").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 PGOwner curr = snapshot.getValue(PGOwner.class);
                 ownerName.setText(curr.getName());
+                ownerContact.setText("Contact : "+curr.getContact());
                 Glide.with(OwnerMainActivity.this)
                         .load(curr.getProfile())
                         .into(OwnerImage);
@@ -218,6 +222,14 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 return true;
             }
         });
+        navigationView.getMenu().findItem(R.id.owner_requests_menu).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(OwnerMainActivity.this, OwnerRequestsActivity.class));
+                return true;
+            }
+        });
         navigationView.getMenu().findItem(R.id.owner_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -236,7 +248,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.about_up_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
+                startActivity(new Intent(OwnerMainActivity.this, AboutUsActivity.class));
                 return true;
             }
         });

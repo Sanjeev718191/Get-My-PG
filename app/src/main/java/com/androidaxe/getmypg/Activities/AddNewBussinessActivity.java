@@ -13,7 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.databinding.ActivityAddNewBussinessBinding;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,6 +47,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     FirebaseStorage storage;
     String selectedBill;
 
+    PGOwner owner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,18 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
+
+        database.getReference().child("PGOwner").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        owner = snapshot.getValue(PGOwner.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
         showBusinessType();
 
@@ -202,6 +218,10 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg");
                         pgUserMap.put("id", newPGID);
                         pgUserMap.put("oid", auth.getUid());
+                        pgUserMap.put("contact", owner.getContact());
+                        pgUserMap.put("deleted", "false");
+                        pgUserMap.put("stopRequests", "false");
+                        pgUserMap.put("deactivated", "false");
 
                         ref.child(newPGID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -280,6 +300,10 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
                         pgUserMap.put("id", MessID);
                         pgUserMap.put("oid", auth.getUid());
+                        pgUserMap.put("contact", owner.getContact());
+                        pgUserMap.put("deleted", "false");
+                        pgUserMap.put("stopRequests", "false");
+                        pgUserMap.put("deactivated", "false");
 
                         ref.child(MessID).updateChildren(pgUserMap);
                         FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -375,6 +399,10 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg");
                 pgUserMap.put("id", newPGID);
                 pgUserMap.put("oid", auth.getUid());
+                pgUserMap.put("contact", owner.getContact());
+                pgUserMap.put("deleted", "false");
+                pgUserMap.put("stopRequests", "false");
+                pgUserMap.put("deactivated", "false");
 
                 ref.child(newPGID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -448,7 +476,11 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("revenue","0");
                 pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
                 pgUserMap.put("id", newMessID);
-                pgUserMap.put("oid", auth.getUid());
+                pgUserMap.put("oid", owner.getuId());
+                pgUserMap.put("contact", owner.getContact());
+                pgUserMap.put("deleted", "false");
+                pgUserMap.put("stopRequests", "false");
+                pgUserMap.put("deactivated", "false");
 
                 ref.child(newMessID).updateChildren(pgUserMap);
                 FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

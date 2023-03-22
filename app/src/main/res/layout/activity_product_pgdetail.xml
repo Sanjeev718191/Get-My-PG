@@ -175,8 +175,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="2"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -191,6 +190,29 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_medium"
                     android:text="Near xyz, Varanasi, UP 000000"/>
+
+            </GridLayout>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact : "
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/roboto_medium"/>
+
+                <TextView
+                    android:id="@+id/product_pg_owner_contact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="0000000000"/>
 
             </GridLayout>
 

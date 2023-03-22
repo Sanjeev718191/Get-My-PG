@@ -32,4 +32,18 @@
         android:fontFamily="@font/roboto_medium"
         android:gravity="center"/>
 
+    <TextView
+        android:id="@+id/OwnerNavigationBarEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="example@gmail.com"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/OwnerNavigationBarContactNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contact : 9800000000"
+        android:gravity="center"/>
+
 </LinearLayout>

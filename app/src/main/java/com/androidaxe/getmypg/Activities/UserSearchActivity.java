@@ -123,7 +123,7 @@ public class UserSearchActivity extends AppCompatActivity {
                         currLocation = currLocation.toLowerCase();
                         if(currLocation.toLowerCase().indexOf(location) >= 0){
                             pg.add(curr);
-                            Toast.makeText(UserSearchActivity.this, currLocation.indexOf(location)+" ", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(UserSearchActivity.this, currLocation.indexOf(location)+" ", Toast.LENGTH_SHORT).show();
                         }
                     }
                     adapter = new UserProductAdapter((Context) UserSearchActivity.this, (ArrayList<OwnerPG>) pg);

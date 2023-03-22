@@ -2,12 +2,12 @@ package com.androidaxe.getmypg.Module;
 
 public class OwnerPG {
 
-    String name, description, locality, city, state, pin, seater1, seater2, seater3, image, electricityBill, totalUsers, paidUsers, revenue, search, id, oid;
+    String name, description, locality, city, state, pin, seater1, seater2, seater3, image, electricityBill, totalUsers, paidUsers, revenue, search, id, oid, contact, deleted, stopRequests, deactivated;
 
     public OwnerPG() {
     }
 
-    public OwnerPG(String name, String description, String locality, String city, String state, String pin, String seater1, String seater2, String seater3, String image, String electricityBill, String totalUsers, String paidUsers, String revenue, String search, String id, String oid) {
+    public OwnerPG(String name, String description, String locality, String city, String state, String pin, String seater1, String seater2, String seater3, String image, String electricityBill, String totalUsers, String paidUsers, String revenue, String search, String id, String oid, String contact, String deleted, String stopRequests, String deactivated) {
         this.name = name;
         this.description = description;
         this.locality = locality;
@@ -25,6 +25,10 @@ public class OwnerPG {
         this.search = search;
         this.id = id;
         this.oid = oid;
+        this.contact = contact;
+        this.deleted = deleted;
+        this.stopRequests = stopRequests;
+        this.deactivated = deactivated;
     }
 
     public String getName() {
@@ -161,5 +165,37 @@ public class OwnerPG {
 
     public void setOid(String oid) {
         this.oid = oid;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getStopRequests() {
+        return stopRequests;
+    }
+
+    public void setStopRequests(String stopRequests) {
+        this.stopRequests = stopRequests;
+    }
+
+    public String getDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(String deactivated) {
+        this.deactivated = deactivated;
     }
 }

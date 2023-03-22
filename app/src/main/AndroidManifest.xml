@@ -15,6 +15,24 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.AboutUsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.UserProductListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.UserRequestsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GetMyPG.NoActionBar"  />
+        <activity
+            android:name=".Activities.OwnerRequestsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GetMyPG.NoActionBar" />
+        <activity
             android:name=".Activities.CheckOutActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

@@ -51,6 +51,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                 binding.productMessDescription.setText(mess.getDescription());
                 binding.productMessPrice.setText("Rs. "+mess.getFeeMonthly());
                 binding.productMessLocation.setText(mess.getLocality()+", "+mess.getCity()+", "+mess.getState()+" "+mess.getPin());
+                binding.productMessOwnerContact.setText(mess.getContact());
             }
 
             @Override

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/rio_img_card"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                app:cardCornerRadius="10dp">
+
+                <ImageView
+                    android:id="@+id/request_item_owner_user_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/placeholder"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/request_item_owner_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
+                android:text="User Name"
+                android:textColor="@color/primary_dark"
+                android:textSize="24sp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@id/rio_img_card"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/request_item_owner_user_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contact : 1234567890"
+                android:textSize="16sp"
+                android:layout_toEndOf="@id/rio_img_card"
+                android:layout_below="@id/request_item_owner_user_name"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="4dp"
+                />
+
+            <TextView
+                android:id="@+id/request_item_owner_user_request_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rio_img_card"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:text="Request For : "
+                android:textSize="16sp"
+                android:textColor="@color/dark_blue" />
+
+            <TextView
+                android:id="@+id/request_item_owner_business_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/request_item_owner_user_request_type"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:text="In Hostel : "
+                android:textSize="16sp"
+                android:textColor="@color/dark_blue"/>
+
+            <TextView
+                android:id="@+id/request_item_owner_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/request_item_owner_business_name"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:text="Price (pre month) : Rs. 3000"
+                android:textSize="16sp"
+                android:textColor="@color/dark_blue"/>
+
+            <TextView
+                android:id="@+id/request_item_owner_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/request_item_owner_price"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:text="Date : 10-01-2023"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/request_item_owner_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/request_item_owner_date"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Status : Pending"
+                android:textSize="18sp"
+                android:textColor="@color/highlight"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/request_item_owner_reject_button"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Reject"
+                android:textAllCaps="false"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/primary_dark"
+                android:layout_below="@+id/request_item_owner_status"
+                android:layout_marginTop="8dp"
+                android:layout_toStartOf="@id/request_item_owner_accept_button"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/button_background_grey"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/request_item_owner_accept_button"
+                android:layout_width="100dp"
+                android:text="Accept"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_medium"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/request_item_owner_status"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_background"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
