@@ -1,15 +1,15 @@
 package com.androidaxe.getmypg.Module;
 
 public class Request {
-    String uid, oid, pqid, requestId, userName, type, roomType, status, date, businessName, userContact, ownerContact, userImage, businessImage, price;
+    String uid, oid, pgid, requestId, userName, type, roomType, status, date, businessName, userContact, ownerContact, userImage, businessImage, price;
 
     public Request() {
     }
 
-    public Request(String uid, String oid, String pqid, String requestId, String userName, String type, String roomType, String status, String date, String businessName, String userContact, String ownerContact, String userImage, String businessImage, String price) {
+    public Request(String uid, String oid, String pgid, String requestId, String userName, String type, String roomType, String status, String date, String businessName, String userContact, String ownerContact, String userImage, String businessImage, String price) {
         this.uid = uid;
         this.oid = oid;
-        this.pqid = pqid;
+        this.pgid = pgid;
         this.requestId = requestId;
         this.userName = userName;
         this.type = type;
@@ -40,12 +40,12 @@ public class Request {
         this.oid = oid;
     }
 
-    public String getPqid() {
-        return pqid;
+    public String getPgid() {
+        return pgid;
     }
 
-    public void setPqid(String pqid) {
-        this.pqid = pqid;
+    public void setPgid(String pqid) {
+        this.pgid = pqid;
     }
 
     public String getRequestId() {

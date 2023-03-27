@@ -1,6 +1,7 @@
 package com.androidaxe.getmypg.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidaxe.getmypg.Activities.OwnerMainActivity;
+import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
+import com.androidaxe.getmypg.Activities.UserPGMessActivity;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.R;
@@ -59,15 +62,17 @@ public class PGBusinessItemAdapter extends RecyclerView.Adapter<PGBusinessItemAd
         holder.businessName.setText(pg.getName());
         holder.netRevenue.setText("Net Revenue : Rs. "+pg.getRevenue());
         holder.totalCustomers.setText("Total Customers : "+pg.getTotalUsers());
-        int percentage = Integer.parseInt(pg.getTotalUsers()) == 0? 0: (Integer.parseInt(pg.getPaidUsers())/Integer.parseInt(pg.getTotalUsers()))*100;
-        holder.precentage.setText(percentage+"%");
-        holder.progressBar.setMax(100);
-        holder.progressBar.setProgress(percentage);
+        holder.progressBar.setMax(Integer.parseInt(pg.getTotalUsers()));
+        holder.progressBar.setProgress(Integer.parseInt(pg.getPaidUsers()));
+        holder.precentage.setText(pg.getPaidUsers());
         Picasso.get().load(pg.getImage()).into(holder.mainImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, OwnerPGMessActivity.class);
+                intent.putExtra("type", "pg");
+                intent.putExtra("id", pg.getId());
+                context.startActivity(intent);
             }
         });
 

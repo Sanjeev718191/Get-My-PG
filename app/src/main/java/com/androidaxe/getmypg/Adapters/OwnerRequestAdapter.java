@@ -1,6 +1,7 @@
 package com.androidaxe.getmypg.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.androidaxe.getmypg.Activities.OwnerAcceptRequestActivity;
 import com.androidaxe.getmypg.Module.Request;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.RequestItemOwnerBinding;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OwnerRequestAdapter extends RecyclerView.Adapter<OwnerRequestAdapter.RequestViewHolder> {
 
@@ -58,10 +66,6 @@ public class OwnerRequestAdapter extends RecyclerView.Adapter<OwnerRequestAdapte
             holder.binding.requestItemOwnerAcceptButton.setVisibility(View.GONE);
             holder.binding.requestItemOwnerRejectButton.setVisibility(View.GONE);
             holder.binding.requestItemOwnerStatus.setTextColor(context.getColor(R.color.primary));
-            if(request.getType().equals("mess"))
-                holder.binding.requestItemOwnerStatus.setText("Status : "+request.getStatus());
-            else
-                holder.binding.requestItemOwnerStatus.setText("Status : "+request.getStatus());
         } else if(request.getStatus().equals("Rejected")){
             holder.binding.requestItemOwnerAcceptButton.setVisibility(View.GONE);
             holder.binding.requestItemOwnerRejectButton.setVisibility(View.GONE);
@@ -71,14 +75,57 @@ public class OwnerRequestAdapter extends RecyclerView.Adapter<OwnerRequestAdapte
         holder.binding.requestItemOwnerAcceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(context, OwnerAcceptRequestActivity.class);
+                intent.putExtra("type",request.getType());
+                intent.putExtra("id",request.getRequestId());
+                context.startActivity(intent);
             }
         });
 
         holder.binding.requestItemOwnerRejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(request.getType().equals("pg")) {
+                    FirebaseDatabase.getInstance().getReference("Requests").child("PGRequests").child(request.getRequestId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            snapshot.getRef().child("status").setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    holder.binding.requestItemOwnerAcceptButton.setVisibility(View.GONE);
+                                    holder.binding.requestItemOwnerRejectButton.setVisibility(View.GONE);
+                                    holder.binding.requestItemOwnerStatus.setTextColor(context.getColor(R.color.red));
+                                    holder.binding.requestItemOwnerStatus.setText("Rejected");
+                                }
+                            });
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                } else if(request.getType().equals("mess")) {
+                    FirebaseDatabase.getInstance().getReference("Requests").child("MessRequests").child(request.getRequestId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            snapshot.getRef().child("status").setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    holder.binding.requestItemOwnerAcceptButton.setVisibility(View.GONE);
+                                    holder.binding.requestItemOwnerRejectButton.setVisibility(View.GONE);
+                                    holder.binding.requestItemOwnerStatus.setTextColor(context.getColor(R.color.red));
+                                    holder.binding.requestItemOwnerStatus.setText("Rejected");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
         });
     }

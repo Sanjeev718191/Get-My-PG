@@ -134,7 +134,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         pgLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         pgRecycler.setLayoutManager(pgLayoutManager);
 
-        database.getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("OwnerPGs").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pgAdapter.clear();
@@ -166,7 +166,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         messLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         messRecycler.setLayoutManager(messLayoutManager);
 
-        database.getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("OwnerMess").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messAdapter.clear();

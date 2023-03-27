@@ -1,11 +1,13 @@
 package com.androidaxe.getmypg.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -109,7 +111,7 @@ public class OwnerRequestsActivity extends AppCompatActivity {
         progressDialog.show();
         requestsIds = new ArrayList<>();
         requests = new ArrayList<>();
-        database.getReference("Requests").child("OwnerPGRequests").child(auth.getUid()).child("requestIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("Requests").child("OwnerPGRequests").child(auth.getUid()).child("requestIds").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getChildrenCount() > 0){
@@ -134,7 +136,7 @@ public class OwnerRequestsActivity extends AppCompatActivity {
                     }
 
                 }
-                database.getReference("Requests").child("OwnerMessRequests").child(auth.getUid()).child("requestIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                database.getReference("Requests").child("OwnerMessRequests").child(auth.getUid()).child("requestIds").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.getChildrenCount() > 0){
@@ -366,4 +368,41 @@ public class OwnerRequestsActivity extends AppCompatActivity {
         binding.ownerRequestList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        getAllRequests();
+//        binding.ownerRequestRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                if(i == R.id.owner_request_all){
+//                    adapter = new OwnerRequestAdapter(OwnerRequestsActivity.this, requests);
+//                    binding.ownerRequestList.setAdapter(adapter);
+//                    adapter.notifyDataSetChanged();
+//                } else if(i == R.id.owner_request_accepted){
+//                    binding.ownerRequestAll.setEnabled(true);
+//                    getAcceptedRequests();
+//                } else if(i == R.id.owner_request_rejected){
+//                    binding.ownerRequestAll.setEnabled(true);
+//                    getRejectedRequests();
+//                } else if(i == R.id.owner_request_pending){
+//                    binding.ownerRequestAll.setEnabled(true);
+//                    getPendingRequests();
+//                } else if(i == R.id.owner_request_pg){
+//                    binding.ownerRequestAll.setEnabled(true);
+//                    getPgRequests();
+//                } else if(i == R.id.owner_request_mess){
+//                    binding.ownerRequestAll.setEnabled(true);
+//                    getMessRequests();
+//                }
+//            }
+//        });
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        startActivity(new Intent(OwnerRequestsActivity.this, OwnerMainActivity.class));
+//        finishAffinity();
+//    }
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.OwnerPGMessFragment.EditFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/edit_mess"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit mess details"
+                android:textColor="@color/primary_dark"
+                android:textSize="16dp"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background_grey"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/edit_mess_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit mess menu"
+                android:textColor="@color/primary_dark"
+                android:textSize="16dp"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background_grey"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/edit_pg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit hostel details"
+                android:textColor="@color/primary_dark"
+                android:textSize="16dp"
+                android:textAllCaps="false"
+                android:background="@drawable/button_background_grey"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

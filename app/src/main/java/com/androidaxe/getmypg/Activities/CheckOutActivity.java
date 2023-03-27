@@ -157,7 +157,7 @@ public class CheckOutActivity extends AppCompatActivity {
                     requestMap.put("date", date);
                     requestMap.put("businessName", pg.getName());
                     requestMap.put("userContact", currentUser.getContact());
-                    requestMap.put("ownerContact", mess.getContact());
+                    requestMap.put("ownerContact", pg.getContact());
                     requestMap.put("userImage", currentUser.getProfile());
                     requestMap.put("businessImage", pg.getImage());
                     requestMap.put("price", total);

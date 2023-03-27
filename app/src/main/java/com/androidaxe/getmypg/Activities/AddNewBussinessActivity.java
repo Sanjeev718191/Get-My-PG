@@ -215,7 +215,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("totalUsers","0");
                         pgUserMap.put("paidUsers","0");
                         pgUserMap.put("revenue","0");
-                        pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg");
+                        pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
                         pgUserMap.put("id", newPGID);
                         pgUserMap.put("oid", auth.getUid());
                         pgUserMap.put("contact", owner.getContact());
@@ -396,7 +396,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("totalUsers","0");
                 pgUserMap.put("paidUsers","0");
                 pgUserMap.put("revenue","0");
-                pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg");
+                pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
                 pgUserMap.put("id", newPGID);
                 pgUserMap.put("oid", auth.getUid());
                 pgUserMap.put("contact", owner.getContact());

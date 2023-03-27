@@ -28,6 +28,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/user_main_pg_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My Active Hostels / PG"
@@ -36,15 +37,18 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/user_main_PG_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:visibility="gone"/>
 
             <TextView
+                android:id="@+id/user_main_mess_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My Active Mess"
@@ -53,13 +57,15 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginRight="8dp"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/com_Mess_Recycler"
+                android:id="@+id/user_main_Mess_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:visibility="gone"/>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

@@ -110,7 +110,7 @@ public class UserRequestsActivity extends AppCompatActivity {
         progressDialog.show();
         requestsIds = new ArrayList<>();
         myRequests = new ArrayList<>();
-        database.getReference("Requests").child("UserPGRequests").child(auth.getUid()).child("requestIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("Requests").child("UserPGRequests").child(auth.getUid()).child("requestIds").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();
@@ -136,7 +136,7 @@ public class UserRequestsActivity extends AppCompatActivity {
                     }
 
                 }
-                database.getReference("Requests").child("UserMessRequests").child(auth.getUid()).child("requestIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                database.getReference("Requests").child("UserMessRequests").child(auth.getUid()).child("requestIds").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.getChildrenCount() > 0){
@@ -155,7 +155,6 @@ public class UserRequestsActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-
                                     }
                                 });
                             }

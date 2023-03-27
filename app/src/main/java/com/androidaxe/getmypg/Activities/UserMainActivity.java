@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidaxe.getmypg.Adapters.UserSubscribedItemAdapter;
 import com.androidaxe.getmypg.Module.PGUser;
+import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserMainBinding;
 import com.bumptech.glide.Glide;
@@ -29,6 +31,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 
 public class UserMainActivity extends AppCompatActivity {
 
@@ -38,6 +45,9 @@ public class UserMainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseDatabase database;
     PGUser currentUser;
+    UserSubscribedItemAdapter messAdapter, pgAdapter;
+    TextView userPGText, userMessText;
+    RecyclerView userPGRecycler, userMessRecycle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +85,12 @@ public class UserMainActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+        userPGText = findViewById(R.id.user_main_pg_text);
+        userMessText = findViewById(R.id.user_main_mess_text);
+        userPGRecycler = findViewById(R.id.user_main_PG_Recycler);
+        userMessRecycle = findViewById(R.id.user_main_Mess_Recycler);
+        pgAdapter = new UserSubscribedItemAdapter(this);
+        messAdapter = new UserSubscribedItemAdapter(this);
 
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.UserNavigationBarName);
@@ -82,13 +98,14 @@ public class UserMainActivity extends AppCompatActivity {
         TextView userContact = headerView.findViewById(R.id.UserNavigationBarContactNumber);
         userEmail.setText(auth.getCurrentUser().getEmail());
         ImageView userImage = headerView.findViewById(R.id.UserNavigationBarImage);
-        database.getReference("PGUser").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        database.getReference("PGUser").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 currentUser =snapshot.getValue(PGUser.class);
                 userName.setText(currentUser.getName());
                 userContact.setText("Contact : "+currentUser.getContact());
                 Glide.with(UserMainActivity.this).load(currentUser.getProfile()).into(userImage);
+                getUserInfo();
             }
 
             @Override
@@ -96,6 +113,8 @@ public class UserMainActivity extends AppCompatActivity {
 
             }
         });
+
+
 
         //Setting navigation drawer buttons ======================================================================================================================================================================================================================================
 
@@ -193,6 +212,137 @@ public class UserMainActivity extends AppCompatActivity {
 //                || super.onSupportNavigateUp();
 //    }
 
+    private void getUserInfo(){
+        userPGRecycler.setAdapter(pgAdapter);
+        LinearLayoutManager pgLayoutManager = new LinearLayoutManager(this);
+        pgLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        userPGRecycler.setLayoutManager(pgLayoutManager);
 
+        database.getReference("UserSubscription").child("UserPG").child(currentUser.getuId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount() > 0){
+                    userPGText.setVisibility(View.VISIBLE);
+                    userPGRecycler.setVisibility(View.VISIBLE);
+//                    ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
+//                    for(DataSnapshot ds : snapshot.getChildren()){
+//                        UserSubscribedItem item = ds.getValue(UserSubscribedItem.class);
+//                        if(item.getCurrentlyActive().equals("true")){
+//                            curr.addFirst(item);
+//                        } else {
+//                            curr.addLast(item);
+//                        }
+//                    }
+//                    pgAdapter.clear();
+//                    for(UserSubscribedItem item : curr) {
+//                        pgAdapter.add(item);
+//                    }
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String id = ds.getValue(String.class);
+                        ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
+                        database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
+                                if(item.getCurrentlyActive().equals("true")){
+                                    curr.addFirst(item);
+                                } else {
+                                    curr.addLast(item);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        pgAdapter.clear();
+                        for(UserSubscribedItem item : curr) {
+                            pgAdapter.add(item);
+                        }
+                    }
+
+                } else {
+                    userPGText.setVisibility(View.GONE);
+                    userPGRecycler.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+
+        userMessRecycle.setAdapter(messAdapter);
+        LinearLayoutManager messLayoutManager = new LinearLayoutManager(this);
+        messLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        userMessRecycle.setLayoutManager(messLayoutManager);
+
+        database.getReference("UserSubscription").child("UserMess").child(currentUser.getuId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount() > 0){
+                    userMessText.setVisibility(View.VISIBLE);
+                    userMessRecycle.setVisibility(View.VISIBLE);
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String id = ds.getValue(String.class);
+                        ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
+                        database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
+                                if(item.getCurrentlyActive().equals("true")){
+                                    curr.addFirst(item);
+                                } else {
+                                    curr.addLast(item);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        pgAdapter.clear();
+                        for(UserSubscribedItem item : curr) {
+                            pgAdapter.add(item);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+//        database.getReference("UserSubscription").child("UserMess").child(currentUser.getuId()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.getChildrenCount() > 0){
+//                    userMessText.setVisibility(View.VISIBLE);
+//                    userMessRecycle.setVisibility(View.VISIBLE);
+//                    ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
+//                    for(DataSnapshot ds : snapshot.getChildren()){
+//                        UserSubscribedItem item = ds.getValue(UserSubscribedItem.class);
+//                        if(item.getCurrentlyActive().equals("true")){
+//                            curr.addFirst(item);
+//                        } else {
+//                            curr.addLast(item);
+//                        }
+//                    }
+//                    messAdapter.clear();
+//                    for(UserSubscribedItem item : curr) {
+//                        messAdapter.add(item);
+//                    }
+//                } else {
+//                    userMessText.setVisibility(View.GONE);
+//                    userMessRecycle.setVisibility(View.GONE);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) { }
+//        });
+    }
 
 }
