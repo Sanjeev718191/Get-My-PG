@@ -1,44 +1,61 @@
 package com.androidaxe.getmypg.Activities.OwnerPGMessFragment;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
+import com.androidaxe.getmypg.Module.PGUser;
+import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
+import com.androidaxe.getmypg.databinding.FragmentMyCustomersBinding;
+import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.mancj.materialsearchbar.SimpleOnSearchActionListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MyCustomersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+
 public class MyCustomersFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    String type, id;
+    Context context;
+    FragmentMyCustomersBinding binding;
+    FirebaseDatabase database;
+    ProgressDialog progressDialog;
+    MyCustomerAdapter adapter;
+    ArrayList<UserSubscribedItem> subscribers;
+    ArrayList<PGUser> users;
 
     public MyCustomersFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyCustomersFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+    public MyCustomersFragment(String type, String id, Context context) {
+        this.type = type;
+        this.id = id;
+        this.context = context;
+    }
+
     public static MyCustomersFragment newInstance(String param1, String param2) {
         MyCustomersFragment fragment = new MyCustomersFragment();
         Bundle args = new Bundle();
@@ -58,9 +75,210 @@ public class MyCustomersFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_customers, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        binding = FragmentMyCustomersBinding.inflate(inflater, container, false);
+
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Loading Info...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        database = FirebaseDatabase.getInstance();
+        subscribers = new ArrayList<>();
+        users = new ArrayList<>();
+        getAllUsers();
+
+        binding.myCustomerRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if(i == R.id.my_customer_all){
+                    getAllUsers();
+                } else if(i == R.id.my_customer_paid) {
+                    getOngoingUsers();
+                } else {
+                    getUnpaidUsers();
+                }
+            }
+        });
+
+        binding.myCustomerSearchBar.setOnSearchActionListener(new SimpleOnSearchActionListener() {
+            @Override
+            public void onSearchStateChanged(boolean enabled) {
+                super.onSearchStateChanged(enabled);
+            }
+
+            @Override
+            public void onSearchConfirmed(CharSequence text) {
+                super.onSearchConfirmed(text);
+                search(text.toString().toLowerCase());
+            }
+
+            @Override
+            public void onButtonClicked(int buttonCode) {
+                super.onButtonClicked(buttonCode);
+            }
+        });
+
+        return binding.getRoot();
     }
+
+    private void getAllUsers(){
+        if(type.equals("pg")){
+            progressDialog.show();
+            binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            database.getReference("BusinessSubscriber").child("HostelUser").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() > 0){
+                        subscribers.clear();
+                        for(DataSnapshot ds : snapshot.getChildren()){
+                            String subscriptionId = ds.getValue(String.class);
+                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
+                                    subscribers.add(item);
+
+                                    FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            PGUser user = snapshot.getValue(PGUser.class);
+                                            users.add(user);
+                                            adapter = new MyCustomerAdapter(context, subscribers, users);
+                                            binding.myCustomerRecyclerView.setAdapter(adapter);
+                                            adapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+
+                    }
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else {
+            progressDialog.show();
+            binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+           database.getReference("BusinessSubscriber").child("MessUser").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() > 0){
+                        for(DataSnapshot ds : snapshot.getChildren()){
+                            String subscriptionId = ds.getValue(String.class);
+                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
+                                    subscribers.add(item);
+                                    FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            PGUser user = snapshot.getValue(PGUser.class);
+                                            users.add(user);
+                                            adapter = new MyCustomerAdapter(context, subscribers, users);
+                                            binding.myCustomerRecyclerView.setAdapter(adapter);
+                                            adapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                    }
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "Data not found", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    ArrayList<UserSubscribedItem> selectedSubscribers;
+    ArrayList<PGUser> selectedUsers;
+    private void search(String query){
+        selectedSubscribers = new ArrayList<>();
+        selectedUsers = new ArrayList<>();
+        adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+        binding.myCustomerRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        for(int i = 0; i<subscribers.size(); i++){
+            if(users.get(i).getName().toLowerCase().indexOf(query) >= 0){
+                selectedUsers.add(users.get(i));
+                selectedSubscribers.add(subscribers.get(i));
+                adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+                binding.myCustomerRecyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void getOngoingUsers(){
+        selectedSubscribers = new ArrayList<>();
+        selectedUsers = new ArrayList<>();
+        adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+        binding.myCustomerRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        for(int i = 0; i<subscribers.size(); i++){
+            UserSubscribedItem item = subscribers.get(i);
+            if (item.getCurrentlyActive().equals("true")){
+                selectedUsers.add(users.get(i));
+                selectedSubscribers.add(subscribers.get(i));
+                adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+                binding.myCustomerRecyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void getUnpaidUsers(){
+        selectedSubscribers = new ArrayList<>();
+        selectedUsers = new ArrayList<>();
+        adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+        binding.myCustomerRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        for(int i = 0; i<subscribers.size(); i++){
+            UserSubscribedItem item = subscribers.get(i);
+            if (item.getCurrentlyActive().equals("false")){
+                selectedUsers.add(users.get(i));
+                selectedSubscribers.add(subscribers.get(i));
+                adapter = new MyCustomerAdapter(context, selectedSubscribers, selectedUsers);
+                binding.myCustomerRecyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
 }

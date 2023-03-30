@@ -72,6 +72,7 @@ public class PGBusinessItemAdapter extends RecyclerView.Adapter<PGBusinessItemAd
                 Intent intent = new Intent(context, OwnerPGMessActivity.class);
                 intent.putExtra("type", "pg");
                 intent.putExtra("id", pg.getId());
+                intent.putExtra("name", pg.getName());
                 context.startActivity(intent);
             }
         });

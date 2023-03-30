@@ -67,6 +67,8 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
                 Intent intent = new Intent(context, OwnerPGMessActivity.class);
                 intent.putExtra("type", "mess");
                 intent.putExtra("id", mess.getId());
+                intent.putExtra("name", mess.getName());
+
                 context.startActivity(intent);
             }
         });

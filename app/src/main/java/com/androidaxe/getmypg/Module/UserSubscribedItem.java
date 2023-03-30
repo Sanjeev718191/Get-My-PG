@@ -1,12 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class UserSubscribedItem {
-    String PGMessId, type, fromDate, toDate, uid, oid, roomType, roomNumber, note, price, Notice, currentlyActive;
+    String PGMessId, type, fromDate, toDate, uid, oid, roomType, roomNumber, note, price, Notice, currentlyActive, subscriptionId, lastPaidAmount, paymentDate;
 
     public UserSubscribedItem() {
     }
 
-    public UserSubscribedItem(String PGMessId, String type, String fromDate, String toDate, String uid, String oid, String roomType, String roomNumber, String note, String price, String notice, String currentlyActive) {
+    public UserSubscribedItem(String PGMessId, String type, String fromDate, String toDate, String uid, String oid, String roomType, String roomNumber, String note, String price, String notice, String currentlyActive, String subscriptionId, String lastPaidAmount, String paymentDate) {
         this.PGMessId = PGMessId;
         this.type = type;
         this.fromDate = fromDate;
@@ -19,6 +19,9 @@ public class UserSubscribedItem {
         this.price = price;
         Notice = notice;
         this.currentlyActive = currentlyActive;
+        this.subscriptionId = subscriptionId;
+        this.lastPaidAmount = lastPaidAmount;
+        this.paymentDate = paymentDate;
     }
 
     public String getPGMessId() {
@@ -115,5 +118,29 @@ public class UserSubscribedItem {
 
     public void setCurrentlyActive(String currentlyActive) {
         this.currentlyActive = currentlyActive;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public String getLastPaidAmount() {
+        return lastPaidAmount;
+    }
+
+    public void setLastPaidAmount(String lastPaidAmount) {
+        this.lastPaidAmount = lastPaidAmount;
+    }
+
+    public String getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(String paymentDate) {
+        this.paymentDate = paymentDate;
     }
 }

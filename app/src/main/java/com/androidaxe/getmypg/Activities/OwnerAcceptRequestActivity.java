@@ -199,6 +199,9 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
         map.put("price", binding.acceptRequestSetPrice.getText().toString());
         map.put("Notice", "na");
         map.put("currentlyActive", "false");
+        map.put("subscriptionId",newSubscriptionID);
+        map.put("lastPaidAmount", "na");
+        map.put("paymentDate", "na");
 
         database.getReference("Subscription").child(newSubscriptionID).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -208,7 +211,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         messCount = snapshot.getChildrenCount() + 1;
                         HashMap<String, Object> countMap = new HashMap<>();
-                        countMap.put("mess"+messCount, newSubscriptionID);
+                        countMap.put(newSubscriptionID, newSubscriptionID);
 
                         database.getReference("UserSubscription").child("UserMess").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -271,6 +274,9 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
         map.put("price", binding.acceptRequestSetPrice.getText().toString());
         map.put("Notice", "na");
         map.put("currentlyActive", "false");
+        map.put("subscriptionId",newSubscriptionID);
+        map.put("lastPaidAmount", "na");
+        map.put("paymentDate", "na");
 
         database.getReference("Subscription").child(newSubscriptionID).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -328,4 +334,5 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
 
 
     }
+
 }

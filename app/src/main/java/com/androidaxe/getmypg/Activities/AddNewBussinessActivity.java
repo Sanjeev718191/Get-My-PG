@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.OwnerMess;
+import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.databinding.ActivityAddNewBussinessBinding;
 import com.bumptech.glide.Glide;
@@ -35,7 +37,6 @@ import java.util.HashMap;
 public class AddNewBussinessActivity extends AppCompatActivity {
 
     ActivityAddNewBussinessBinding binding;
-    String[] BusinessTypeItems = {"Select Business Type","I have PG/Hostel", "I have Mess"};
     String[] ElectricityBillItems = {"Included in monthly fee", "Meter reading"};
     ArrayAdapter<String> businessTypeAdapter;
     ArrayAdapter<String> eleBillAdapter;
@@ -48,6 +49,11 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     String selectedBill;
 
     PGOwner owner;
+    String type, id;
+    OwnerPG pg;
+    OwnerMess mess;
+
+    String newId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
+        type = getIntent().getStringExtra("type");
+        id = getIntent().getStringExtra("id");
 
         database.getReference().child("PGOwner").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -76,61 +84,57 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     }
 
     private void showBusinessType(){
-        businessTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, BusinessTypeItems);
-        binding.selectBusinessSpinner.setAdapter(businessTypeAdapter);
-        binding.selectBusinessSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String item = adapterView.getItemAtPosition(i).toString();
-                if(item.equals("Select Business Type")){
-                    binding.PGCardView.setVisibility(View.GONE);
-                    binding.MessCardView.setVisibility(View.GONE);
-                }else if(item.equals("I have PG/Hostel")){
-                    binding.PGCardView.setVisibility(View.VISIBLE);
-                    binding.MessCardView.setVisibility(View.GONE);
-                    showElectricityBill();
-                    binding.addPGImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Clicked = "PG";
-                            Intent i = new Intent();
-                            i.setType("image/*");
-                            i.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_HOSTEL);
-                        }
-                    });
-                    binding.AddPGButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            addMYPG();
-                        }
-                    });
-                } else if(item.equals("I have Mess")){
-                    binding.PGCardView.setVisibility(View.GONE);
-                    binding.MessCardView.setVisibility(View.VISIBLE);
-                    binding.addMessImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Clicked = "Mess";
-                            Intent i = new Intent();
-                            i.setType("image/*");
-                            i.setAction(Intent.ACTION_GET_CONTENT);
-                            startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_MESS);
-                        }
-                    });
-                    binding.AddMessButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            addMyMess();
-                        }
-                    });
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+        if(type.equals("pg")){
+            binding.PGCardView.setVisibility(View.VISIBLE);
+            binding.MessCardView.setVisibility(View.GONE);
+            showElectricityBill();
 
+            if(!id.equals("new")){
+                showMyPG();
             }
-        });
+
+            binding.addPGImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Clicked = "PG";
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_HOSTEL);
+                }
+            });
+            binding.AddPGButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMYPG();
+                }
+            });
+        } else {
+            binding.PGCardView.setVisibility(View.GONE);
+            binding.MessCardView.setVisibility(View.VISIBLE);
+
+            if(!id.equals("new")){
+                showMyMess();
+            }
+
+            binding.addMessImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Clicked = "Mess";
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_MESS);
+                }
+            });
+            binding.AddMessButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addMyMess();
+                }
+            });
+        }
+
     }
     private void showElectricityBill(){
         eleBillAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, ElectricityBillItems);
@@ -153,6 +157,56 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         });
     }
 
+    private void showMyPG(){
+        database.getReference("PGs").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                pg = snapshot.getValue(OwnerPG.class);
+                Glide.with(AddNewBussinessActivity.this).load(pg.getImage()).into(binding.addPGImage);
+                binding.PGNameEditText.setText(pg.getName());
+                binding.PGDescriptionEditText.setText(pg.getDescription());
+                binding.PGAddressLocalityEditText.setText(pg.getLocality());
+                binding.PGAddressCityEditText.setText(pg.getCity());
+                binding.PGAddressStateEditText.setText(pg.getState());
+                binding.PGAddressPinCodeEditText.setText(pg.getPin());
+                binding.PG1seaterEditText.setText(pg.getSeater1());
+                binding.PG2seaterEditText.setText(pg.getSeater2());
+                binding.PG3seaterEditText.setText(pg.getSeater3());
+                if(pg.getElectricityBill().equals("Meter reading")){
+                    binding.PGeleBillSpinner.setSelection(1);
+                } else {
+                    binding.PGeleBillSpinner.setSelection(0);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showMyMess(){
+        database.getReference("Mess").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mess = snapshot.getValue(OwnerMess.class);
+                Glide.with(AddNewBussinessActivity.this).load(mess.getImage()).into(binding.addMessImage);
+                binding.MessNameEditText.setText(mess.getName());
+                binding.MessDescriptionEditText.setText(mess.getDescription());
+                binding.MessAddressLocalityEditText.setText(mess.getLocality());
+                binding.MessAddressCityEditText.setText(mess.getCity());
+                binding.MessAddressStateEditText.setText(mess.getState());
+                binding.MessAddressPinCodeEditText.setText(mess.getPin());
+                binding.MessMonthlyEditText.setText(mess.getFeeMonthly());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -171,7 +225,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadPGImage(String newPGID){
+    private void uploadPGImage(){
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Adding Info...");
@@ -180,7 +234,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         progressDialog.show();
 
         if(imageUri != null){
-            final StorageReference fileRef = storage.getReference().child("PGs").child(newPGID+".jpg");
+            final StorageReference fileRef = storage.getReference().child("PGs").child(newId+".jpg");
 
             StorageTask uploadTask = fileRef.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
@@ -216,28 +270,31 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("paidUsers","0");
                         pgUserMap.put("revenue","0");
                         pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
-                        pgUserMap.put("id", newPGID);
+                        pgUserMap.put("id", newId);
                         pgUserMap.put("oid", auth.getUid());
                         pgUserMap.put("contact", owner.getContact());
                         pgUserMap.put("deleted", "false");
                         pgUserMap.put("stopRequests", "false");
                         pgUserMap.put("deactivated", "false");
 
-                        ref.child(newPGID).updateChildren(pgUserMap);
-                        FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                long count = snapshot.getChildrenCount()+1;
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("PG"+count,newPGID);
-                                FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
-                            }
+                        ref.child(newId).updateChildren(pgUserMap);
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        if(id.equals("new")){
+                            FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    long count = snapshot.getChildrenCount()+1;
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("PG"+count,newId);
+                                    FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
 
                         progressDialog.dismiss();
                         startActivity(new Intent(AddNewBussinessActivity.this, OwnerMainActivity.class));
@@ -256,7 +313,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
 
     }
 
-    private void uploadMessImage(String MessID){
+    private void uploadMessImage(){
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Adding Info...");
@@ -265,7 +322,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         progressDialog.show();
 
         if(imageUri != null){
-            final StorageReference fileRef = storage.getReference().child("Mess").child(MessID+".jpg");
+            final StorageReference fileRef = storage.getReference().child("Mess").child(newId+".jpg");
 
             StorageTask uploadTask = fileRef.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
@@ -298,32 +355,35 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("paidUsers","0");
                         pgUserMap.put("revenue","0");
                         pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
-                        pgUserMap.put("id", MessID);
+                        pgUserMap.put("id", newId);
                         pgUserMap.put("oid", auth.getUid());
                         pgUserMap.put("contact", owner.getContact());
                         pgUserMap.put("deleted", "false");
                         pgUserMap.put("stopRequests", "false");
                         pgUserMap.put("deactivated", "false");
 
-                        ref.child(MessID).updateChildren(pgUserMap);
-                        FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                long count = snapshot.getChildrenCount()+1;
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("Mess"+count,MessID);
-                                FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).updateChildren(map);
-                            }
+                        ref.child(newId).updateChildren(pgUserMap);
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        if(id.equals("new")){
+                            FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    long count = snapshot.getChildrenCount()+1;
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("Mess"+count,newId);
+                                    FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).updateChildren(map);
+                                }
 
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
 
                         progressDialog.dismiss();
                         Intent intent = new Intent(AddNewBussinessActivity.this, EditMessMenuActivity.class);
-                        intent.putExtra("Mess Id", ""+MessID);
+                        intent.putExtra("Mess Id", ""+newId);
                         startActivity(intent);
                         Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
                         finishAffinity();
@@ -370,9 +430,11 @@ public class AddNewBussinessActivity extends AppCompatActivity {
             binding.PG3seaterEditText.setError("Field can't be empty");
             Toast.makeText(this, "Please enter 3 seater fee", Toast.LENGTH_SHORT).show();
         } else {
-            String newPGID = database.getReference().push().getKey();
+            newId = id;
+            if(id.equals("new"))
+                newId = database.getReference().push().getKey();
             if(Clicked.equals("PG")){
-                uploadPGImage(newPGID);
+                uploadPGImage();
             } else {
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Adding Info...");
@@ -397,28 +459,31 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("paidUsers","0");
                 pgUserMap.put("revenue","0");
                 pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
-                pgUserMap.put("id", newPGID);
+                pgUserMap.put("id", newId);
                 pgUserMap.put("oid", auth.getUid());
                 pgUserMap.put("contact", owner.getContact());
                 pgUserMap.put("deleted", "false");
                 pgUserMap.put("stopRequests", "false");
                 pgUserMap.put("deactivated", "false");
 
-                ref.child(newPGID).updateChildren(pgUserMap);
-                FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        long count = snapshot.getChildrenCount()+1;
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("PG"+count,newPGID);
-                        FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
-                    }
+                ref.child(newId).updateChildren(pgUserMap);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                if(id.equals("new")){
+                    FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long count = snapshot.getChildrenCount()+1;
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("PG"+count,newId);
+                            FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
 
                 progressDialog.dismiss();
                 startActivity(new Intent(AddNewBussinessActivity.this, OwnerMainActivity.class));
@@ -451,9 +516,10 @@ public class AddNewBussinessActivity extends AppCompatActivity {
             binding.MessMonthlyEditText.setError("Field can't be empty");
             Toast.makeText(this, "Please enter Monthly fee", Toast.LENGTH_SHORT).show();
         } else {
-            String newMessID = database.getReference().push().getKey();
+            newId = id;
+            if(id.equals("new")) newId = database.getReference().push().getKey();
             if(Clicked.equals("Mess")){
-                uploadMessImage(newMessID);
+                uploadMessImage();
             } else {
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle("Adding Info...");
@@ -475,32 +541,34 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("paidUsers","0");
                 pgUserMap.put("revenue","0");
                 pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
-                pgUserMap.put("id", newMessID);
+                pgUserMap.put("id", newId);
                 pgUserMap.put("oid", owner.getuId());
                 pgUserMap.put("contact", owner.getContact());
                 pgUserMap.put("deleted", "false");
                 pgUserMap.put("stopRequests", "false");
                 pgUserMap.put("deactivated", "false");
 
-                ref.child(newMessID).updateChildren(pgUserMap);
-                FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        long count = snapshot.getChildrenCount()+1;
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("Mess"+count,newMessID);
-                        FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).updateChildren(map);
-                    }
+                ref.child(newId).updateChildren(pgUserMap);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                if(id.equals("new")){
+                    FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long count = snapshot.getChildrenCount()+1;
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("Mess"+count,newId);
+                            FirebaseDatabase.getInstance().getReference("OwnerMess").child(auth.getUid()).updateChildren(map);
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
+                        }
+                    });
+                }
                 progressDialog.dismiss();
                 Intent intent = new Intent(AddNewBussinessActivity.this, EditMessMenuActivity.class);
-                intent.putExtra("Mess Id", ""+newMessID);
+                intent.putExtra("Mess Id", ""+newId);
                 startActivity(intent);
                 Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
                 finishAffinity();

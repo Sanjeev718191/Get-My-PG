@@ -81,7 +81,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.add_business, R.id.edit_profile_owner, R.id.owner_logout, R.id.share_owner, R.id.about_up_owner)
+                R.id.nav_home, R.id.nav_add_pg, R.id.nav_add_mess, R.id.edit_profile_owner, R.id.owner_logout, R.id.share_owner, R.id.about_up_owner)
                 .setOpenableLayout(drawer)
                 .build();
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
@@ -203,23 +203,38 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+                return false;
             }
         });
 
-        navigationView.getMenu().findItem(R.id.add_business).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        navigationView.getMenu().findItem(R.id.nav_add_pg).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
-                return true;
+                Intent intent = new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class);
+                intent.putExtra("type", "pg");
+                intent.putExtra("id", "new");
+                startActivity(intent);
+                return false;
             }
         });
+
+        navigationView.getMenu().findItem(R.id.nav_add_mess).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                Intent intent = new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class);
+                intent.putExtra("type", "mess");
+                intent.putExtra("id", "new");
+                startActivity(intent);
+                return false;
+            }
+        });
+
         navigationView.getMenu().findItem(R.id.edit_profile_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.owner_requests_menu).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -227,7 +242,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(OwnerMainActivity.this, OwnerRequestsActivity.class));
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.owner_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -236,20 +251,20 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 auth.signOut();
                 startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
                 finishAffinity();
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.share_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.about_up_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 startActivity(new Intent(OwnerMainActivity.this, AboutUsActivity.class));
-                return true;
+                return false;
             }
         });
 
@@ -278,33 +293,33 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        int id = item.getItemId();
-        if(id == R.id.nav_home){
-
-            binding.drawerLayout.closeDrawer(GravityCompat.START);
-
-        } else if(id == R.id.add_business){
-
-            //binding.drawerLayout.closeDrawer(GravityCompat.START);
-            startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
-
-        } else if(id == R.id.edit_profile_owner){
-
-            binding.drawerLayout.closeDrawer(GravityCompat.START);
-            startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
-
-        } else if(id == R.id.owner_logout){
-
-            auth.signOut();
-            startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
-            finishAffinity();
-
-        } else if(id == R.id.share_owner){
-
-        } else if(id == R.id.about_up_owner){
-
-        }
-        return true;
+//        int id = item.getItemId();
+//        if(id == R.id.nav_home){
+//
+//            binding.drawerLayout.closeDrawer(GravityCompat.START);
+//
+//        } else if(id == R.id.add_business){
+//
+//            //binding.drawerLayout.closeDrawer(GravityCompat.START);
+//            startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
+//
+//        } else if(id == R.id.edit_profile_owner){
+//
+//            binding.drawerLayout.closeDrawer(GravityCompat.START);
+//            startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
+//
+//        } else if(id == R.id.owner_logout){
+//
+//            auth.signOut();
+//            startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
+//            finishAffinity();
+//
+//        } else if(id == R.id.share_owner){
+//
+//        } else if(id == R.id.about_up_owner){
+//
+//        }
+        return false;
     }
 
     private void checkData(){
@@ -320,10 +335,22 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                                 builder.setTitle("No Data");
                                 builder.setMessage("No PG(Hostel) or Mess is added. Please add to continue.");
 
-                                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                                builder.setPositiveButton("Add Hostel", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
+                                        Intent intent = new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class);
+                                        intent.putExtra("type", "pg");
+                                        intent.putExtra("id", "new");
+                                        startActivity(intent);
+                                    }
+                                });
+                                builder.setNegativeButton("Add Mess", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class);
+                                        intent.putExtra("type", "mess");
+                                        intent.putExtra("id", "new");
+                                        startActivity(intent);
                                     }
                                 });
 

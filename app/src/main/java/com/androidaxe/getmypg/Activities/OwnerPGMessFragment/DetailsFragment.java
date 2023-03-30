@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewbinding.ViewBinding;
 
 import android.view.LayoutInflater;
@@ -19,8 +20,11 @@ import android.widget.Toast;
 import com.androidaxe.getmypg.Activities.EditMessMenuActivity;
 import com.androidaxe.getmypg.Activities.ImageZoomViewActivity;
 import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
+import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
+import com.androidaxe.getmypg.Module.PGUser;
+import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.FragmentDetailsBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +34,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -94,7 +105,7 @@ public class DetailsFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         if(type.equals("pg")){
             progressDialog.show();
-            database.getReference("PGs").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.getReference("PGs").child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     pg = snapshot.getValue(OwnerPG.class);
@@ -110,7 +121,7 @@ public class DetailsFragment extends Fragment {
                     binding.ownerPgmessPaidUsers.setText("Received Payment : "+pg.getPaidUsers());
                     binding.ownerPgmessUnpaidUsers.setText("User not paid : "+unpaidUsers);
                     binding.ownerPgmessRevenue.setText("Total profit(this month) : Rs."+pg.getRevenue());
-                    progressDialog.dismiss();
+                    calculateDetails();
                 }
 
                 @Override
@@ -121,7 +132,7 @@ public class DetailsFragment extends Fragment {
             });
         } else {
             progressDialog.show();
-            database.getReference("Mess").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            database.getReference("Mess").child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     mess = snapshot.getValue(OwnerMess.class);
@@ -138,7 +149,7 @@ public class DetailsFragment extends Fragment {
                     binding.ownerPgmessPaidUsers.setText("Received Payment : "+mess.getPaidUsers());
                     binding.ownerPgmessUnpaidUsers.setText("User not paid : "+unpaidUsers);
                     binding.ownerPgmessRevenue.setText("Total profit(this month) : Rs."+mess.getRevenue());
-                    progressDialog.dismiss();
+                    calculateDetails();
                 }
 
                 @Override
@@ -203,17 +214,125 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-//        if(type.equals("mess")){
-//            binding.ownerPgmessEditMenuButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(context, EditMessMenuActivity.class);
-//                    intent.putExtra("Mess Id", ""+mess.getId());
-//                    startActivity(intent);
-//                }
-//            });
-//        }
 
         return binding.getRoot();
     }
+    String todayDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    long netRevenue, paidUsers;
+    int count;
+    private void calculateDetails(){
+        netRevenue = 0;
+        paidUsers = 0;
+        count = 0;
+        if(type.equals("pg")){
+            database.getReference("BusinessSubscriber").child("HostelUser").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() > 0){
+                        for(DataSnapshot ds : snapshot.getChildren()){
+                            count++;
+                            String subscriptionId = ds.getValue(String.class);
+                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snap) {
+                                    UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
+                                    if(item.getCurrentlyActive().equals("true")){
+                                        incrementPaidUser();
+                                    }
+                                    if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,5).equals(todayDate.substring(3,5))){
+                                        addRevenue(Long.parseLong(item.getLastPaidAmount()));
+                                    }
+                                    if(count == snapshot.getChildrenCount()){
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("revenue", netRevenue+"");
+                                        map.put("paidUsers",""+paidUsers);
+                                        database.getReference("PGs").child(id).updateChildren(map);
+                                        progressDialog.dismiss();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    progressDialog.dismiss();
+                                }
+                            });
+
+                        }
+
+                    } else {
+                        progressDialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressDialog.dismiss();
+                }
+            });
+
+        } else {
+            database.getReference("BusinessSubscriber").child("MessUser").child(id).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() > 0){
+                        for(DataSnapshot ds : snapshot.getChildren()){
+                            count++;
+                            String subscriptionId = ds.getValue(String.class);
+                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snap) {
+                                    UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
+                                    if(item.getCurrentlyActive().equals("true")){
+                                        incrementPaidUser();
+                                    }
+                                    if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,5).equals(todayDate.substring(3,5))){
+                                        addRevenue(Long.parseLong(item.getLastPaidAmount()));
+                                    }
+                                    if(count == snapshot.getChildrenCount()){
+
+                                        HashMap<String, Object> map = new HashMap<>();
+                                        map.put("revenue", netRevenue+"");
+                                        map.put("paidUsers",""+paidUsers);
+                                        database.getReference("Mess").child(id).updateChildren(map);
+                                        progressDialog.dismiss();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    progressDialog.dismiss();
+                                }
+                            });
+
+                        }
+                    } else {
+                        progressDialog.dismiss();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressDialog.dismiss();
+                }
+            });
+        }
+    }
+
+    private void addRevenue(long revenue){
+        netRevenue += revenue;
+    }
+    private void incrementPaidUser(){
+        paidUsers++;
+    }
+
+//    private String getTodayDate(){
+//        Calendar cal = Calendar.getInstance();
+//        int year = cal.get(Calendar.YEAR);
+//        int month = cal.get(Calendar.MONTH);
+//        month = month + 1;
+//        int day = cal.get(Calendar.DAY_OF_MONTH);
+//        if(month >= 9) return day+"-0"+month+"-"+year;
+//        else return day+"-"+month+"-"+year;
+//    }
+
 }

@@ -15,5 +15,7 @@
     <color name="dark_blue">#287CF6</color>
     <color name="light_background">#EEEEEE</color>
     <color name="red">#B60000</color>
+    <color name="light_green">#CCFFDA</color>
+    <color name="light_red">#FFC4C4</color>
 
 </resources>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.OwnerPayFeeActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/pay_fee_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pay_fee_user_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:civ_border_color="@color/primary_dark"
+                app:civ_border_width="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/pay_fee_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer name"
+                android:textSize="22dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textStyle="bold"
+                android:textColor="@color/primary_dark"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
+
+            <TextView
+                android:id="@+id/pay_fee_user_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9800000000"
+                android:textSize="18dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amount : Rs. "
+                    android:textSize="18dp"
+                    android:fontFamily="@font/roboto_medium"/>
+
+                <EditText
+                    android:id="@+id/owner_pay_fee_amount"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textStyle="bold"
+                    android:background="@drawable/input_background"
+                    android:padding="8dp"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="From date : "
+                    android:textSize="18dp"
+                    android:fontFamily="@font/roboto_medium"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/owner_pay_fee_from_date"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textStyle="bold"
+                    android:background="@drawable/input_background"
+                    android:padding="8dp"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="      To date : "
+                    android:textSize="18dp"
+                    android:fontFamily="@font/roboto_medium"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/owner_pay_fee_to_date"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:textColor="@color/dark_blue"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textStyle="bold"
+                    android:background="@drawable/input_background"
+                    android:padding="8dp"
+                    android:layout_marginLeft="4dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/pay_fee_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_background"
+        android:fontFamily="@font/roboto_medium"
+        android:text="Recharge"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

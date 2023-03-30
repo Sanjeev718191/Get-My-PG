@@ -9,9 +9,13 @@
             android:icon="@drawable/baseline_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/add_business"
+            android:id="@+id/nav_add_pg"
             android:icon="@drawable/add_business_icon"
-            android:title="Add Business" />
+            android:title="Add Hostel/PG" />
+        <item
+            android:id="@+id/nav_add_mess"
+            android:icon="@drawable/baseline_food"
+            android:title="Add Mess" />
         <item
             android:id="@+id/edit_profile_owner"
             android:icon="@drawable/manage_icon"

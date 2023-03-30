@@ -6,29 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Activities.AddNewBussinessActivity">
 
-    <TextView
-        android:id="@+id/nb_select_businessText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Select Type"
-        android:textColor="@color/primary_dark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/select_business_spinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/input_backround_highlighted"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nb_select_businessText" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/PGCardView"
         android:layout_width="0dp"
@@ -37,12 +14,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_business_spinner"
-        app:cardCornerRadius="20dp">
-<!--        android:visibility="gone">-->
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
+        <!--        android:visibility="gone">-->
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -52,21 +30,21 @@
                 android:id="@+id/addPGHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PG/Hostel Details"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/primary_dark"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
-                android:layout_centerHorizontal="true"/>
+                android:fontFamily="@font/roboto_medium"
+                android:text="PG/Hostel Details"
+                android:textColor="@color/primary_dark"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <ScrollView
                 android:id="@+id/pgDetailScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:layout_above="@+id/AddPGButton"
                 android:layout_below="@id/addPGHeading"
-                android:layout_above="@+id/AddPGButton">
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -77,291 +55,292 @@
                         android:id="@+id/addPGImage"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
-                        android:background="@drawable/input_background"
                         android:layout_marginBottom="8dp"
-                        android:src="@drawable/add_image"
-                        android:padding="10dp"/>
+                        android:background="@drawable/input_background"
+                        android:padding="10dp"
+                        android:src="@drawable/add_image" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Name of PG / Hostel"/>
+                            android:text="Name of PG / Hostel" />
 
                         <EditText
                             android:id="@+id/PGNameEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Name of PG/Hostel"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Description"/>
+                            android:text="Description" />
 
                         <EditText
                             android:id="@+id/PGDescriptionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Details"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Address details"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textColor="@color/primary_dark"
                         android:layout_marginTop="20dp"
-                        android:gravity="center"/>
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:text="Address details"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Locality"/>
+                            android:text="Locality" />
 
                         <EditText
                             android:id="@+id/PGAddressLocalityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Locality"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="City"/>
+                            android:text="City" />
 
                         <EditText
                             android:id="@+id/PGAddressCityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="City"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="State"/>
+                            android:text="State" />
 
                         <EditText
                             android:id="@+id/PGAddressStateEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="State"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Pin code"/>
+                            android:text="Pin code" />
 
                         <EditText
                             android:id="@+id/PGAddressPinCodeEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Pin Code"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Fed details"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textColor="@color/primary_dark"
                         android:layout_marginTop="20dp"
-                        android:gravity="center"/>
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:text="Fed details"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Rent(1-Seater) per Month"/>
+                            android:text="Rent(1-Seater) per Month" />
 
                         <EditText
                             android:id="@+id/PG1seaterEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Enter Price(If not available - 0)"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Rent(2-Seater) per Month"/>
+                            android:text="Rent(2-Seater) per Month" />
 
                         <EditText
                             android:id="@+id/PG2seaterEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Enter Price(If not available - 0)"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Rent(3-Seater) per Month"/>
+                            android:text="Rent(3-Seater) per Month" />
 
                         <EditText
                             android:id="@+id/PG3seaterEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Enter Price(If not available - 0)"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Electricity Bill"/>
+                            android:text="Electricity Bill" />
 
                         <Spinner
                             android:id="@+id/PGeleBillSpinner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="12dp"
                             android:background="@drawable/input_background"
                             android:hint="Enter Price(If not available - 0)"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
             </ScrollView>
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/AddPGButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add PG/Hostal"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_medium"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
                 android:layout_margin="8dp"
                 android:background="@drawable/button_background"
-                android:layout_alignParentBottom="true"/>
+                android:fontFamily="@font/roboto_medium"
+                android:text="Add PG/Hostal"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
@@ -377,12 +356,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_business_spinner"
-        app:cardCornerRadius="20dp"
-        android:visibility="gone">
+        app:layout_constraintTop_toTopOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -392,21 +371,21 @@
                 android:id="@+id/addMessHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mess Details"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/primary_dark"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
-                android:layout_centerHorizontal="true"/>
+                android:fontFamily="@font/roboto_medium"
+                android:text="Mess Details"
+                android:textColor="@color/primary_dark"
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <ScrollView
                 android:id="@+id/MessDetailScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:layout_above="@+id/AddMessButton"
                 android:layout_below="@id/addMessHeading"
-                android:layout_above="@+id/AddMessButton">
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -417,216 +396,217 @@
                         android:id="@+id/addMessImage"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
-                        android:background="@drawable/input_background"
                         android:layout_marginBottom="8dp"
-                        android:src="@drawable/add_image"
-                        android:padding="10dp"/>
+                        android:background="@drawable/input_background"
+                        android:padding="10dp"
+                        android:src="@drawable/add_image" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Name of Mess"/>
+                            android:text="Name of Mess" />
 
                         <EditText
                             android:id="@+id/MessNameEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Name of Mess"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Description"/>
+                            android:text="Description" />
 
                         <EditText
                             android:id="@+id/MessDescriptionEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Details"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Address details"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textColor="@color/primary_dark"
                         android:layout_marginTop="20dp"
-                        android:gravity="center"/>
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:text="Address details"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Locality"/>
+                            android:text="Locality" />
 
                         <EditText
                             android:id="@+id/MessAddressLocalityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Locality"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="City"/>
+                            android:text="City" />
 
                         <EditText
                             android:id="@+id/MessAddressCityEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="City"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="State"/>
+                            android:text="State" />
 
                         <EditText
                             android:id="@+id/MessAddressStateEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="State"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Pin code"/>
+                            android:text="Pin code" />
 
                         <EditText
                             android:id="@+id/MessAddressPinCodeEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="number"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Pin Code"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:inputType="number"
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Fee details"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/roboto_medium"
-                        android:textColor="@color/primary_dark"
                         android:layout_marginTop="20dp"
-                        android:gravity="center"/>
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:text="Fee details"
+                        android:textColor="@color/primary_dark"
+                        android:textSize="16sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Price per Month"/>
+                            android:text="Price per Month" />
 
                         <EditText
                             android:id="@+id/MessMonthlyEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:background="@drawable/input_background"
                             android:hint="Enter Price(If not available - 0)"
                             android:inputType="number"
-                            android:padding="14dp"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginLeft="8dp"/>
+                            android:padding="14dp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
             </ScrollView>
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/AddMessButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add and edit Mess Menu"
-                android:textStyle="bold"
-                android:fontFamily="@font/roboto_medium"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
                 android:layout_margin="8dp"
                 android:background="@drawable/button_background"
-                android:layout_alignParentBottom="true"/>
+                android:fontFamily="@font/roboto_medium"
+                android:text="Add and edit Mess Menu"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
         </RelativeLayout>
 

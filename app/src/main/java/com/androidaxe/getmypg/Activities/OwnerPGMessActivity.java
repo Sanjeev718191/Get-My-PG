@@ -37,7 +37,7 @@ import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 public class OwnerPGMessActivity extends AppCompatActivity {
 
     ActivityOwnerPgmessBinding binding;
-    String type, id1;
+    String type, id1, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +47,21 @@ public class OwnerPGMessActivity extends AppCompatActivity {
 
         type = getIntent().getStringExtra("type");
         id1 = getIntent().getStringExtra("id");
+        name = getIntent().getStringExtra("name");
+        getSupportActionBar().setTitle(name);
 
         binding.ownerPGMessBottomNavigationView.setSelectedItemId(R.id.navigation_pgmess_details);
+        loadFragment(new DetailsFragment(type, id1, OwnerPGMessActivity.this), true);
         binding.ownerPGMessBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if(id == R.id.navigation_pgmess_details){
-                    loadFragment(new DetailsFragment(type, id1, OwnerPGMessActivity.this), true);
+                    loadFragment(new DetailsFragment(type, id1, OwnerPGMessActivity.this), false);
                 } else if(id == R.id.navigation_pgmess_edit){
-                    loadFragment(new EditFragment(), false);
+                    loadFragment(new EditFragment(type, id1, OwnerPGMessActivity.this), false);
                 } else if(id == R.id.navigation_pgmess_customers){
-                    loadFragment(new MyCustomersFragment(), false);
+                    loadFragment(new MyCustomersFragment(type, id1, OwnerPGMessActivity.this), false);
                 } else if(id == R.id.navigation_pgmess_chat){
                     loadFragment(new ChatFragment(), false);
                 }
