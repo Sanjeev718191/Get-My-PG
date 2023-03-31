@@ -1,5 +1,6 @@
 package com.androidaxe.getmypg.Activities;
 
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -165,6 +166,7 @@ public class UserMainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 auth.signOut();
+                ((ActivityManager)UserMainActivity.this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
                 startActivity(new Intent(UserMainActivity.this, WelcomeActivity.class));
                 finishAffinity();
                 return true;
@@ -212,16 +214,18 @@ public class UserMainActivity extends AppCompatActivity {
 //                || super.onSupportNavigateUp();
 //    }
 
+    int c1, c2;
     private void getUserInfo(){
-        userPGRecycler.setAdapter(pgAdapter);
         LinearLayoutManager pgLayoutManager = new LinearLayoutManager(this);
         pgLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         userPGRecycler.setLayoutManager(pgLayoutManager);
+        userPGRecycler.setAdapter(pgAdapter);
 
         database.getReference("UserSubscription").child("UserPG").child(currentUser.getuId()).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getChildrenCount() > 0){
+            public void onDataChange(@NonNull DataSnapshot snap) {
+                if(snap.getChildrenCount() > 0){
+                    c1 = 0;
                     userPGText.setVisibility(View.VISIBLE);
                     userPGRecycler.setVisibility(View.VISIBLE);
 //                    ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
@@ -237,7 +241,8 @@ public class UserMainActivity extends AppCompatActivity {
 //                    for(UserSubscribedItem item : curr) {
 //                        pgAdapter.add(item);
 //                    }
-                    for(DataSnapshot ds : snapshot.getChildren()){
+                    for(DataSnapshot ds : snap.getChildren()){
+                        c1++;
                         String id = ds.getValue(String.class);
                         ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
                         database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
@@ -249,6 +254,12 @@ public class UserMainActivity extends AppCompatActivity {
                                 } else {
                                     curr.addLast(item);
                                 }
+                                if(c1 == snap.getChildrenCount()) {
+                                    pgAdapter.clear();
+                                    for (UserSubscribedItem i : curr) {
+                                        pgAdapter.add(i);
+                                    }
+                                }
                             }
 
                             @Override
@@ -256,10 +267,7 @@ public class UserMainActivity extends AppCompatActivity {
 
                             }
                         });
-                        pgAdapter.clear();
-                        for(UserSubscribedItem item : curr) {
-                            pgAdapter.add(item);
-                        }
+
                     }
 
                 } else {
@@ -271,18 +279,20 @@ public class UserMainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) { }
         });
 
-        userMessRecycle.setAdapter(messAdapter);
         LinearLayoutManager messLayoutManager = new LinearLayoutManager(this);
         messLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
         userMessRecycle.setLayoutManager(messLayoutManager);
+        userMessRecycle.setAdapter(messAdapter);
 
         database.getReference("UserSubscription").child("UserMess").child(currentUser.getuId()).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getChildrenCount() > 0){
+            public void onDataChange(@NonNull DataSnapshot snap) {
+                if(snap.getChildrenCount() > 0){
+                    c2 = 0;
                     userMessText.setVisibility(View.VISIBLE);
                     userMessRecycle.setVisibility(View.VISIBLE);
-                    for(DataSnapshot ds : snapshot.getChildren()){
+                    for(DataSnapshot ds : snap.getChildren()){
+                        c2++;
                         String id = ds.getValue(String.class);
                         ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
                         database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
@@ -294,6 +304,12 @@ public class UserMainActivity extends AppCompatActivity {
                                 } else {
                                     curr.addLast(item);
                                 }
+                                if(c2 == snap.getChildrenCount()) {
+                                    messAdapter.clear();
+                                    for (UserSubscribedItem i : curr) {
+                                        messAdapter.add(i);
+                                    }
+                                }
                             }
 
                             @Override
@@ -301,10 +317,7 @@ public class UserMainActivity extends AppCompatActivity {
 
                             }
                         });
-                        pgAdapter.clear();
-                        for(UserSubscribedItem item : curr) {
-                            pgAdapter.add(item);
-                        }
+
                     }
                 }
             }

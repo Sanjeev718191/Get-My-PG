@@ -1,38 +1,21 @@
 package com.androidaxe.getmypg.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewbinding.ViewBinding;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.ChatFragment;
 import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.DetailsFragment;
 import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.EditFragment;
 import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.MyCustomersFragment;
-import com.androidaxe.getmypg.Module.OwnerMess;
-import com.androidaxe.getmypg.Module.OwnerPG;
+import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.RoomsDetailsFragment;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerPgmessBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 public class OwnerPGMessActivity extends AppCompatActivity {
 
@@ -62,8 +45,8 @@ public class OwnerPGMessActivity extends AppCompatActivity {
                     loadFragment(new EditFragment(type, id1, OwnerPGMessActivity.this), false);
                 } else if(id == R.id.navigation_pgmess_customers){
                     loadFragment(new MyCustomersFragment(type, id1, OwnerPGMessActivity.this), false);
-                } else if(id == R.id.navigation_pgmess_chat){
-                    loadFragment(new ChatFragment(), false);
+                } else if(id == R.id.navigation_pgmess_rooms){
+                    loadFragment(new RoomsDetailsFragment(type, id1, OwnerPGMessActivity.this), false);
                 }
                 return true;
             }

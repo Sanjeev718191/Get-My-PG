@@ -2,7 +2,6 @@ package com.androidaxe.getmypg.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
-import com.androidaxe.getmypg.Activities.UserPGMessActivity;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.R;
 import com.squareup.picasso.Picasso;

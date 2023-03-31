@@ -2,7 +2,6 @@ package com.androidaxe.getmypg.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.androidaxe.getmypg.Activities.OwnerMainActivity;
 import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
-import com.androidaxe.getmypg.Activities.UserPGMessActivity;
-import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.R;
-import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

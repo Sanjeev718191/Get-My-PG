@@ -108,6 +108,32 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/PGRoomCountlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Number of rooms" />
+
+                        <EditText
+                            android:id="@+id/PGRoomCountEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/input_background"
+                            android:inputType="number"
+                            android:hint="No. of rooms"
+                            android:padding="14dp" />
+
+                    </LinearLayout>
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -334,10 +360,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/button_background"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Add PG/Hostal"
+                android:text="Add PG/Hostel"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textStyle="bold" />

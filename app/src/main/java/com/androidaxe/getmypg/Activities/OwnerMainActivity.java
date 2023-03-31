@@ -1,5 +1,6 @@
 package com.androidaxe.getmypg.Activities;
 
+import android.app.ActivityManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -249,6 +250,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 auth.signOut();
+                ((ActivityManager)OwnerMainActivity.this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
                 startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
                 finishAffinity();
                 return false;

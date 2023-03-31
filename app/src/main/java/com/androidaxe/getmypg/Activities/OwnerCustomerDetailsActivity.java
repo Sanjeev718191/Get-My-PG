@@ -156,28 +156,30 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         if(subscription.getType().equals("pg")){
-                            database.getReference("UserSubscription").
-                                    child("UserPG").
-                                    child(subscription.getUid()).
-                                    child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            database.getReference("UserSubscription").child("UserPG").child(subscription.getUid()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     database.getReference("BusinessSubscriber").child("HostelUser").child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            database.getReference("PGRoom").child(subscription.getPGMessId()).child("Room"+subscription.getRoomNumber()).child("users").child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    int count = Integer.parseInt(snapshot.getValue(String.class));
-                                                    count--;
-                                                    database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").setValue(count+"");
-                                                    progressDialog.dismiss();
-                                                    finish();
-                                                }
+                                                public void onSuccess(Void unused) {
+                                                    database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            int count = Integer.parseInt(snapshot.getValue(String.class));
+                                                            count--;
+                                                            database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").setValue(count+"");
+                                                            progressDialog.dismiss();
+                                                            finish();
+                                                        }
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
 
+                                                        }
+                                                    });
                                                 }
                                             });
                                         }

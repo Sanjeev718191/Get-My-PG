@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.androidaxe.getmypg.Activities.UserPGMessActivity;
+import com.androidaxe.getmypg.Activities.UserSubscriptionActivity;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
@@ -84,8 +84,8 @@ public class UserSubscribedItemAdapter extends RecyclerView.Adapter<UserSubscrib
                 }
             });
         }
-        holder.binding.fromDateText.setText(item.getFromDate());
-        holder.binding.toDateText.setText(item.getToDate());
+        holder.binding.fromDateText.setText("From : "+item.getFromDate());
+        holder.binding.toDateText.setText("To : "+item.getToDate());
 
         if(!item.getToDate().equals("na")){
             String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
@@ -109,7 +109,7 @@ public class UserSubscribedItemAdapter extends RecyclerView.Adapter<UserSubscrib
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, UserPGMessActivity.class);
+                Intent intent = new Intent(context, UserSubscriptionActivity.class);
                 intent.putExtra("type", item.getType());
                 intent.putExtra("id", item.getPGMessId());
                 context.startActivity(intent);

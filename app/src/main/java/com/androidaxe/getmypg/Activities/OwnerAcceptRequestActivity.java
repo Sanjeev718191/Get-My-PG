@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.OwnerMess;
+import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.Request;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerAcceptRequestBinding;
@@ -31,6 +33,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
     Request request;
     FirebaseDatabase database;
     ProgressDialog progressDialog;
+    OwnerPG pg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +75,17 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     request = snapshot.getValue(Request.class);
-                    progressDialog.dismiss();
+                    FirebaseDatabase.getInstance().getReference("PGs").child(request.getPgid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            pg = snapshot.getValue(OwnerPG.class);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     binding.acceptRequestUserName.setText(request.getUserName());
                     binding.acceptRequestRoomTypeLayout.setVisibility(View.VISIBLE);
                     binding.acceptRequestRoomNumberLayout.setVisibility(View.VISIBLE);
@@ -85,6 +98,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                         binding.acceptRequestRoomType.setText("Triple Seater");
                     }
                     binding.acceptRequestSetPrice.setText(request.getPrice());
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -154,17 +168,19 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
         binding.acceptRequestSetUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.show();
                 if(request.getType().equals("pg")) {
                     if(binding.acceptRequestRoomType.getText().equals("")){
                         binding.acceptRequestRoomType.setError("Please enter Room type");
                     } else if(binding.acceptRequestRoomNumber.getText().equals("")){
                         binding.acceptRequestRoomNumber.setError("Please enter Room Number");
+                    } else if(Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString()) > Integer.parseInt(pg.getRoomCount()) ||  Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString()) < 0){
+                        binding.acceptRequestRoomNumber.setError("Please enter Valid Room No.");
                     } else if(binding.acceptRequestNote.getText().equals("")){
                         binding.acceptRequestNote.setError("Please enter user note");
                     } else if(binding.acceptRequestSetPrice.getText().equals("")){
                         binding.acceptRequestSetPrice.setError("Please set Price");
                     } else {
+                        progressDialog.show();
                         addPGToUser();
                     }
                 } else if(request.getType().equals("mess")) {
@@ -173,6 +189,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     } else if(binding.acceptRequestSetPrice.getText().equals("")){
                         binding.acceptRequestSetPrice.setError("Please set Price");
                     } else {
+                        progressDialog.show();
                         addMessToUser();
                     }
                 }
@@ -269,7 +286,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
         map.put("uid", request.getUid());
         map.put("oid", request.getOid());
         map.put("roomType", binding.acceptRequestRoomType.getText().toString());
-        map.put("roomNumber", binding.acceptRequestRoomNumber.getText().toString());
+        map.put("roomNumber", ""+Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString()));
         map.put("note", binding.acceptRequestNote.getText().toString());
         map.put("price", binding.acceptRequestSetPrice.getText().toString());
         map.put("Notice", "na");
@@ -305,6 +322,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                                         map2.put("totalUsers", userCount+"");
                                         database.getReference("PGs").child(request.getPgid()).updateChildren(map2);
                                         database.getReference("Requests").child("PGRequests").child(requestId).child("status").setValue("Accepted");
+                                        database.getReference("PGRoom").child(pg.getId()).child("Room"+Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString())).child("users").updateChildren(map1);
                                         progressDialog.dismiss();
                                         binding.acceptRequestRejectUserButton.setEnabled(false);
                                         binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));

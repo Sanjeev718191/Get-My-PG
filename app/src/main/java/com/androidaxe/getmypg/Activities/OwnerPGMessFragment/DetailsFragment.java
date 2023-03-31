@@ -110,6 +110,7 @@ public class DetailsFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     pg = snapshot.getValue(OwnerPG.class);
                     int unpaidUsers = Integer.parseInt(pg.getTotalUsers()) - Integer.parseInt(pg.getPaidUsers());
+                    binding.ownerPgmessDetails.setText("Hostel/PG Details");
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(pg.getImage()));
                     binding.ownerPgmessName.setText("Name : "+pg.getName());
                     binding.ownerPgmessDescription.setText("Description : "+pg.getDescription());
@@ -137,6 +138,7 @@ public class DetailsFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     mess = snapshot.getValue(OwnerMess.class);
                     int unpaidUsers = Integer.parseInt(mess.getTotalUsers()) - Integer.parseInt(mess.getPaidUsers());
+                    binding.ownerPgmessDetails.setText("Mess Details");
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getImage()));
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getMenu()));
                     binding.ownerPgmessName.setText("Name : "+mess.getName());

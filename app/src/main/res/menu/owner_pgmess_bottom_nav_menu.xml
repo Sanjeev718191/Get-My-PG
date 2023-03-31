@@ -17,8 +17,8 @@
         android:title="My Customers" />
 
     <item
-        android:id="@+id/navigation_pgmess_chat"
-        android:icon="@drawable/baseline_chat"
-        android:title="Chat" />
+        android:id="@+id/navigation_pgmess_rooms"
+        android:icon="@drawable/baseline_bedroom"
+        android:title="Rooms" />
 
 </menu>

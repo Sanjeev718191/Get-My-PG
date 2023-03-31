@@ -158,6 +158,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     }
 
     private void showMyPG(){
+        binding.AddPGButton.setText("Update PG/Hostel");
         database.getReference("PGs").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -165,6 +166,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 Glide.with(AddNewBussinessActivity.this).load(pg.getImage()).into(binding.addPGImage);
                 binding.PGNameEditText.setText(pg.getName());
                 binding.PGDescriptionEditText.setText(pg.getDescription());
+                binding.PGRoomCountEditText.setText(pg.getRoomCount());
                 binding.PGAddressLocalityEditText.setText(pg.getLocality());
                 binding.PGAddressCityEditText.setText(pg.getCity());
                 binding.PGAddressStateEditText.setText(pg.getState());
@@ -177,6 +179,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 } else {
                     binding.PGeleBillSpinner.setSelection(0);
                 }
+                binding.PGRoomCountlayout.setVisibility(View.GONE);
             }
 
             @Override
@@ -187,6 +190,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
     }
 
     private void showMyMess(){
+        binding.AddMessButton.setText("Update and Edit Mess Menu");
         database.getReference("Mess").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -276,6 +280,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("deleted", "false");
                         pgUserMap.put("stopRequests", "false");
                         pgUserMap.put("deactivated", "false");
+                        pgUserMap.put("roomCount", ""+Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
 
                         ref.child(newId).updateChildren(pgUserMap);
 
@@ -287,6 +292,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                                     HashMap<String, Object> map = new HashMap<>();
                                     map.put("PG"+count,newId);
                                     FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
+                                    addRooms(newId);
                                 }
 
                                 @Override
@@ -408,6 +414,12 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         } else if(binding.PGDescriptionEditText.getText().toString().equals("")){
             binding.PGDescriptionEditText.setError("Field can't be empty");
             Toast.makeText(this, "Please enter Description", Toast.LENGTH_SHORT).show();
+        } else if(binding.PGRoomCountEditText.getText().toString().equals("")){
+            binding.PGRoomCountEditText.setError("Field can't be empty");
+            Toast.makeText(this, "Please enter number of rooms", Toast.LENGTH_SHORT).show();
+        } else if(Integer.parseInt(binding.PGRoomCountEditText.getText().toString()) <= 0){
+            binding.PGRoomCountEditText.setError("Wrong Input");
+            Toast.makeText(this, "Please enter a valid Positive number", Toast.LENGTH_SHORT).show();
         } else if(binding.PGAddressLocalityEditText.getText().toString().equals("")){
             binding.PGAddressLocalityEditText.setError("Field can't be empty");
             Toast.makeText(this, "Please enter Locality", Toast.LENGTH_SHORT).show();
@@ -465,6 +477,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("deleted", "false");
                 pgUserMap.put("stopRequests", "false");
                 pgUserMap.put("deactivated", "false");
+                pgUserMap.put("roomCount", ""+Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
 
                 ref.child(newId).updateChildren(pgUserMap);
 
@@ -476,6 +489,7 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("PG"+count,newId);
                             FirebaseDatabase.getInstance().getReference("OwnerPGs").child(auth.getUid()).updateChildren(map);
+                            addRooms(newId);
                         }
 
                         @Override
@@ -573,6 +587,15 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
                 finishAffinity();
             }
+        }
+    }
+
+    private void addRooms(String newId){
+        int num = Integer.parseInt(binding.PGRoomCountEditText.getText().toString());
+        for(int x = 1; x<=num; x++){
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("roomNum",""+x);
+            database.getReference("PGRoom").child(newId).child("Room"+x).updateChildren(map);
         }
     }
 

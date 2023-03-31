@@ -83,8 +83,10 @@ public class MyCustomersFragment extends Fragment {
         progressDialog.setTitle("Loading Info...");
         progressDialog.setCanceledOnTouchOutside(false);
         database = FirebaseDatabase.getInstance();
-        subscribers = new ArrayList<>();
-        users = new ArrayList<>();
+        binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        adapter = new MyCustomerAdapter(context, new ArrayList<>(), new ArrayList<>());
+        binding.myCustomerRecyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         getAllUsers();
 
         binding.myCustomerRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -124,11 +126,12 @@ public class MyCustomersFragment extends Fragment {
     private void getAllUsers(){
         if(type.equals("pg")){
             progressDialog.show();
-            binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             database.getReference("BusinessSubscriber").child("HostelUser").child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
+                        subscribers = new ArrayList<>();
+                        users = new ArrayList<>();
                         subscribers.clear();
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
@@ -175,11 +178,12 @@ public class MyCustomersFragment extends Fragment {
 
         } else {
             progressDialog.show();
-            binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
            database.getReference("BusinessSubscriber").child("MessUser").child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
+                        subscribers = new ArrayList<>();
+                        users = new ArrayList<>();
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
                             database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
