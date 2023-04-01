@@ -75,4 +75,22 @@ dependencies {
     implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
     //why not image carousel
 
+    //horizontal progress bar
+    implementation 'com.github.mckrpk:AnimatedProgressBar:0.1.0'
+
+    //circle image view for user main category images
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    //QR generator
+    implementation 'com.github.androidmads:QRGenerator:1.0.1'
+
+    //QR scanner
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
+
+    //Ask permission library
+    implementation 'com.karumi:dexter:6.2.3'
+
 }

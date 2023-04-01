@@ -1,12 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class UserSubscribedItem {
-    String PGMessId, type, fromDate, toDate, uid, oid, roomType, roomNumber, note, price, Notice, currentlyActive, subscriptionId, lastPaidAmount, paymentDate;
+    String PGMessId, type, fromDate, toDate, uid, oid, roomType, roomNumber, note, price, Notice, currentlyActive, subscriptionId, lastPaidAmount, paymentDate, qrCode;
 
     public UserSubscribedItem() {
     }
 
-    public UserSubscribedItem(String PGMessId, String type, String fromDate, String toDate, String uid, String oid, String roomType, String roomNumber, String note, String price, String notice, String currentlyActive, String subscriptionId, String lastPaidAmount, String paymentDate) {
+    public UserSubscribedItem(String PGMessId, String type, String fromDate, String toDate, String uid, String oid, String roomType, String roomNumber, String note, String price, String notice, String currentlyActive, String subscriptionId, String lastPaidAmount, String paymentDate, String qrCode) {
         this.PGMessId = PGMessId;
         this.type = type;
         this.fromDate = fromDate;
@@ -22,6 +22,7 @@ public class UserSubscribedItem {
         this.subscriptionId = subscriptionId;
         this.lastPaidAmount = lastPaidAmount;
         this.paymentDate = paymentDate;
+        this.qrCode = qrCode;
     }
 
     public String getPGMessId() {
@@ -142,5 +143,13 @@ public class UserSubscribedItem {
 
     public void setPaymentDate(String paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }

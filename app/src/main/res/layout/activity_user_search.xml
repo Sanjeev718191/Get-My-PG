@@ -91,6 +91,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/input_background"
                     android:hint="Enter location(City, university, etc.)"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
                     android:padding="12dp" />
 
                 <androidx.appcompat.widget.AppCompatButton

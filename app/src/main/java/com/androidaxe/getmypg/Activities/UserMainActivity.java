@@ -3,13 +3,17 @@ package com.androidaxe.getmypg.Activities;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.UserSubscribedItemAdapter;
+import com.androidaxe.getmypg.Module.Offers;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
@@ -24,7 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -34,6 +40,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewbinding.ViewBinding;
+
+import org.imaginativeworld.whynotimagecarousel.ImageCarousel;
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -48,7 +59,10 @@ public class UserMainActivity extends AppCompatActivity {
     PGUser currentUser;
     UserSubscribedItemAdapter messAdapter, pgAdapter;
     TextView userPGText, userMessText;
+    ImageCarousel offerCarousel;
+    ConstraintLayout CategoryPG, CategoryMess;
     RecyclerView userPGRecycler, userMessRecycle;
+    ArrayList<Offers> offers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +77,13 @@ public class UserMainActivity extends AppCompatActivity {
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        binding.appBarUserMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        binding.appBarUserMain.fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navViewUser;
         // Passing each menu ID as a set of Ids because each
@@ -84,12 +98,18 @@ public class UserMainActivity extends AppCompatActivity {
 
         // my code ==============================================================================================================================================================================================================
 
+        getSupportActionBar().setTitle("Home");
+
+        offers = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         userPGText = findViewById(R.id.user_main_pg_text);
         userMessText = findViewById(R.id.user_main_mess_text);
         userPGRecycler = findViewById(R.id.user_main_PG_Recycler);
         userMessRecycle = findViewById(R.id.user_main_Mess_Recycler);
+        offerCarousel = findViewById(R.id.user_offers_carousel);
+        CategoryPG = findViewById(R.id.pg_near_me);
+        CategoryMess = findViewById(R.id.mess_near_me);
         pgAdapter = new UserSubscribedItemAdapter(this);
         messAdapter = new UserSubscribedItemAdapter(this);
 
@@ -107,6 +127,7 @@ public class UserMainActivity extends AppCompatActivity {
                 userContact.setText("Contact : "+currentUser.getContact());
                 Glide.with(UserMainActivity.this).load(currentUser.getProfile()).into(userImage);
                 getUserInfo();
+                loadOffers();
             }
 
             @Override
@@ -123,7 +144,7 @@ public class UserMainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.user_edit_profile).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -131,7 +152,7 @@ public class UserMainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(UserMainActivity.this, UserSetProfileActivity.class));
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.user_pg).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -141,7 +162,7 @@ public class UserMainActivity extends AppCompatActivity {
                 Intent intent = new Intent(UserMainActivity.this, UserProductListActivity.class);
                 intent.putExtra("productType", "pg");
                 startActivity(intent);
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.user_mess).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -151,7 +172,7 @@ public class UserMainActivity extends AppCompatActivity {
                 Intent intent = new Intent(UserMainActivity.this, UserProductListActivity.class);
                 intent.putExtra("productType", "mess");
                 startActivity(intent);
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.user_my_requests).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -159,7 +180,7 @@ public class UserMainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(UserMainActivity.this, UserRequestsActivity.class));
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.user_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -169,7 +190,7 @@ public class UserMainActivity extends AppCompatActivity {
                 ((ActivityManager)UserMainActivity.this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
                 startActivity(new Intent(UserMainActivity.this, WelcomeActivity.class));
                 finishAffinity();
-                return true;
+                return false;
             }
         });
         navigationView.getMenu().findItem(R.id.share_user).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -183,7 +204,83 @@ public class UserMainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
                 startActivity(new Intent(UserMainActivity.this, AboutUsActivity.class));
-                return true;
+                return false;
+            }
+        });
+
+        //carousel onclick ==================================================================================================================================================================================
+
+        offerCarousel.setCarouselListener(new CarouselListener() {
+            @Nullable
+            @Override
+            public ViewBinding onCreateViewHolder(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull ViewBinding viewBinding, @NonNull CarouselItem carouselItem, int i) {
+
+            }
+
+            @Override
+            public void onClick(int i, @NonNull CarouselItem carouselItem) {
+                if(i < offers.size()){
+                    Offers o = offers.get(i);
+                    if(o.getType().equals("pg")){
+                        Intent intent = new Intent(UserMainActivity.this, ProductPGDetailActivity.class);
+                        intent.putExtra("id", o.getId());
+                        startActivity(intent);
+                    } else if(o.getType().equals("mess")){
+                        Intent intent = new Intent(UserMainActivity.this, ProductMessDetailActivity.class);
+                        intent.putExtra("id", o.getId());
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
+
+            }
+        });
+
+        CategoryPG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
+                intent.putExtra("type", "pg");
+                startActivity(intent);
+            }
+        });
+
+        CategoryMess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
+                intent.putExtra("type", "mess");
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void loadOffers() {
+
+        database.getReference("offers").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount() > 0){
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        Offers offer = ds.getValue(Offers.class);
+                        offers.add(offer);
+                        offerCarousel.addData(new CarouselItem(offer.getImage()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 
@@ -228,19 +325,6 @@ public class UserMainActivity extends AppCompatActivity {
                     c1 = 0;
                     userPGText.setVisibility(View.VISIBLE);
                     userPGRecycler.setVisibility(View.VISIBLE);
-//                    ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
-//                    for(DataSnapshot ds : snapshot.getChildren()){
-//                        UserSubscribedItem item = ds.getValue(UserSubscribedItem.class);
-//                        if(item.getCurrentlyActive().equals("true")){
-//                            curr.addFirst(item);
-//                        } else {
-//                            curr.addLast(item);
-//                        }
-//                    }
-//                    pgAdapter.clear();
-//                    for(UserSubscribedItem item : curr) {
-//                        pgAdapter.add(item);
-//                    }
                     for(DataSnapshot ds : snap.getChildren()){
                         c1++;
                         String id = ds.getValue(String.class);

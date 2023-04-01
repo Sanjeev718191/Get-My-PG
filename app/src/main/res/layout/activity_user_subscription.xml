@@ -10,10 +10,11 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/user_subscription_product_details_button"
+        android:layout_marginBottom="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,16 +38,29 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp">
 
-
                     <TextView
                         android:id="@+id/user_subscription_details"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
                         android:text="Hostel/PG Details"
-                        android:textSize="20dp"
+                        android:textSize="16dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/user_subscription_notice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:fontFamily="@font/roboto_medium"
+                        android:text="Notice : "
+                        android:textColor="@color/red"
+                        android:textSize="14dp"
+                        android:textStyle="italic"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/user_subscription_details" />
 
                     <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                         android:id="@+id/user_subscription_image_carousel"
@@ -56,37 +70,161 @@
                         app:autoPlay="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_details" />
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_notice" />
 
                     <TextView
-                        android:id="@+id/user_subscription_name"
+                        android:id="@+id/user_subscription_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="Note from seller"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@id/user_subscription_image_carousel" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/user_subscription_status_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="1dp"
+                        app:cardCornerRadius="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/user_subscription_note"
+                        android:backgroundTint="@color/light_background">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp">
+
+                            <TextView
+                                android:id="@+id/textView114"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Subscription Left :"/>
+
+                            <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+                                android:id="@+id/user_subscription_ProgressBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_below="@id/textView114"
+                                app:animationStyle="wave"
+                                app:lineWidth="8dp"
+                                app:progressColor="@color/colorPrimary"
+                                app:progressTipColor="@color/colorAccent"
+                                app:progressTipEnabled="true"
+                                app:trackColor="@color/primary_lite" />
+
+                            <TextView
+                                android:id="@+id/user_subscription_remaining_days"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/user_subscription_ProgressBar"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="Status : xx days remain to end Subscription"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/user_subscription_from_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/user_subscription_remaining_days"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="From date : "
+                                android:textColor="@color/primary_dark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/user_subscription_to_date"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/user_subscription_from_date"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginTop="8dp"
+                                android:fontFamily="@font/roboto_medium"
+                                android:text="To date : "
+                                android:textColor="@color/primary_dark"
+                                android:textSize="16sp" />
+
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/user_subscription_last_paid_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Name : Example"
-                        android:textColor="@color/dark_blue"
-                        android:textSize="18dp"
+                        android:text="Last payment amount : Rs. "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_image_carousel" />
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_status_card" />
 
                     <TextView
-                        android:id="@+id/user_subscription_description"
+                        android:id="@+id/user_subscription_last_paid_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Description : Example"
+                        android:text="On date : "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_name" />
+                        app:layout_constraintTop_toBottomOf="@id/user_subscription_last_paid_amount" />
 
                     <TextView
                         android:id="@+id/user_subscription_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Price : "
+                        android:text="Price : Rs."
+                        android:textSize="16dp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_description" />
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_last_paid_date" />
 
+                    <TextView
+                        android:id="@+id/user_subscription_room_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Room No. : "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_price" />
+
+                    <TextView
+                        android:id="@+id/user_subscription_room_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Room type : "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_room_number" />
+
+                    <TextView
+                        android:id="@+id/user_subscription_seller_contact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Seller Contact No. : "
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/user_subscription_room_type" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -95,5 +233,19 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/user_subscription_product_details_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:text="View Hostel details"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

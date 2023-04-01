@@ -9,8 +9,12 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.UserProductAdapter;
@@ -109,6 +113,27 @@ public class UserSearchActivity extends AppCompatActivity {
             }
         });
 
+        binding.userLocationEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                    if(category.equals("")){
+                        Toast.makeText(UserSearchActivity.this, "Please select Category", Toast.LENGTH_SHORT).show();
+                    } else if(location.equals("")) {
+                        Toast.makeText(UserSearchActivity.this, "Please enter Location", Toast.LENGTH_SHORT).show();
+                    } else if(binding.userSearchBar.getText().equals("")){
+                        Toast.makeText(UserSearchActivity.this, "Please enter name", Toast.LENGTH_SHORT).show();
+                    } else {
+                        search(binding.userSearchBar.getText());
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     private void search(String query){
@@ -147,7 +172,6 @@ public class UserSearchActivity extends AppCompatActivity {
                         currLocation = currLocation.toLowerCase();
                         if(currLocation.contains(location)){
                             mess.add(curr);
-                            Toast.makeText(UserSearchActivity.this, curr.getName(), Toast.LENGTH_SHORT).show();
                         }
                     }
                     adapter = new UserProductAdapter((Context) UserSearchActivity.this, (ArrayList<OwnerMess>) mess, false);

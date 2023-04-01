@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityProductMessDetailBinding;
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,6 +33,9 @@ public class ProductMessDetailActivity extends AppCompatActivity {
     String messid;
     OwnerMess mess;
     FirebaseDatabase database;
+    FirebaseAuth auth;
+    boolean flag;
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         messid = getIntent().getStringExtra("id");
+        auth = FirebaseAuth.getInstance();
         binding.productMessCarousel.setScaleOnScroll(true);
         database.getReference("Mess").child(messid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -103,5 +109,67 @@ public class ProductMessDetailActivity extends AppCompatActivity {
             }
         });
 
+        flag = false;
+        database.getReference("UserSubscription").child("UserMess").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount() > 0){
+                    count = 0;
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String id = ds.getValue(String.class);
+                        database.getReference("Subscription").child(id).child("PGMessId").addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String checkId = snapshot.getValue(String.class);
+                                if(checkId.equals(messid)){
+                                    deactivateButton();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        count++;
+                        if(flag || count == snapshot.getChildrenCount()){
+                            if(!flag){
+                                activateButton();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void deactivateButton(){
+        flag = true;
+        binding.productMessSubscribe.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+        binding.productMessSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ProductMessDetailActivity.this, "You are already in.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void activateButton(){
+        binding.productMessSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductMessDetailActivity.this, CheckOutActivity.class);
+                intent.putExtra("id", messid);
+                intent.putExtra("type", "pg");
+                intent.putExtra("new", "yes");
+                startActivity(intent);
+            }
+        });
     }
 }

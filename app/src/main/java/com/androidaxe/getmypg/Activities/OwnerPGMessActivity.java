@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.androidaxe.getmypg.Activities.OwnerPGMessFragment.DetailsFragment;
@@ -62,6 +64,27 @@ public class OwnerPGMessActivity extends AppCompatActivity {
         if(flag) ft.add(R.id.owner_pgmess_frame_layout, fragment);
         else ft.replace(R.id.owner_pgmess_frame_layout, fragment);
         ft.commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.qr_scanner_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.qr_scan:
+                Intent intent = new Intent(OwnerPGMessActivity.this, ScanQRCodeActivity.class);
+                intent.putExtra("id", id1);
+                intent.putExtra("name", name);
+                intent.putExtra("type", type);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

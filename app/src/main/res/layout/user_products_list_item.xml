@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/user_product_list_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textSize="16sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textStyle="bold"/>
+
+            <com.mckrpk.animatedprogressbar.AnimatedProgressBar
+                android:id="@+id/user_product_list_ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/user_product_list_name"
+                app:animationStyle="wave"
+                app:lineWidth="8dp"
+                app:progressColor="@color/colorPrimary"
+                app:progressTipColor="@color/colorAccent"
+                app:progressTipEnabled="true"
+                app:trackColor="@color/light_background" />
+
+            <TextView
+                android:id="@+id/user_product_list_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user_product_list_ProgressBar"
+                android:text="Active"
+                android:textSize="14sp"
+                android:fontFamily="@font/roboto_medium"
+                android:textStyle="bold"
+                android:textColor="@color/primary"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
