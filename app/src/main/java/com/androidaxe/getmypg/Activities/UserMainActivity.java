@@ -226,11 +226,11 @@ public class UserMainActivity extends AppCompatActivity {
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
                 if(i < offers.size()){
                     Offers o = offers.get(i);
-                    if(o.getType().equals("pg")){
+                    if(o.getType().equals("pg") && !o.getId().equals("na")){
                         Intent intent = new Intent(UserMainActivity.this, ProductPGDetailActivity.class);
                         intent.putExtra("id", o.getId());
                         startActivity(intent);
-                    } else if(o.getType().equals("mess")){
+                    } else if(o.getType().equals("mess") && !o.getId().equals("na")){
                         Intent intent = new Intent(UserMainActivity.this, ProductMessDetailActivity.class);
                         intent.putExtra("id", o.getId());
                         startActivity(intent);

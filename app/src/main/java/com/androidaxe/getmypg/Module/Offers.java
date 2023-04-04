@@ -10,6 +10,8 @@ public class Offers {
         this.type = type;
     }
 
+    public Offers(){ }
+
     public String getImage() {
         return image;
     }

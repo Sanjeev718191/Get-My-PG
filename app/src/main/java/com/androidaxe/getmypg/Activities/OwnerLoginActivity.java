@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Toast;
 
@@ -69,10 +70,48 @@ public class OwnerLoginActivity extends AppCompatActivity {
 
         if(requestCode == RC_SIGN_IN){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            GoogleSignInAccount account = task.getResult();
-            authWithGoogle(account.getIdToken());
+            try {
+                GoogleSignInAccount account = task.getResult();
+                signInIfNotCustomer(account);
+            } catch (Exception e){
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
 
+    }
+
+    boolean flag = false;
+    private void signInIfNotCustomer(GoogleSignInAccount account){
+
+        if (account != null && account.getIdToken() != null)
+            database.getReference().child("PGUser").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.getChildrenCount() > 0){
+                        flag = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        new CountDownTimer(2000, 2000){
+
+            @Override
+            public void onTick(long l) { }
+
+            @Override
+            public void onFinish() {
+                if(flag){
+                    Toast.makeText(OwnerLoginActivity.this, "You are already a customer", Toast.LENGTH_SHORT).show();
+                } else {
+                    authWithGoogle(account.getIdToken());
+                }
+            }
+        }.start();
     }
 
     private void authWithGoogle(String idToken) {
@@ -96,7 +135,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if(snapshot.getValue((String.class)) == null){
-                                                PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGOwner");
+                                                PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
                                                 database.getReference()
                                                         .child("PGOwner")
                                                         .child(user.getUid())
@@ -129,7 +168,6 @@ public class OwnerLoginActivity extends AppCompatActivity {
                         } else {
                             progressDialog.dismiss();
                             Toast.makeText(OwnerLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            //Log.e("Error", task.getException().getLocalizedMessage());
                         }
                     }
                 });

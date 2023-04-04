@@ -91,6 +91,8 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
         //My Code============================================================================================================
 
+        getSupportActionBar().setTitle("Home");
+
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 

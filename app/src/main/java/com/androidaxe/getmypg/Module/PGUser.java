@@ -1,17 +1,18 @@
 package com.androidaxe.getmypg.Module;
 
 public class PGUser {
-    private String uId, Name, profile, contact, userType;
+    private String uId, Name, profile, contact, userType, email;
 
     public PGUser() {
     }
 
-    public PGUser(String uId, String name, String profile, String contact, String userType) {
+    public PGUser(String uId, String name, String profile, String contact, String userType, String email) {
         this.uId = uId;
         Name = name;
         this.profile = profile;
         this.contact = contact;
         this.userType = userType;
+        this.email = email;
     }
 
     public String getuId() {
@@ -52,5 +53,13 @@ public class PGUser {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -18,10 +18,23 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:navGraph="@navigation/mobile_navigation" />-->
 
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="Your Hostel/PG and Mess Details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,37 +45,37 @@
                 android:id="@+id/com_PG_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hostels / PG"
-                android:textStyle="bold"
-                android:textColor="@color/primary_dark"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp"
+                android:text="Hostels / PG"
+                android:textColor="@color/primary_dark"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/com_PG_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/com_Mess_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mess"
-                android:textStyle="bold"
-                android:textColor="@color/primary_dark"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="4dp"
+                android:text="Mess"
+                android:textColor="@color/primary_dark"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/com_Mess_Recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

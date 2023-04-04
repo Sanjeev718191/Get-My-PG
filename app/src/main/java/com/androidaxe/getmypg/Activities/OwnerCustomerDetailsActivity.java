@@ -49,7 +49,7 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
         subId = getIntent().getStringExtra("SubId");
         database = FirebaseDatabase.getInstance();
 
-        database.getReference("Subscription").child(subId).addValueEventListener(new ValueEventListener() {
+        database.getReference("Subscription").child(subId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();

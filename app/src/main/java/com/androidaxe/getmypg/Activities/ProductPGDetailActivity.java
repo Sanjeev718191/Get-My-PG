@@ -100,6 +100,8 @@ public class ProductPGDetailActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                } else {
+                    activateButton();
                 }
             }
 

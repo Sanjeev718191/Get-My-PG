@@ -99,8 +99,10 @@ public class UserCategoryProductsActivity extends AppCompatActivity {
                             postelCode = addresses.get(0).getPostalCode();
 
                             if(type.equals("pg")){
+                                binding.userCategoryProductsLocation.setText("Hostel/PG near "+city);
                                 getPGNearMe();
                             } else {
+                                binding.userCategoryProductsLocation.setText("Mess near "+city);
                                 getMessNearMe();
                             }
 

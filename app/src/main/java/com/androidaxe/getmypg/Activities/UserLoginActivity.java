@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -70,10 +73,58 @@ public class UserLoginActivity extends AppCompatActivity {
 
         if(requestCode == RC_SIGN_IN){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            GoogleSignInAccount account = task.getResult();
-            authWithGoogle(account.getIdToken());
+            try {
+                GoogleSignInAccount account = task.getResult();
+                signInIfNotOwner(account);
+            } catch (Exception e){
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
 
+    }
+
+    boolean flag = false;
+    private void signInIfNotOwner(GoogleSignInAccount account){
+
+        if (account != null && account.getIdToken() != null) {
+            database.getReference().child("PGOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail() + "\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.getChildrenCount() > 0) {
+                        flag = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+        new CountDownTimer(2000, 2000){
+
+            @Override
+            public void onTick(long l) { }
+
+            @Override
+            public void onFinish() {
+                if(flag){
+                    Toast.makeText(UserLoginActivity.this, "You are already a seller", Toast.LENGTH_SHORT).show();
+                    try {
+                        if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
+                            ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
+                        } else {
+                            Runtime.getRuntime().exec("pm clear " + getApplicationContext().getPackageName());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    authWithGoogle(account.getIdToken());
+                }
+            }
+        }.start();
     }
 
     private void authWithGoogle(String idToken) {
@@ -97,7 +148,7 @@ public class UserLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if(snapshot.getValue((String.class)) == null){
-                                                PGUser firebaseUser = new PGUser(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGUser");
+                                                PGUser firebaseUser = new PGUser(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGUser", user.getEmail());
                                                 database.getReference()
                                                         .child("PGUser")
                                                         .child(user.getUid())
@@ -130,10 +181,10 @@ public class UserLoginActivity extends AppCompatActivity {
                         } else {
                             progressDialog.dismiss();
                             Toast.makeText(UserLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            //Log.e("Error", task.getException().getLocalizedMessage());
                         }
                     }
                 });
 
     }
+
 }

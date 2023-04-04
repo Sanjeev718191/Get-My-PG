@@ -139,6 +139,8 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                             break;
                         }
                     }
+                } else {
+                    activateButton();
                 }
             }
 
