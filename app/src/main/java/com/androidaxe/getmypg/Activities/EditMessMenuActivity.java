@@ -41,7 +41,7 @@ public class EditMessMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityEditMessMenuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        getSupportActionBar().setTitle("Add your mess menu");
         binding.menuImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

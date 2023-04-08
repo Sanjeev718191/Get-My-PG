@@ -79,7 +79,7 @@ public class CheckOutActivity extends AppCompatActivity {
             binding.checkoutMess.setVisibility(View.VISIBLE);
             binding.checkoutPg.setVisibility(View.GONE);
             checkoutMess();
-        } else {
+        } else if(type.equals("pg")){
             binding.checkoutMess.setVisibility(View.GONE);
             binding.checkoutPg.setVisibility(View.VISIBLE);
             checkoutPG();

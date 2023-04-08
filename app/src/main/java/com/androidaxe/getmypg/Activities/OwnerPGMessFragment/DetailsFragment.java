@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.viewbinding.ViewBinding;
 
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGUser;
+import com.androidaxe.getmypg.Module.Request;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.FragmentDetailsBinding;
@@ -35,12 +37,14 @@ import com.google.firebase.database.ValueEventListener;
 import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,6 +127,7 @@ public class DetailsFragment extends Fragment {
                     binding.ownerPgmessUnpaidUsers.setText("User not paid : "+unpaidUsers);
                     binding.ownerPgmessRevenue.setText("Total profit(this month) : Rs."+pg.getRevenue());
                     calculateDetails();
+                    deleteUselessSubscriptions();
                 }
 
                 @Override
@@ -238,8 +243,18 @@ public class DetailsFragment extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snap) {
                                     UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
-                                    if(item.getCurrentlyActive().equals("true")){
-                                        incrementPaidUser();
+                                    if(item == null) return;
+                                    if(!item.getToDate().equals("na")){
+                                        try {
+                                            Date currDate = new Date();
+                                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                            Date toDate = sdf.parse(item.getToDate());
+                                            if (toDate.compareTo(currDate) > 0) {
+                                                incrementPaidUser();
+                                            }
+                                        } catch (ParseException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     }
                                     if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,5).equals(todayDate.substring(3,5))){
                                         addRevenue(Long.parseLong(item.getLastPaidAmount()));
@@ -284,14 +299,23 @@ public class DetailsFragment extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snap) {
                                     UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
-                                    if(item.getCurrentlyActive().equals("true")){
-                                        incrementPaidUser();
+                                    if(item == null) return;
+                                    if(!item.getToDate().equals("na")){
+                                        try {
+                                            Date currDate = new Date();
+                                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                                            Date toDate = sdf.parse(item.getToDate());
+                                            if (toDate.compareTo(currDate) > 0) {
+                                                incrementPaidUser();
+                                            }
+                                        } catch (ParseException e) {
+                                            throw new RuntimeException(e);
+                                        }
                                     }
-                                    if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,5).equals(todayDate.substring(3,5))){
+                                    if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,10).equals(todayDate.substring(3,10))){
                                         addRevenue(Long.parseLong(item.getLastPaidAmount()));
                                     }
                                     if(count == snapshot.getChildrenCount()){
-
                                         HashMap<String, Object> map = new HashMap<>();
                                         map.put("revenue", netRevenue+"");
                                         map.put("paidUsers",""+paidUsers);
@@ -327,14 +351,44 @@ public class DetailsFragment extends Fragment {
         paidUsers++;
     }
 
-//    private String getTodayDate(){
-//        Calendar cal = Calendar.getInstance();
-//        int year = cal.get(Calendar.YEAR);
-//        int month = cal.get(Calendar.MONTH);
-//        month = month + 1;
-//        int day = cal.get(Calendar.DAY_OF_MONTH);
-//        if(month >= 9) return day+"-0"+month+"-"+year;
-//        else return day+"-"+month+"-"+year;
-//    }
+    private void deleteUselessSubscriptions(){
+        if(type.equals("pg")){
+            database.getReference("deletedSubscription").child(pg.getOid()).child(pg.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String currentId = ds.getValue(String.class);
+                        database.getReference("Subscription").child(currentId).removeValue();
+                        database.getReference("deletedSubscription").child(pg.getOid()).child(pg.getId()).child(currentId).removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        } else {
+
+            database.getReference("deletedSubscription").child(mess.getOid()).child(mess.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        String currentId = ds.getValue(String.class);
+                        database.getReference("Subscription").child(currentId).removeValue();
+                        database.getReference("deletedSubscription").child(mess.getOid()).child(mess.getId()).child(currentId).removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
+
+    }
 
 }

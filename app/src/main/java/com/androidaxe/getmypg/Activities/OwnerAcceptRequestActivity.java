@@ -39,6 +39,7 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import androidmads.library.qrgenearator.QRGContents;
@@ -149,8 +150,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                                     binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
                                     binding.acceptRequestSetUserButton.setEnabled(false);
                                     binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                    startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
-                                    finishAffinity();
+                                    finish();
                                 }
                             });
                         }
@@ -173,8 +173,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                                     binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
                                     binding.acceptRequestSetUserButton.setEnabled(false);
                                     binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                    startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
-                                    finishAffinity();
+                                    finish();
                                 }
                             });
                         }
@@ -222,7 +221,6 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
 
     }
 
-    long messCount = 1;
     private void addMessToUser() {
         //add info to user and owner database
         progressDialog.show();
@@ -277,50 +275,35 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     database.getReference("Subscription").child(newSubscriptionID).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            database.getReference("UserSubscription").child("UserMess").child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            HashMap<String, Object> countMap = new HashMap<>();
+                            countMap.put(newSubscriptionID, newSubscriptionID);
+                            database.getReference("UserSubscription").child("UserMess").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    messCount = snapshot.getChildrenCount() + 1;
-                                    HashMap<String, Object> countMap = new HashMap<>();
-                                    countMap.put(newSubscriptionID, newSubscriptionID);
+                                public void onSuccess(Void unused) {
+                                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).updateChildren(countMap);
 
-                                    database.getReference("UserSubscription").child("UserMess").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    database.getReference("Mess").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            HashMap<String, Object> map1 = new HashMap<>();
-                                            map1.put(newSubscriptionID, newSubscriptionID);
-                                            database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).updateChildren(map1);
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            int userCount = Integer.parseInt(snapshot.getValue(String.class));
+                                            userCount++;
+                                            HashMap<String, Object> map2 = new HashMap<>();
+                                            map2.put("totalUsers", userCount+"");
+                                            database.getReference("Mess").child(request.getPgid()).updateChildren(map2);
+                                            database.getReference("Requests").child("MessRequests").child(requestId).child("status").setValue("Accepted");
+                                            progressDialog.dismiss();
+                                            binding.acceptRequestRejectUserButton.setEnabled(false);
+                                            binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                                            binding.acceptRequestSetUserButton.setEnabled(false);
+                                            binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                                            finish();
+                                        }
 
-                                            database.getReference("Mess").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    int userCount = Integer.parseInt(snapshot.getValue(String.class));
-                                                    userCount++;
-                                                    HashMap<String, Object> map2 = new HashMap<>();
-                                                    map2.put("totalUsers", userCount+"");
-                                                    database.getReference("Mess").child(request.getPgid()).updateChildren(map2);
-                                                    database.getReference("Requests").child("MessRequests").child(requestId).child("status").setValue("Accepted");
-                                                    progressDialog.dismiss();
-                                                    binding.acceptRequestRejectUserButton.setEnabled(false);
-                                                    binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                                    binding.acceptRequestSetUserButton.setEnabled(false);
-                                                    binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                                    startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
-                                                    finishAffinity();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            progressDialog.dismiss();
                                         }
                                     });
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.dismiss();
                                 }
                             });
                         }
@@ -388,52 +371,50 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     database.getReference("Subscription").child(newSubscriptionID).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-
-                            database.getReference("UserSubscription").child("UserPG").child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            HashMap<String, Object> countMap = new HashMap<>();
+                            countMap.put(newSubscriptionID, newSubscriptionID);
+//                            database.getReference("UserSubscription").child("UserPG").child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//
+//
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//                                    progressDialog.dismiss();
+//                                }
+//                            });
+                            database.getReference("UserSubscription").child("UserPG").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    pgCount = snapshot.getChildrenCount() + 1;
-                                    HashMap<String, Object> countMap = new HashMap<>();
-                                    countMap.put("pg"+pgCount, newSubscriptionID);
+                                public void onSuccess(Void unused) {
+                                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).updateChildren(countMap);
 
-                                    database.getReference("UserSubscription").child("UserPG").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    database.getReference("PGs").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            HashMap<String, Object> map1 = new HashMap<>();
-                                            map1.put(newSubscriptionID, newSubscriptionID);
-                                            database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).updateChildren(map1);
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            int userCount = Integer.parseInt(snapshot.getValue(String.class));
+                                            userCount++;
+                                            HashMap<String, Object> map2 = new HashMap<>();
+                                            map2.put("totalUsers", userCount+"");
+                                            database.getReference("PGs").child(request.getPgid()).updateChildren(map2);
+                                            database.getReference("Requests").child("PGRequests").child(requestId).child("status").setValue("Accepted");
+                                            database.getReference("PGRoom").child(pg.getId()).child("Room"+Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString())).child("users").updateChildren(countMap);
+                                            progressDialog.dismiss();
+                                            binding.acceptRequestRejectUserButton.setEnabled(false);
+                                            binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                                            binding.acceptRequestSetUserButton.setEnabled(false);
+                                            binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                                            startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
+                                            finishAffinity();
+                                        }
 
-                                            database.getReference("PGs").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    int userCount = Integer.parseInt(snapshot.getValue(String.class));
-                                                    userCount++;
-                                                    HashMap<String, Object> map2 = new HashMap<>();
-                                                    map2.put("totalUsers", userCount+"");
-                                                    database.getReference("PGs").child(request.getPgid()).updateChildren(map2);
-                                                    database.getReference("Requests").child("PGRequests").child(requestId).child("status").setValue("Accepted");
-                                                    database.getReference("PGRoom").child(pg.getId()).child("Room"+Integer.parseInt(binding.acceptRequestRoomNumber.getText().toString())).child("users").updateChildren(map1);
-                                                    progressDialog.dismiss();
-                                                    binding.acceptRequestRejectUserButton.setEnabled(false);
-                                                    binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                                    binding.acceptRequestSetUserButton.setEnabled(false);
-                                                    binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                                    startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
-                                                    finishAffinity();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            progressDialog.dismiss();
                                         }
                                     });
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.dismiss();
                                 }
                             });
 
@@ -452,7 +433,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
     public Uri getImageUri( Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), inImage, "IMG_" + Calendar.getInstance().getTime(), null);
         return Uri.parse(path);
     }
 

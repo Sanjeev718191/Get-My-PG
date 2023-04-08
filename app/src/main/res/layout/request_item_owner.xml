@@ -21,8 +21,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/rio_img_card"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="0dp"
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/placeholder"/>
+                    android:src="@drawable/placeholder" />
 
             </androidx.cardview.widget.CardView>
 
@@ -41,26 +41,27 @@
                 android:id="@+id/request_item_owner_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/rio_img_card"
                 android:fontFamily="@font/roboto_medium"
+                android:maxLines="1"
                 android:text="User Name"
                 android:textColor="@color/primary_dark"
-                android:textSize="24sp"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@id/rio_img_card"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="8dp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_user_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contact : 1234567890"
-                android:textSize="16sp"
-                android:layout_toEndOf="@id/rio_img_card"
                 android:layout_below="@id/request_item_owner_user_name"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="4dp"
-                />
+                android:layout_toEndOf="@id/rio_img_card"
+                android:maxLines="1"
+                android:text="Contact : 1234567890"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_user_request_type"
@@ -70,9 +71,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
+                android:maxLines="1"
                 android:text="Request For : "
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue" />
+                android:textColor="@color/dark_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_business_name"
@@ -82,9 +84,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
+                android:maxLines="1"
                 android:text="In Hostel : "
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue"/>
+                android:textColor="@color/dark_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_price"
@@ -94,9 +97,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
+                android:maxLines="1"
                 android:text="Price (pre month) : Rs. 3000"
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue"/>
+                android:textColor="@color/dark_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_date"
@@ -106,8 +110,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
+                android:maxLines="1"
                 android:text="Date : 10-01-2023"
-                android:textSize="16sp"/>
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_owner_status"
@@ -118,36 +123,43 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_medium"
+                android:maxLines="1"
                 android:text="Status : Pending"
-                android:textSize="18sp"
-                android:textColor="@color/highlight"/>
+                android:textColor="@color/highlight"
+                android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/request_item_owner_reject_button"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:layout_below="@+id/request_item_owner_status"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="1dp"
+                android:background="@drawable/button_background_grey"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Reject"
                 android:textAllCaps="false"
-                android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/primary_dark"
-                android:layout_below="@+id/request_item_owner_status"
-                android:layout_marginTop="8dp"
-                android:layout_toStartOf="@id/request_item_owner_accept_button"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/button_background_grey"/>
+                android:textColor="@color/primary_dark" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/request_item_owner_accept_button"
-                android:layout_width="100dp"
-                android:text="Accept"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:fontFamily="@font/roboto_medium"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:layout_below="@+id/request_item_owner_status"
                 android:layout_alignParentEnd="true"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/button_background"/>
+                android:layout_marginRight="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_toEndOf="@+id/request_item_owner_reject_button"
+                android:background="@drawable/button_background"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Accept"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 

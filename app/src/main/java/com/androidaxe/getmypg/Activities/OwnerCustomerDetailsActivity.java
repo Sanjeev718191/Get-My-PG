@@ -7,8 +7,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
@@ -54,21 +56,24 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();
                 subscription = snapshot.getValue(UserSubscribedItem.class);
-                binding.ownerCustomerDetailsFromDate.setText("From : "+subscription.getFromDate());
-                binding.ownerCustomerDetailsToDate.setText("To : "+subscription.getToDate());
-                binding.ownerCustomerDetailsNote.setText("Note : "+subscription.getNote());
-                binding.ownerCustomerDetailsPrice.setText("Price : Rs."+subscription.getPrice());
-                binding.ownerCustomerDetailsLastPaid.setText("Last paid amount : Rs."+subscription.getLastPaidAmount());
-                if(subscription.getType().equals("pg")){
-                    binding.ownerCustomerDetailsRoomNum.setVisibility(View.VISIBLE);
-                    binding.ownerCustomerDetailsRoomType.setVisibility(View.VISIBLE);
-                    binding.ownerCustomerDetailsRoomNum.setText("Room Number : "+subscription.getRoomNumber());
-                    binding.ownerCustomerDetailsRoomType.setText("Room Type : "+subscription.getRoomType());
-                } else {
-                    binding.ownerCustomerDetailsRoomNum.setVisibility(View.GONE);
-                    binding.ownerCustomerDetailsRoomType.setVisibility(View.GONE);
+                if(subscription != null) {
+                    binding.ownerCustomerDetailsFromDate.setText("From : " + subscription.getFromDate());
+                    binding.ownerCustomerDetailsToDate.setText("To : " + subscription.getToDate());
+                    binding.ownerCustomerDetailsNote.setText("Note : " + subscription.getNote());
+                    binding.ownerCustomerDetailsPrice.setText("Price : Rs." + subscription.getPrice());
+                    binding.ownerCustomerDetailsLastPaid.setText("Last paid amount : Rs." + subscription.getLastPaidAmount());
+                    binding.ownerCustomerDetailsLastPaidDate.setText("Last payment date : "+subscription.getPaymentDate());
+                    if (subscription.getType().equals("pg")) {
+                        binding.ownerCustomerDetailsRoomNum.setVisibility(View.VISIBLE);
+                        binding.ownerCustomerDetailsRoomType.setVisibility(View.VISIBLE);
+                        binding.ownerCustomerDetailsRoomNum.setText("Room Number : " + subscription.getRoomNumber());
+                        binding.ownerCustomerDetailsRoomType.setText("Room Type : " + subscription.getRoomType());
+                    } else {
+                        binding.ownerCustomerDetailsRoomNum.setVisibility(View.GONE);
+                        binding.ownerCustomerDetailsRoomType.setVisibility(View.GONE);
+                    }
+                    setUserSubscriptionStatus();
                 }
-                setUserSubscriptionStatus();
             }
 
             @Override
@@ -137,6 +142,7 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
         });
     }
 
+    int count;
     private void deleteSubscription(){
         ProgressDialog userDeleteDialog = new ProgressDialog(this);
         userDeleteDialog.setTitle("Delete User");
@@ -152,62 +158,81 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 progressDialog.show();
-                database.getReference("Subscription").child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        if(subscription.getType().equals("pg")){
-                            database.getReference("UserSubscription").child("UserPG").child(subscription.getUid()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+
+//                Intent intent = new Intent(OwnerCustomerDetailsActivity.this, DeleteActivity.class);
+//                intent.putExtra("id", subId);
+//                startActivity(intent);
+
+                if(subscription.getType().equals("pg")){
+
+                    database.getReference("UserSubscription").child("UserPG").child(subscription.getUid()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            database.getReference("BusinessSubscriber").child("HostelUser").child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    database.getReference("BusinessSubscriber").child("HostelUser").child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    database.getReference("Subscription").child(subscription.getSubscriptionId()).removeValue();
+                                    database.getReference("deletedSubscription").child(subscription.getOid()).child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).setValue(subscription.getSubscriptionId());
+                                    database.getReference("PGRoom").child(subscription.getPGMessId()).child("Room"+subscription.getRoomNumber()).child("users").child(subscription.getSubscriptionId()).removeValue();
+                                    database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            database.getReference("PGRoom").child(subscription.getPGMessId()).child("Room"+subscription.getRoomNumber()).child("users").child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            int count = Integer.parseInt(snapshot.getValue(String.class));
-                                                            count--;
-                                                            database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").setValue(count+"");
-                                                            progressDialog.dismiss();
-                                                            finish();
-                                                        }
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            count = Integer.parseInt(snapshot.getValue(String.class));
+                                            count--;
+                                            database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").setValue(count+"");
+                                            progressDialog.dismiss();
+                                            finish();
+                                        }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
-                                                }
-                                            });
                                         }
                                     });
                                 }
                             });
-                        } else {
-                            database.getReference("UserSubscription").
-                                    child("UserMess").
-                                    child(subscription.getUid()).
-                                    child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        }
+                    });
+
+                } else {
+                    database.getReference("UserSubscription").child("UserMess").child(subscription.getUid()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            database.getReference("BusinessSubscriber").child("MessUser").child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+//                                    database.getReference("Subscription").child(subscription.getSubscriptionId()).removeValue();
+                                    database.getReference("deletedSubscription").child(subscription.getOid()).child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).setValue(subscription.getSubscriptionId());
+                                    database.getReference("Mess").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onSuccess(Void unused) {
-                                            database.getReference("BusinessSubscriber").child("MessUser").child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    finish();
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            count = Integer.parseInt(snapshot.getValue(String.class));
+                                            count--;
+                                            database.getReference("Mess").child(subscription.getPGMessId()).child("totalUsers").setValue(count+"");
+                                            progressDialog.dismiss();
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
                                         }
                                     });
+
+                                }
+                            });
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
         userDeleteDialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    }
 }

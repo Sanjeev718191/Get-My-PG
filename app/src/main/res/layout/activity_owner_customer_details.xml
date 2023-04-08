@@ -76,8 +76,7 @@
                         <ImageView
                             android:id="@+id/owner_customer_details_status_image"
                             android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            android:src="@drawable/correct" />
+                            android:layout_height="70dp" />
 
                         <TextView
                             android:id="@+id/owner_customer_details_status"
@@ -118,6 +117,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Last paid amount : "
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/owner_customer_details_last_paid_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Last paid date : "
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:textSize="16sp"/>

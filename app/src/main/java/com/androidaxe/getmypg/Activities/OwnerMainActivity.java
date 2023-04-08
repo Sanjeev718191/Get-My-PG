@@ -18,6 +18,11 @@ import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerMainBinding;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,6 +61,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     RecyclerView messRecycler;
     TextView pgtext;
     TextView messtext;
+    GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +76,13 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        binding.appBarOwnerMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        binding.appBarOwnerMain.fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navViewOwner;
         // Passing each menu ID as a set of Ids because each
@@ -85,14 +91,15 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 R.id.nav_home, R.id.nav_add_pg, R.id.nav_add_mess, R.id.edit_profile_owner, R.id.owner_logout, R.id.share_owner, R.id.about_up_owner)
                 .setOpenableLayout(drawer)
                 .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_owner_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//        NavigationUI.setupWithNavController(navigationView, navController);
 
         //My Code============================================================================================================
 
         getSupportActionBar().setTitle("Home");
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
 
@@ -108,6 +115,8 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         pgRecycler.setVisibility(View.GONE);
         messRecycler = findViewById(R.id.com_Mess_Recycler);
         messRecycler.setVisibility(View.GONE);
+
+
 
         checkData();
 
@@ -251,10 +260,15 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.owner_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                auth.signOut();
-                ((ActivityManager)OwnerMainActivity.this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
-                startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
-                finishAffinity();
+
+                mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        auth.signOut();
+                        startActivity(new Intent(OwnerMainActivity.this, SelectUserActivity.class));
+                        finishAffinity();
+                    }
+                });
                 return false;
             }
         });
@@ -275,12 +289,12 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.owner_main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.owner_main, menu);
+//        return true;
+//    }
 
 //    @Override
 //    public boolean onSupportNavigateUp() {
@@ -289,40 +303,13 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 //                || super.onSupportNavigateUp();
 //    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-//        int id = item.getItemId();
-//        if(id == R.id.nav_home){
-//
-//            binding.drawerLayout.closeDrawer(GravityCompat.START);
-//
-//        } else if(id == R.id.add_business){
-//
-//            //binding.drawerLayout.closeDrawer(GravityCompat.START);
-//            startActivity(new Intent(OwnerMainActivity.this, AddNewBussinessActivity.class));
-//
-//        } else if(id == R.id.edit_profile_owner){
-//
-//            binding.drawerLayout.closeDrawer(GravityCompat.START);
-//            startActivity(new Intent(OwnerMainActivity.this, OwnerSetProfileActivity.class));
-//
-//        } else if(id == R.id.owner_logout){
-//
-//            auth.signOut();
-//            startActivity(new Intent(OwnerMainActivity.this, WelcomeActivity.class));
-//            finishAffinity();
-//
-//        } else if(id == R.id.share_owner){
-//
-//        } else if(id == R.id.about_up_owner){
-//
-//        }
         return false;
     }
 

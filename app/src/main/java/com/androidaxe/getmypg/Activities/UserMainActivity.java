@@ -19,6 +19,11 @@ import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserMainBinding;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,7 +68,8 @@ public class UserMainActivity extends AppCompatActivity {
     ConstraintLayout CategoryPG, CategoryMess;
     RecyclerView userPGRecycler, userMessRecycle;
     ArrayList<Offers> offers;
-
+    ArrayList<CarouselItem> carouselItems;
+    GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,14 +98,15 @@ public class UserMainActivity extends AppCompatActivity {
                 R.id.user_nav_home, R.id.user_edit_profile, R.id.user_pg, R.id.user_mess, R.id.user_my_requests, R.id.user_logout, R.id.share_user, R.id.about_up_user)
                 .setOpenableLayout(drawer)
                 .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_user_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//        NavigationUI.setupWithNavController(navigationView, navController);
 
         // my code ==============================================================================================================================================================================================================
 
         getSupportActionBar().setTitle("Home");
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         offers = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -112,6 +119,7 @@ public class UserMainActivity extends AppCompatActivity {
         CategoryMess = findViewById(R.id.mess_near_me);
         pgAdapter = new UserSubscribedItemAdapter(this);
         messAdapter = new UserSubscribedItemAdapter(this);
+        carouselItems = new ArrayList<>();
 
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.UserNavigationBarName);
@@ -123,11 +131,13 @@ public class UserMainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 currentUser =snapshot.getValue(PGUser.class);
-                userName.setText(currentUser.getName());
-                userContact.setText("Contact : "+currentUser.getContact());
-                Glide.with(UserMainActivity.this).load(currentUser.getProfile()).into(userImage);
-                getUserInfo();
-                loadOffers();
+                if(currentUser != null){
+                    userName.setText(currentUser.getName());
+                    userContact.setText("Contact : " + currentUser.getContact());
+                    Glide.with(UserMainActivity.this).load(currentUser.getProfile()).into(userImage);
+                    getUserInfo();
+                    loadOffers();
+                }
             }
 
             @Override
@@ -186,10 +196,14 @@ public class UserMainActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.user_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                auth.signOut();
-                ((ActivityManager)UserMainActivity.this.getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
-                startActivity(new Intent(UserMainActivity.this, WelcomeActivity.class));
-                finishAffinity();
+                mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        auth.signOut();
+                        startActivity(new Intent(UserMainActivity.this, SelectUserActivity.class));
+                        finishAffinity();
+                    }
+                });
                 return false;
             }
         });
@@ -270,10 +284,15 @@ public class UserMainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getChildrenCount() > 0){
+                    offers.clear();
+                    carouselItems.clear();
                     for(DataSnapshot ds : snapshot.getChildren()){
                         Offers offer = ds.getValue(Offers.class);
-                        offers.add(offer);
-                        offerCarousel.addData(new CarouselItem(offer.getImage()));
+                        if(offer != null){
+                            offers.add(offer);
+                            carouselItems.add(new CarouselItem(offer.getImage()));
+                            offerCarousel.addData(carouselItems);
+                        }
                     }
                 }
             }
@@ -329,19 +348,21 @@ public class UserMainActivity extends AppCompatActivity {
                         c1++;
                         String id = ds.getValue(String.class);
                         ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
-                        database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
+                        database.getReference("Subscription").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
-                                if(item.getCurrentlyActive().equals("true")){
-                                    curr.addFirst(item);
-                                } else {
-                                    curr.addLast(item);
-                                }
-                                if(c1 == snap.getChildrenCount()) {
-                                    pgAdapter.clear();
-                                    for (UserSubscribedItem i : curr) {
-                                        pgAdapter.add(i);
+                                if(item != null){
+                                    if (item.getCurrentlyActive().equals("true")) {
+                                        curr.addFirst(item);
+                                    } else {
+                                        curr.addLast(item);
+                                    }
+                                    if (c1 == snap.getChildrenCount()) {
+                                        pgAdapter.clear();
+                                        for (UserSubscribedItem i : curr) {
+                                            pgAdapter.add(i);
+                                        }
                                     }
                                 }
                             }
@@ -379,19 +400,21 @@ public class UserMainActivity extends AppCompatActivity {
                         c2++;
                         String id = ds.getValue(String.class);
                         ArrayDeque<UserSubscribedItem> curr = new ArrayDeque<>();
-                        database.getReference("Subscription").child(id).addValueEventListener(new ValueEventListener() {
+                        database.getReference("Subscription").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
-                                if(item.getCurrentlyActive().equals("true")){
-                                    curr.addFirst(item);
-                                } else {
-                                    curr.addLast(item);
-                                }
-                                if(c2 == snap.getChildrenCount()) {
-                                    messAdapter.clear();
-                                    for (UserSubscribedItem i : curr) {
-                                        messAdapter.add(i);
+                                if(item != null){
+                                    if (item.getCurrentlyActive().equals("true")) {
+                                        curr.addFirst(item);
+                                    } else {
+                                        curr.addLast(item);
+                                    }
+                                    if (c2 == snap.getChildrenCount()) {
+                                        messAdapter.clear();
+                                        for (UserSubscribedItem i : curr) {
+                                            messAdapter.add(i);
+                                        }
                                     }
                                 }
                             }

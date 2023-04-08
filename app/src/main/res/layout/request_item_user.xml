@@ -20,8 +20,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/riu_img_card"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="0dp"
@@ -43,7 +43,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="User Name"
                 android:textColor="@color/primary_dark"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@id/riu_img_card"
                 android:layout_marginLeft="12dp"
@@ -53,12 +53,11 @@
                 android:id="@+id/request_item_user_owner_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Contact : 1234567890"
-                android:textSize="16sp"
-                android:layout_alignParentStart="true"
                 android:layout_below="@id/riu_img_card"
+                android:layout_alignParentStart="true"
                 android:layout_marginTop="4dp"
-                />
+                android:text="Contact : 1234567890"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_user_request_type"
@@ -69,8 +68,8 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
                 android:text="Request For : Single seater room"
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue" />
+                android:textColor="@color/dark_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_user_price"
@@ -81,8 +80,8 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
                 android:text="Price (pre month) : Rs. 3000"
-                android:textSize="16sp"
-                android:textColor="@color/dark_blue"/>
+                android:textColor="@color/dark_blue"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_user_date"
@@ -93,7 +92,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="8dp"
                 android:text="Date : 10-01-2023"
-                android:textSize="16sp"/>
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/request_item_user_status"
@@ -105,8 +104,8 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="Status : Pending"
-                android:textSize="18sp"
-                android:textColor="@color/highlight"/>
+                android:textColor="@color/highlight"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 

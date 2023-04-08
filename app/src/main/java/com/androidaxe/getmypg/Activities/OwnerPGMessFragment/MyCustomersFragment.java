@@ -45,6 +45,7 @@ public class MyCustomersFragment extends Fragment {
     MyCustomerAdapter adapter;
     ArrayList<UserSubscribedItem> subscribers;
     ArrayList<PGUser> users;
+    ArrayList<String> subIds;
 
     public MyCustomersFragment() {
         // Required empty public constructor
@@ -79,9 +80,11 @@ public class MyCustomersFragment extends Fragment {
 
         binding = FragmentMyCustomersBinding.inflate(inflater, container, false);
 
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setTitle("Loading Info...");
-        progressDialog.setCanceledOnTouchOutside(false);
+        if(getActivity() != null){
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setTitle("Loading Info...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
         database = FirebaseDatabase.getInstance();
         binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new MyCustomerAdapter(context, new ArrayList<>(), new ArrayList<>());
@@ -132,30 +135,40 @@ public class MyCustomersFragment extends Fragment {
                     if(snapshot.getChildrenCount() > 0){
                         subscribers = new ArrayList<>();
                         users = new ArrayList<>();
+                        subIds = new ArrayList<>();
                         subscribers.clear();
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
+                            subIds.add(subscriptionId);
                             database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
-                                    subscribers.add(item);
+                                    if(item == null) return;
+                                    int ind = subIds.indexOf(item.getSubscriptionId());
+                                    if(subscribers.size() > 0 && ind >= 0) {
+                                        subscribers.remove(ind);
+                                        subscribers.add(ind, item);
+                                    } else {
+                                        subIds.add(item.getSubscriptionId());
+                                        subscribers.add(item);
+                                        FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                PGUser user = snapshot.getValue(PGUser.class);
+                                                users.add(user);
+                                                adapter = new MyCustomerAdapter(context, subscribers, users);
+                                                binding.myCustomerRecyclerView.setAdapter(adapter);
+                                                adapter.notifyDataSetChanged();
+                                            }
 
-                                    FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            PGUser user = snapshot.getValue(PGUser.class);
-                                            users.add(user);
-                                            adapter = new MyCustomerAdapter(context, subscribers, users);
-                                            binding.myCustomerRecyclerView.setAdapter(adapter);
-                                            adapter.notifyDataSetChanged();
-                                        }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
+                                    }
 
-                                        }
-                                    });
                                 }
 
                                 @Override
@@ -190,6 +203,7 @@ public class MyCustomersFragment extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
+                                    if(item == null) return;
                                     subscribers.add(item);
                                     FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
                                         @Override

@@ -3,6 +3,7 @@ package com.androidaxe.getmypg.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,12 +28,17 @@ public class ProductPGDetailActivity extends AppCompatActivity {
     FirebaseAuth auth;
     boolean flag;
     int count;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProductPgdetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading Info...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         database = FirebaseDatabase.getInstance();
         pgid = getIntent().getStringExtra("id");
@@ -51,6 +57,7 @@ public class ProductPGDetailActivity extends AppCompatActivity {
                 binding.productPgElectricity.setText(pg.getElectricityBill());
                 binding.productPgLocation.setText(pg.getLocality()+", "+pg.getCity()+", "+pg.getState()+" "+pg.getPin());
                 binding.productPgOwnerContact.setText(pg.getContact());
+                progressDialog.dismiss();
 
             }
 
@@ -110,17 +117,6 @@ public class ProductPGDetailActivity extends AppCompatActivity {
 
             }
         });
-
-//        binding.productPgSubscribe.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(ProductPGDetailActivity.this, CheckOutActivity.class);
-//                intent.putExtra("id", pgid);
-//                intent.putExtra("type", "pg");
-//                intent.putExtra("new", "yes");
-//                startActivity(intent);
-//            }
-//        });
 
     }
 

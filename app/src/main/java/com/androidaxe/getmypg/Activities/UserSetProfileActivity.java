@@ -8,10 +8,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.Module.PGUser;
+import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserSetProfileBinding;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -48,7 +50,9 @@ public class UserSetProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityUserSetProfileBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(binding.getRoot());getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Edit Profile");
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -205,4 +209,15 @@ public class UserSetProfileActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

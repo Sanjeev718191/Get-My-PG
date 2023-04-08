@@ -94,7 +94,7 @@ public class UserCategoryProductsActivity extends AppCompatActivity {
                         try {
                             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                             address = addresses.get(0).getAddressLine(0);
-                            city = addresses.get(0).getAddressLine(0);
+                            city = addresses.get(0).getLocality();
                             country = addresses.get(0).getCountryName();
                             postelCode = addresses.get(0).getPostalCode();
 

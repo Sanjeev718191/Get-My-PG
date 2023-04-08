@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewbinding.ViewBinding;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,12 +37,17 @@ public class ProductMessDetailActivity extends AppCompatActivity {
     FirebaseAuth auth;
     boolean flag;
     int count;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityProductMessDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading Info...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         database = FirebaseDatabase.getInstance();
         messid = getIntent().getStringExtra("id");
@@ -58,6 +64,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                 binding.productMessPrice.setText("Rs. "+mess.getFeeMonthly());
                 binding.productMessLocation.setText(mess.getLocality()+", "+mess.getCity()+", "+mess.getState()+" "+mess.getPin());
                 binding.productMessOwnerContact.setText(mess.getContact());
+                progressDialog.dismiss();
             }
 
             @Override
@@ -95,17 +102,6 @@ public class ProductMessDetailActivity extends AppCompatActivity {
             @Override
             public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
 
-            }
-        });
-
-        binding.productMessSubscribe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ProductMessDetailActivity.this, CheckOutActivity.class);
-                intent.putExtra("id", messid);
-                intent.putExtra("type", "mess");
-                intent.putExtra("new", "yes");
-                startActivity(intent);
             }
         });
 
@@ -168,7 +164,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ProductMessDetailActivity.this, CheckOutActivity.class);
                 intent.putExtra("id", messid);
-                intent.putExtra("type", "pg");
+                intent.putExtra("type", "mess");
                 intent.putExtra("new", "yes");
                 startActivity(intent);
             }

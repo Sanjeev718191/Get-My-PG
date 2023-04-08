@@ -70,6 +70,10 @@ public class OwnerRequestAdapter extends RecyclerView.Adapter<OwnerRequestAdapte
             holder.binding.requestItemOwnerAcceptButton.setVisibility(View.GONE);
             holder.binding.requestItemOwnerRejectButton.setVisibility(View.GONE);
             holder.binding.requestItemOwnerStatus.setTextColor(context.getColor(R.color.red));
+        } else if(request.getStatus().equals("Pending")){
+            holder.binding.requestItemOwnerAcceptButton.setVisibility(View.VISIBLE);
+            holder.binding.requestItemOwnerRejectButton.setVisibility(View.VISIBLE);
+            holder.binding.requestItemOwnerStatus.setTextColor(context.getColor(R.color.highlight));
         }
 
         holder.binding.requestItemOwnerAcceptButton.setOnClickListener(new View.OnClickListener() {
