@@ -86,23 +86,23 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     binding.acceptRequestSetPrice.setText(request.getPrice());
                     Glide.with(OwnerAcceptRequestActivity.this).load(request.getUserImage()).into(binding.acceptRequestUserImage);
 
-                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    database.getReference("BusinessSubscriber").child("BusinessUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.getChildrenCount() > 0) {
+                            String id = snapshot.getValue(String.class);
+                            if(id != null && !id.equals("")) {
                                 deactivateAcceptBtn();
                             }
                             else {
                                 activateAcceptBtn();
                             }
+                            progressDialog.dismiss();
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            progressDialog.dismiss();
                         }
                     });
-
-                    progressDialog.dismiss();
 
                 }
 
@@ -142,23 +142,23 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                     }
                     binding.acceptRequestSetPrice.setText(request.getPrice());
 
-                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    database.getReference("BusinessSubscriber").child("BusinessUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.getChildrenCount() > 0) {
+                            String id = snapshot.getValue(String.class);
+                            if(id != null && !id.equals("")) {
                                 deactivateAcceptBtn();
                             }
                             else {
                                 activateAcceptBtn();
                             }
+                            progressDialog.dismiss();
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            progressDialog.dismiss();
                         }
                     });
-
-                    progressDialog.dismiss();
 
                 }
 
@@ -338,10 +338,8 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                             database.getReference("UserSubscription").child("UserMess").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    HashMap<String, Object> dataMap = new HashMap<>();
-                                    countMap.put("subscriptionId", newSubscriptionID);
-                                    countMap.put("userId", request.getUid());
-                                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).child(newSubscriptionID).updateChildren(dataMap);
+                                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).updateChildren(countMap);
+                                    database.getReference("BusinessSubscriber").child("BusinessUser").child(request.getPgid()).child(request.getUid()).setValue(request.getUid());
 
                                     database.getReference("Mess").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -450,10 +448,8 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                             database.getReference("UserSubscription").child("UserPG").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    HashMap<String, Object> dataMap = new HashMap<>();
-                                    countMap.put("subscriptionId", newSubscriptionID);
-                                    countMap.put("userId", request.getUid());
-                                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).child(newSubscriptionID).updateChildren(dataMap);
+                                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).updateChildren(countMap);
+                                    database.getReference("BusinessSubscriber").child("BusinessUser").child(request.getPgid()).child(request.getUid()).setValue(request.getUid());
 
                                     database.getReference("PGs").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
