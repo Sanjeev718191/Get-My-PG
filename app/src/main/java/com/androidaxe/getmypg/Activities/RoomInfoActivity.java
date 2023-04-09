@@ -65,6 +65,7 @@ public class RoomInfoActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
                                 subscribers.add(item);
+                                if(item == null) return;
 
                                 FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
                                     @Override

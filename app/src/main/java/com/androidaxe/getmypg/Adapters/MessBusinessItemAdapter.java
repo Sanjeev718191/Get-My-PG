@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
+
 public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessItemAdapter.MyViewHolder>{
 
     private Context context;
@@ -55,9 +57,8 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
         holder.businessName.setText(mess.getName());
         holder.netRevenue.setText("Net Revenue : Rs. "+mess.getRevenue());
         holder.totalCustomers.setText("Total Customers : "+mess.getTotalUsers());
-        holder.progressBar.setMax(Integer.parseInt(mess.getTotalUsers()));
-        holder.progressBar.setProgress(Integer.parseInt(mess.getPaidUsers()));
-        holder.precentage.setText(mess.getPaidUsers());
+        holder.circularProgress.setMaxProgress(Integer.parseInt(mess.getTotalUsers()));
+        holder.circularProgress.setCurrentProgress(Integer.parseInt(mess.getPaidUsers()));
         Picasso.get().load(mess.getImage()).into(holder.mainImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,15 +82,14 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
         private TextView businessName, totalCustomers, netRevenue, precentage;
-        private ProgressBar progressBar;
+        private CircularProgressIndicator circularProgress;
         private ImageView mainImage;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             businessName = itemView.findViewById(R.id.ob_recycler_heading);
             totalCustomers = itemView.findViewById(R.id.ob_recycler_customers_count);
             netRevenue = itemView.findViewById(R.id.ob_recycler_revenue);
-            precentage = itemView.findViewById(R.id.ob_recycler_percentage);
-            progressBar = itemView.findViewById(R.id.progressbar);
+            circularProgress = itemView.findViewById(R.id.progressbar);
             mainImage = itemView.findViewById(R.id.ob_recycler_image);
         }
     }

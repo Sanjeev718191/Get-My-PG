@@ -93,4 +93,7 @@ dependencies {
     //Ask permission library
     implementation 'com.karumi:dexter:6.2.3'
 
+    //circular progress bar
+    implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.3.0'
+
 }

@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator;
+
 public class UserSubscribedItemAdapter extends RecyclerView.Adapter<UserSubscribedItemAdapter.MyViewHolder> {
 
     Context context;
@@ -99,9 +101,9 @@ public class UserSubscribedItemAdapter extends RecyclerView.Adapter<UserSubscrib
                 long remainingDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
                 diffInMillies = Math.abs(toDate.getTime() - fromDate.getTime());
                 long totalDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                holder.binding.progressbar.setMax((int)totalDays);
-                holder.binding.progressbar.setProgress((int)remainingDays);
-                holder.binding.userRemainingDays.setText(remainingDays+"");
+
+                holder.binding.progressbar.setMaxProgress((int)totalDays);
+                holder.binding.progressbar.setCurrentProgress((int)remainingDays);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }

@@ -2,6 +2,7 @@ package com.androidaxe.getmypg.Activities.OwnerPGMessFragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.androidaxe.getmypg.Activities.EditMessMenuActivity;
 import com.androidaxe.getmypg.Activities.ImageZoomViewActivity;
 import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
+import com.androidaxe.getmypg.Activities.OwnerPayFeeActivity;
 import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
@@ -29,6 +31,8 @@ import com.androidaxe.getmypg.Module.Request;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.FragmentDetailsBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 public class DetailsFragment extends Fragment {
 
     FragmentDetailsBinding binding;
-    String type, id;
+    String type, id, subscriptionType;
     OwnerPG pg;
     OwnerMess mess;
     FirebaseDatabase database;
@@ -76,6 +80,8 @@ public class DetailsFragment extends Fragment {
         this.type = type;
         this.id = id;
         this.context = context;
+        if(type.equals("pg")) subscriptionType = "HostelUser";
+        else subscriptionType = "MessUser";
     }
 
     public static DetailsFragment newInstance(String param1, String param2) {
@@ -126,6 +132,13 @@ public class DetailsFragment extends Fragment {
                     binding.ownerPgmessPaidUsers.setText("Received Payment : "+pg.getPaidUsers());
                     binding.ownerPgmessUnpaidUsers.setText("User not paid : "+unpaidUsers);
                     binding.ownerPgmessRevenue.setText("Total profit(this month) : Rs."+pg.getRevenue());
+                    if(pg.getStopRequests().equals("false")){
+                        binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_deactive_background));
+                        binding.stopGettingRequests.setText("Stop Getting Requests");
+                    } else {
+                        binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_background));
+                        binding.stopGettingRequests.setText("Start Getting Requests");
+                    }
                     calculateDetails();
                     deleteUselessSubscriptions();
                 }
@@ -156,7 +169,15 @@ public class DetailsFragment extends Fragment {
                     binding.ownerPgmessPaidUsers.setText("Received Payment : "+mess.getPaidUsers());
                     binding.ownerPgmessUnpaidUsers.setText("User not paid : "+unpaidUsers);
                     binding.ownerPgmessRevenue.setText("Total profit(this month) : Rs."+mess.getRevenue());
+                    if(mess.getStopRequests().equals("false")){
+                        binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_deactive_background));
+                        binding.stopGettingRequests.setText("Stop Getting Requests");
+                    } else {
+                        binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_background));
+                        binding.stopGettingRequests.setText("Start Getting Requests");
+                    }
                     calculateDetails();
+                    deleteUselessSubscriptions();
                 }
 
                 @Override
@@ -210,14 +231,21 @@ public class DetailsFragment extends Fragment {
         binding.ownerPgmessNotifyAllButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                notifyAllUsers();
+                notifyUsers(true);
             }
         });
 
-        binding.ownerPgmessUnpaidUsers.setOnClickListener(new View.OnClickListener() {
+        binding.ownerPgmessNotifyUnpaidButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                notifyOnlyUnpaid();
+                notifyUsers(false);
+            }
+        });
+
+        binding.stopGettingRequests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleGettingRequest();
             }
         });
 
@@ -232,29 +260,21 @@ public class DetailsFragment extends Fragment {
         paidUsers = 0;
         count = 0;
         if(type.equals("pg")){
-            database.getReference("BusinessSubscriber").child("HostelUser").child(id).addValueEventListener(new ValueEventListener() {
+            database.getReference("BusinessSubscriber").child(subscriptionType).child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
                         for(DataSnapshot ds : snapshot.getChildren()){
                             count++;
                             String subscriptionId = ds.getValue(String.class);
+                            if(subscriptionId == null) return;
                             database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snap) {
                                     UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
                                     if(item == null) return;
-                                    if(!item.getToDate().equals("na")){
-                                        try {
-                                            Date currDate = new Date();
-                                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                                            Date toDate = sdf.parse(item.getToDate());
-                                            if (toDate.compareTo(currDate) > 0) {
-                                                incrementPaidUser();
-                                            }
-                                        } catch (ParseException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                                    if(!item.getToDate().equals("na") && isActiveUser(item)){
+                                        incrementPaidUser();
                                     }
                                     if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,5).equals(todayDate.substring(3,5))){
                                         addRevenue(Long.parseLong(item.getLastPaidAmount()));
@@ -277,6 +297,10 @@ public class DetailsFragment extends Fragment {
                         }
 
                     } else {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("revenue", netRevenue+"");
+                        map.put("paidUsers",""+paidUsers);
+                        database.getReference("PGs").child(id).updateChildren(map);
                         progressDialog.dismiss();
                     }
                 }
@@ -288,7 +312,7 @@ public class DetailsFragment extends Fragment {
             });
 
         } else {
-            database.getReference("BusinessSubscriber").child("MessUser").child(id).addValueEventListener(new ValueEventListener() {
+            database.getReference("BusinessSubscriber").child(subscriptionType).child(id).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
@@ -300,17 +324,8 @@ public class DetailsFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snap) {
                                     UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
                                     if(item == null) return;
-                                    if(!item.getToDate().equals("na")){
-                                        try {
-                                            Date currDate = new Date();
-                                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-                                            Date toDate = sdf.parse(item.getToDate());
-                                            if (toDate.compareTo(currDate) > 0) {
-                                                incrementPaidUser();
-                                            }
-                                        } catch (ParseException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                                    if(!item.getToDate().equals("na") && isActiveUser(item)){
+                                        incrementPaidUser();
                                     }
                                     if(!item.getPaymentDate().equals("na") && item.getPaymentDate().substring(3,10).equals(todayDate.substring(3,10))){
                                         addRevenue(Long.parseLong(item.getLastPaidAmount()));
@@ -332,6 +347,10 @@ public class DetailsFragment extends Fragment {
 
                         }
                     } else {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("revenue", netRevenue+"");
+                        map.put("paidUsers",""+paidUsers);
+                        database.getReference("Mess").child(id).updateChildren(map);
                         progressDialog.dismiss();
                     }
                 }
@@ -358,6 +377,7 @@ public class DetailsFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot ds : snapshot.getChildren()){
                         String currentId = ds.getValue(String.class);
+                        if(currentId == null) return;
                         database.getReference("Subscription").child(currentId).removeValue();
                         database.getReference("deletedSubscription").child(pg.getOid()).child(pg.getId()).child(currentId).removeValue();
                     }
@@ -376,6 +396,7 @@ public class DetailsFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for(DataSnapshot ds : snapshot.getChildren()){
                         String currentId = ds.getValue(String.class);
+                        if(currentId == null) return;
                         database.getReference("Subscription").child(currentId).removeValue();
                         database.getReference("deletedSubscription").child(mess.getOid()).child(mess.getId()).child(currentId).removeValue();
                     }
@@ -388,6 +409,127 @@ public class DetailsFragment extends Fragment {
             });
 
         }
+
+    }
+
+    private void notifyUsers(boolean toAll){
+
+        progressDialog.setTitle("Sending Notice...");
+        progressDialog.show();
+        count = 0;
+        database.getReference("BusinessSubscriber").child(subscriptionType).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getChildrenCount() > 0){
+                    for(DataSnapshot ds : snapshot.getChildren()){
+                        count++;
+                        String subscriptionId = ds.getValue(String.class);
+                        if(subscriptionId == null) return;
+                        database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snap) {
+                                UserSubscribedItem item = snap.getValue(UserSubscribedItem.class);
+                                if(item == null) return;
+                                if(item.getToDate().equals("na") || !isActiveUser(item) || toAll){
+                                    database.getReference("Subscription").child(subscriptionId).child("Notice").setValue("Please Pay Fee to Continue");
+                                    if(count == snapshot.getChildrenCount()){
+                                        Toast.makeText(context, "Notification sent", Toast.LENGTH_SHORT).show();
+                                        progressDialog.dismiss();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                progressDialog.dismiss();
+                            }
+                        });
+
+                    }
+
+                } else {
+                    Toast.makeText(context, "Notification sent", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    private boolean isActiveUser(UserSubscribedItem item){
+        try {
+            Date currDate = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+            Date toDate = sdf.parse(item.getToDate());
+            if (toDate.compareTo(currDate) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    String message = "";
+    String businessType = "";
+    private void toggleGettingRequest(){
+
+        if(type.equals("pg")){
+            businessType = "PGs";
+        } else {
+            businessType = "Mess";
+        }
+
+        String warning = "";
+        if(pg.getStopRequests().equals("false")) {
+            message = "true";
+            warning = "If you do so, Customers will not able to send you request.";
+        }
+        else {
+            message = "false";
+            warning = "If you do so, Customers will able to send you request.";
+        }
+
+        ProgressDialog userDeleteDialog = new ProgressDialog(context);
+        userDeleteDialog.setTitle("Are you sure?");
+        userDeleteDialog.setMessage(warning);
+        userDeleteDialog.setCancelable(false);
+        userDeleteDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        userDeleteDialog.setButton(DialogInterface.BUTTON_POSITIVE, "YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog.setTitle("Please wait");
+                progressDialog.setMessage("");
+                progressDialog.show();
+                database.getReference(businessType).child(id).child("stopRequests").setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        progressDialog.dismiss();
+                        if(message.equals("false")){
+                            Toast.makeText(context, "Now you can get requests.", Toast.LENGTH_SHORT).show();
+                            binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_deactive_background));
+                            binding.stopGettingRequests.setText("Stop Getting Requests");
+                        } else {
+                            Toast.makeText(context, "Now you will not get requests.", Toast.LENGTH_SHORT).show();
+                            binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_background));
+                            binding.stopGettingRequests.setText("Start Getting Requests");
+                        }
+                    }
+                });
+
+            }
+        });
+        userDeleteDialog.show();
 
     }
 

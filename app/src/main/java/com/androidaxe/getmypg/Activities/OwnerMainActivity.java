@@ -1,6 +1,7 @@
 package com.androidaxe.getmypg.Activities;
 
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.MessBusinessItemAdapter;
 import com.androidaxe.getmypg.Adapters.PGBusinessItemAdapter;
@@ -62,6 +64,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     TextView pgtext;
     TextView messtext;
     GoogleSignInClient mGoogleSignInClient;
+    ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +97,11 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
         //My Code============================================================================================================
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
         getSupportActionBar().setTitle("Home");
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -116,8 +124,6 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         messRecycler = findViewById(R.id.com_Mess_Recycler);
         messRecycler.setVisibility(View.GONE);
 
-
-
         checkData();
 
         View headerView = navigationView.getHeaderView(0);
@@ -135,10 +141,15 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 Glide.with(OwnerMainActivity.this)
                         .load(curr.getProfile())
                         .into(OwnerImage);
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
+                Toast.makeText(OwnerMainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         });
 
         pgRecycler.setAdapter(pgAdapter);
@@ -289,12 +300,12 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.owner_main, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.owner_main, menu);
+        return true;
+    }
 
 //    @Override
 //    public boolean onSupportNavigateUp() {
@@ -303,10 +314,19 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 //                || super.onSupportNavigateUp();
 //    }
 
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.owner_main_action_refresh:
+                startActivity(new Intent(OwnerMainActivity.this, OwnerMainActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

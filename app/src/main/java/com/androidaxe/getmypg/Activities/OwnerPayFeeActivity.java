@@ -30,6 +30,7 @@ import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
+import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerPayFeeBinding;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -230,6 +231,8 @@ public class OwnerPayFeeActivity extends AppCompatActivity {
                 map.put("currentlyActive", "true");
                 map.put("lastPaidAmount", binding.ownerPayFeeAmount.getText().toString());
                 map.put("paymentDate", getTodayDate());
+                if(item.getNotice().equals("Please Pay Fee to Continue"))
+                    map.put("Notice", "na");
                 database.getReference("Subscription").child(subscriptionId).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {

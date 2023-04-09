@@ -65,22 +65,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ProgressBar
+<!--                    <ProgressBar-->
+<!--                        android:id="@+id/progressbar"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:padding="24dp"-->
+<!--                        android:indeterminateOnly="false"-->
+<!--                        android:progressDrawable="@drawable/custom_progress"/>-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/ob_recycler_percentage"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_centerInParent="true"-->
+<!--                        android:fontFamily="@font/roboto_medium"-->
+<!--                        android:text="0"-->
+<!--                        android:textSize="20dp" />-->
+
+                    <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
                         android:id="@+id/progressbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="24dp"
-                        android:indeterminateOnly="false"
-                        android:progressDrawable="@drawable/custom_progress"/>
-
-                    <TextView
-                        android:id="@+id/ob_recycler_percentage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:fontFamily="@font/roboto_medium"
-                        android:text="0"
-                        android:textSize="20dp" />
+                        android:layout_gravity="center"
+                        android:layout_margin="16dp"
+                        app:direction="clockwise"
+                        app:drawDot="false"
+                        app:enableProgressAnimation="true"
+                        app:fillBackground="false"
+                        app:gradientEndColor="@color/dark_blue"
+                        app:gradientType="linear"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:progressBackgroundColor="@color/light_blue"
+                        app:progressBackgroundStrokeWidth="14dp"
+                        app:progressCap="round"
+                        app:progressColor="@color/pink"
+                        app:progressStrokeWidth="20dp"
+                        app:startAngle="270"
+                        app:textColor="#A3A3A3"
+                        app:textSize="20sp"
+                        android:layout_centerInParent="true"/>
 
                 </RelativeLayout>
 

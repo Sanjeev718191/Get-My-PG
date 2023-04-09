@@ -4,7 +4,13 @@
     <item
         android:id="@+id/user_action_search"
         android:orderInCategory="100"
-        android:title="search"
+        android:title="Search"
         android:icon="@drawable/baseline_search"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/user_main_action_refresh"
+        android:orderInCategory="100"
+        android:title="Refresh"
+        android:icon="@drawable/baseline_refresh"
         app:showAsAction="always" />
 </menu>

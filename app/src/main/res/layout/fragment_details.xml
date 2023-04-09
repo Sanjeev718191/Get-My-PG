@@ -161,6 +161,22 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_unpaid_users" />
 
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/stop_getting_requests"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_revenue"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="1dp"
+                            android:background="@drawable/button_background"
+                            android:text="Stop Getting Requests"
+                            android:textColor="@color/white"
+                            android:textStyle="bold"
+                            android:textAllCaps="false"/>
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>

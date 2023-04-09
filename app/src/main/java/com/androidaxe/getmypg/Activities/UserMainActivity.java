@@ -318,6 +318,9 @@ public class UserMainActivity extends AppCompatActivity {
             case R.id.user_action_search:
                 startActivity(new Intent(UserMainActivity.this, UserSearchActivity.class));
                 return true;
+            case R.id.user_main_action_refresh:
+                startActivity(new Intent(UserMainActivity.this, UserMainActivity.class));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

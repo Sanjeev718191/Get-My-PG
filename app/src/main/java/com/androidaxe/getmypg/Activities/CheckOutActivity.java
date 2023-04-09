@@ -48,12 +48,18 @@ public class CheckOutActivity extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth auth;
     PGUser currentUser;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityCheckOutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -71,7 +77,7 @@ public class CheckOutActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(CheckOutActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -100,11 +106,13 @@ public class CheckOutActivity extends AppCompatActivity {
                 binding.checkoutPgElectricity.setText("Electricity bill : "+pg.getElectricityBill());
                 binding.checkoutPgLocation.setText("Location : "+pg.getLocality()+", "+pg.getCity()+", "+pg.getState()+" "+pg.getPin());
                 getSupportActionBar().setTitle("Subscribe "+pg.getName());
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
+                Toast.makeText(CheckOutActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -137,7 +145,6 @@ public class CheckOutActivity extends AppCompatActivity {
                 if(roomType.equals("")){
                     Toast.makeText(CheckOutActivity.this, "Please select room type", Toast.LENGTH_SHORT).show();
                 } else {
-                    final ProgressDialog progressDialog = new ProgressDialog(CheckOutActivity.this);
                     progressDialog.setTitle("Sending request...");
                     progressDialog.setMessage("Please wait, while we are sending request");
                     progressDialog.setCanceledOnTouchOutside(false);
@@ -227,11 +234,13 @@ public class CheckOutActivity extends AppCompatActivity {
                 binding.checkoutMessTotal.setText("Rs. "+mess.getFeeMonthly());
                 getSupportActionBar().setTitle("Subscribe "+mess.getName());
                 total = mess.getFeeMonthly();
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
+                Toast.makeText(CheckOutActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -242,7 +251,6 @@ public class CheckOutActivity extends AppCompatActivity {
         binding.checkoutMessPaynowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final ProgressDialog progressDialog = new ProgressDialog(CheckOutActivity.this);
                 progressDialog.setTitle("Sending request...");
                 progressDialog.setMessage("Please wait, while we are sending request");
                 progressDialog.setCanceledOnTouchOutside(false);

@@ -86,6 +86,9 @@ public class MyCustomersFragment extends Fragment {
             progressDialog.setCanceledOnTouchOutside(false);
         }
         database = FirebaseDatabase.getInstance();
+        subscribers = new ArrayList<>();
+        users = new ArrayList<>();
+        subIds = new ArrayList<>();
         binding.myCustomerRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         adapter = new MyCustomerAdapter(context, new ArrayList<>(), new ArrayList<>());
         binding.myCustomerRecyclerView.setAdapter(adapter);

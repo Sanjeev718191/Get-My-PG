@@ -80,12 +80,30 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     request = snapshot.getValue(Request.class);
-                    progressDialog.dismiss();
                     binding.acceptRequestUserName.setText(request.getUserName());
                     binding.acceptRequestRoomTypeLayout.setVisibility(View.GONE);
                     binding.acceptRequestRoomNumberLayout.setVisibility(View.GONE);
                     binding.acceptRequestSetPrice.setText(request.getPrice());
                     Glide.with(OwnerAcceptRequestActivity.this).load(request.getUserImage()).into(binding.acceptRequestUserImage);
+
+                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.getChildrenCount() > 0) {
+                                deactivateAcceptBtn();
+                            }
+                            else {
+                                activateAcceptBtn();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                    progressDialog.dismiss();
+
                 }
 
                 @Override
@@ -123,7 +141,25 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                         binding.acceptRequestRoomType.setText("Triple Seater");
                     }
                     binding.acceptRequestSetPrice.setText(request.getPrice());
+
+                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).child(request.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.getChildrenCount() > 0) {
+                                deactivateAcceptBtn();
+                            }
+                            else {
+                                activateAcceptBtn();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                     progressDialog.dismiss();
+
                 }
 
                 @Override
@@ -188,6 +224,10 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void activateAcceptBtn() {
+        binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_background));
         binding.acceptRequestSetUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,8 +258,26 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
+    private void deactivateAcceptBtn() {
+        String requestType = type.equals("pg") ? "PGRequests":"MessRequests";
+        binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+        binding.acceptRequestSetUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(OwnerAcceptRequestActivity.this, "This user is Already Your customer.", Toast.LENGTH_SHORT).show();
+                database.getReference("Requests").child(requestType).child(requestId).child("status").setValue("Accepted");
+                progressDialog.dismiss();
+                binding.acceptRequestRejectUserButton.setEnabled(false);
+                binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                binding.acceptRequestSetUserButton.setEnabled(false);
+                binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
+                finish();
+            }
+        });
+    }
+
 
     private void addMessToUser() {
         //add info to user and owner database
@@ -280,7 +338,10 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                             database.getReference("UserSubscription").child("UserMess").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).updateChildren(countMap);
+                                    HashMap<String, Object> dataMap = new HashMap<>();
+                                    countMap.put("subscriptionId", newSubscriptionID);
+                                    countMap.put("userId", request.getUid());
+                                    database.getReference("BusinessSubscriber").child("MessUser").child(request.getPgid()).child(newSubscriptionID).updateChildren(dataMap);
 
                                     database.getReference("Mess").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -389,7 +450,10 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                             database.getReference("UserSubscription").child("UserPG").child(request.getUid()).updateChildren(countMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).updateChildren(countMap);
+                                    HashMap<String, Object> dataMap = new HashMap<>();
+                                    countMap.put("subscriptionId", newSubscriptionID);
+                                    countMap.put("userId", request.getUid());
+                                    database.getReference("BusinessSubscriber").child("HostelUser").child(request.getPgid()).child(newSubscriptionID).updateChildren(dataMap);
 
                                     database.getReference("PGs").child(request.getPgid()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
