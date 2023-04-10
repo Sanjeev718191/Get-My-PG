@@ -2,6 +2,7 @@ package com.androidaxe.getmypg.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,15 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
 
         if(isPG){
             OwnerPG pg = pgs.get(position);
-            Glide.with(context).load(pg.getImage()).into(holder.binding.userProductImage);
+            if(pg.getStopRequests().equals("false")){
+                holder.binding.userProductStatus.setTextColor(context.getColor(R.color.primary));
+                holder.binding.userProductStatus.setText("Available");
+            } else {
+                holder.binding.userProductStatus.setTextColor(context.getColor(R.color.red));
+                holder.binding.userProductStatus.setText("Unavailable");
+            }
+            if(pg.getImage() != null && !pg.getImage().equals("na"))
+                Glide.with(context).load(pg.getImage()).into(holder.binding.userProductImage);
             holder.binding.userProductLabel.setText(pg.getName());
             holder.binding.userProductType.setText("Hostel/PG");
             holder.binding.userProductPrice.setText("Rs. "+pg.getSeater1()+" (Single seater)");
@@ -63,7 +72,8 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
             });
         } else {
             OwnerMess mess = messes.get(position);
-            Glide.with(context).load(mess.getImage()).into(holder.binding.userProductImage);
+            if(mess.getImage() != null && !mess.getImage().equals("na"))
+                Glide.with(context).load(mess.getImage()).into(holder.binding.userProductImage);
             holder.binding.userProductLabel.setText(mess.getName());
             holder.binding.userProductType.setText("Mess");
             holder.binding.userProductPrice.setText("Rs. "+mess.getFeeMonthly()+" (Monthly)");

@@ -172,6 +172,7 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void unused) {
 //                                    database.getReference("Subscription").child(subscription.getSubscriptionId()).removeValue();
+                                    database.getReference("BusinessSubscriber").child("BusinessUser").child(subscription.getPGMessId()).child(subscription.getUid()).removeValue();
                                     database.getReference("deletedSubscription").child(subscription.getOid()).child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).setValue(subscription.getSubscriptionId());
                                     database.getReference("PGRoom").child(subscription.getPGMessId()).child("Room"+subscription.getRoomNumber()).child("users").child(subscription.getSubscriptionId()).removeValue();
                                     database.getReference("PGs").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -202,6 +203,7 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void unused) {
 //                                    database.getReference("Subscription").child(subscription.getSubscriptionId()).removeValue();
+                                    database.getReference("BusinessSubscriber").child("BusinessUser").child(subscription.getPGMessId()).child(subscription.getUid()).removeValue();
                                     database.getReference("deletedSubscription").child(subscription.getOid()).child(subscription.getPGMessId()).child(subscription.getSubscriptionId()).setValue(subscription.getSubscriptionId());
                                     database.getReference("Mess").child(subscription.getPGMessId()).child("totalUsers").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override

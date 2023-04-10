@@ -47,9 +47,21 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
                             android:text="Hostel/PG Details"
-                            android:textSize="20dp"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/owner_pgmess_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_medium"
+                            android:text="Status : Active"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_details" />
 
                         <org.imaginativeworld.whynotimagecarousel.ImageCarousel
                             android:id="@+id/owner_prmess_image_carousel"
@@ -59,7 +71,7 @@
                             app:autoPlay="false"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_details" />
+                            app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_status" />
 
                         <TextView
                             android:id="@+id/owner_pgmess_name"

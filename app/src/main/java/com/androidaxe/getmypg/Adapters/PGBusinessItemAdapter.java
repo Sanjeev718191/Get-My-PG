@@ -61,7 +61,8 @@ public class PGBusinessItemAdapter extends RecyclerView.Adapter<PGBusinessItemAd
         holder.totalCustomers.setText("Total Customers : "+pg.getTotalUsers());
         holder.circularProgress.setMaxProgress(Integer.parseInt(pg.getTotalUsers()));
         holder.circularProgress.setCurrentProgress(Integer.parseInt(pg.getPaidUsers()));
-        Picasso.get().load(pg.getImage()).into(holder.mainImage);
+        if(pg.getImage() != null && !pg.getImage().equals("na"))
+            Picasso.get().load(pg.getImage()).into(holder.mainImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

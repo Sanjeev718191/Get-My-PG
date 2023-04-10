@@ -1,16 +1,20 @@
 package com.androidaxe.getmypg.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewbinding.ViewBinding;
 
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.Module.OwnerMess;
@@ -23,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 import java.text.ParseException;
@@ -111,6 +116,47 @@ public class UserSubscriptionActivity extends AppCompatActivity {
                     intent.putExtra("id", subscription.getPGMessId());
                     startActivity(intent);
                 }
+            }
+        });
+
+        binding.userSubscriptionImageCarousel.setCarouselListener(new CarouselListener() {
+            @Nullable
+            @Override
+            public ViewBinding onCreateViewHolder(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull ViewBinding viewBinding, @NonNull CarouselItem carouselItem, int i) {
+
+            }
+
+            @Override
+            public void onClick(int i, @NonNull CarouselItem carouselItem) {
+                String Image;
+                String name;
+                if(type.equals("pg")){
+                    Image = pg.getImage();
+                    name = pg.getName();
+                } else {
+                    if(i == 0){
+                        Image = mess.getImage();
+                    } else {
+                        Image = mess.getMenu();
+                    }
+                    name = mess.getName();
+                }
+                if(Image != null && !Image.equals("na")){
+                    Intent intent = new Intent(UserSubscriptionActivity.this, ImageZoomViewActivity.class);
+                    intent.putExtra("name", name);
+                    intent.putExtra("link", Image);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
+
             }
         });
 

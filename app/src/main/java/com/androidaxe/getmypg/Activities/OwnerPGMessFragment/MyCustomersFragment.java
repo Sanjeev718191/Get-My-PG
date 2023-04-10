@@ -149,7 +149,7 @@ public class MyCustomersFragment extends Fragment {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
                                     if(item == null) return;
                                     int ind = subIds.indexOf(item.getSubscriptionId());
-                                    if(subscribers.size() > 0 && ind >= 0) {
+                                    if(subscribers.size() > 0 && ind >= 0 && subscribers.size() > ind) {
                                         subscribers.remove(ind);
                                         subscribers.add(ind, item);
                                         adapter = new MyCustomerAdapter(context, subscribers, users);
@@ -214,7 +214,7 @@ public class MyCustomersFragment extends Fragment {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
                                     if(item == null) return;
                                     int ind = subIds.indexOf(item.getSubscriptionId());
-                                    if(subscribers.size() > 0 && ind >= 0) {
+                                    if(subscribers.size() > 0 && ind >= 0 && subscribers.size() > ind) {
                                         subscribers.remove(ind);
                                         subscribers.add(ind, item);
                                         adapter = new MyCustomerAdapter(context, subscribers, users);

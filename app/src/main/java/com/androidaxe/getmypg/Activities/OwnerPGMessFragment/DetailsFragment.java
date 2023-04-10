@@ -116,6 +116,13 @@ public class DetailsFragment extends Fragment {
                     pg = snapshot.getValue(OwnerPG.class);
                     int unpaidUsers = Integer.parseInt(pg.getTotalUsers()) - Integer.parseInt(pg.getPaidUsers());
                     binding.ownerPgmessDetails.setText("Hostel/PG Details");
+                    if(pg.getStopRequests().equals("false")){
+                        binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.primary));
+                        binding.ownerPgmessStatus.setText("Status : Active");
+                    } else {
+                        binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.red));
+                        binding.ownerPgmessStatus.setText("Status : You are currently not Accepting Requests");
+                    }
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(pg.getImage()));
                     binding.ownerPgmessName.setText("Name : "+pg.getName());
                     binding.ownerPgmessDescription.setText("Description : "+pg.getDescription());
@@ -197,21 +204,19 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
+                String Image;
                 if(type.equals("pg")){
-                    String Image = pg.getImage();
-                    Intent intent = new Intent(context, ImageZoomViewActivity.class);
-                    intent.putExtra("name", pg.getName());
-                    intent.putExtra("link", Image);
-                    startActivity(intent);
+                    Image = pg.getImage();
                 } else {
-                    String Image;
                     if(i == 0){
                         Image = mess.getImage();
                     } else {
                         Image = mess.getMenu();
                     }
+                }
+                if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(context, ImageZoomViewActivity.class);
-                    intent.putExtra("name", mess.getName());
+                    intent.putExtra("name", pg.getName());
                     intent.putExtra("link", Image);
                     startActivity(intent);
                 }

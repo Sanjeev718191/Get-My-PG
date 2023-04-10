@@ -53,6 +53,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
         messid = getIntent().getStringExtra("id");
         auth = FirebaseAuth.getInstance();
         binding.productMessCarousel.setScaleOnScroll(true);
+        flag = false;
         database.getReference("Mess").child(messid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -64,12 +65,57 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                 binding.productMessPrice.setText("Rs. "+mess.getFeeMonthly());
                 binding.productMessLocation.setText(mess.getLocality()+", "+mess.getCity()+", "+mess.getState()+" "+mess.getPin());
                 binding.productMessOwnerContact.setText(mess.getContact());
-                progressDialog.dismiss();
+                database.getReference("UserSubscription").child("UserMess").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.getChildrenCount() > 0){
+                            count = 0;
+                            for(DataSnapshot ds : snapshot.getChildren()){
+                                String id = ds.getValue(String.class);
+                                database.getReference("Subscription").child(id).child("PGMessId").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String checkId = snapshot.getValue(String.class);
+                                        if(checkId.equals(messid)){
+                                            deactivateButton();
+                                            progressDialog.dismiss();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(ProductMessDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                count++;
+                                if(flag || count == snapshot.getChildrenCount()){
+                                    if(mess.getStopRequests().equals("true")) deactivateButton();
+                                    if(!flag){
+                                        activateButton();
+                                    }
+                                    progressDialog.dismiss();
+                                    break;
+                                }
+                            }
+                        } else {
+                            activateButton();
+                            progressDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.dismiss();
+                        Toast.makeText(ProductMessDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                progressDialog.dismiss();
+                Toast.makeText(ProductMessDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -93,55 +139,16 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                 } else {
                     Image = mess.getMenu();
                 }
-                Intent intent = new Intent(ProductMessDetailActivity.this, ImageZoomViewActivity.class);
-                intent.putExtra("name", mess.getName());
-                intent.putExtra("link", Image);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
-
-            }
-        });
-
-        flag = false;
-        database.getReference("UserSubscription").child("UserMess").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getChildrenCount() > 0){
-                    count = 0;
-                    for(DataSnapshot ds : snapshot.getChildren()){
-                        String id = ds.getValue(String.class);
-                        database.getReference("Subscription").child(id).child("PGMessId").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String checkId = snapshot.getValue(String.class);
-                                if(checkId.equals(messid)){
-                                    deactivateButton();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                        count++;
-                        if(flag || count == snapshot.getChildrenCount()){
-                            if(!flag){
-                                activateButton();
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    activateButton();
+                if(Image != null && !Image.equals("na")){
+                    Intent intent = new Intent(ProductMessDetailActivity.this, ImageZoomViewActivity.class);
+                    intent.putExtra("name", mess.getName());
+                    intent.putExtra("link", Image);
+                    startActivity(intent);
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
 
             }
         });
@@ -154,7 +161,10 @@ public class ProductMessDetailActivity extends AppCompatActivity {
         binding.productMessSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ProductMessDetailActivity.this, "You are already in.", Toast.LENGTH_SHORT).show();
+                if(mess.getStopRequests().equals("false"))
+                    Toast.makeText(ProductMessDetailActivity.this, "You are already in.", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(ProductMessDetailActivity.this, "Seller is not accepting requests.\nPlease contact seller for more info.", Toast.LENGTH_SHORT).show();
             }
         });
     }

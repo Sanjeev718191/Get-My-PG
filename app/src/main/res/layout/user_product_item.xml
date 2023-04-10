@@ -30,6 +30,19 @@
                 app:srcCompat="@drawable/placeholder" />
 
             <TextView
+                android:id="@+id/user_product_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:text="Available"
+                android:fontFamily="@font/roboto_medium"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/primary"/>
+
+            <TextView
                 android:id="@+id/user_product_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,7 +56,7 @@
                 android:textColor="@color/primary_dark"
                 android:textStyle="bold"
                 android:fontFamily="@font/roboto_medium"
-                android:textSize="14sp"/>
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/user_product_type"
@@ -64,11 +77,10 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="Rs. 0"
-                android:textColor="#000000"
-                android:textSize="18sp" />
+                android:textColor="#000000" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

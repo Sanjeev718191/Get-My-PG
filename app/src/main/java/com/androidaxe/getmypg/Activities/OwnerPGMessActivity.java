@@ -36,7 +36,6 @@ public class OwnerPGMessActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(name);
 
         binding.ownerPGMessBottomNavigationView.setSelectedItemId(R.id.navigation_pgmess_details);
-        loadFragment(new DetailsFragment(type, id1, OwnerPGMessActivity.this), true);
         binding.ownerPGMessBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

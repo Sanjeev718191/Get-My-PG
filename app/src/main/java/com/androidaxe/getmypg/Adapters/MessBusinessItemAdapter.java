@@ -59,7 +59,8 @@ public class MessBusinessItemAdapter extends RecyclerView.Adapter<MessBusinessIt
         holder.totalCustomers.setText("Total Customers : "+mess.getTotalUsers());
         holder.circularProgress.setMaxProgress(Integer.parseInt(mess.getTotalUsers()));
         holder.circularProgress.setCurrentProgress(Integer.parseInt(mess.getPaidUsers()));
-        Picasso.get().load(mess.getImage()).into(holder.mainImage);
+        if(mess.getImage() != null && !mess.getImage().equals("na"))
+            Picasso.get().load(mess.getImage()).into(holder.mainImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
