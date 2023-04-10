@@ -29,6 +29,8 @@ public class OwnerPGMessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOwnerPgmessBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         type = getIntent().getStringExtra("type");
         id1 = getIntent().getStringExtra("id");
@@ -80,6 +82,9 @@ public class OwnerPGMessActivity extends AppCompatActivity {
                 intent.putExtra("name", name);
                 intent.putExtra("type", type);
                 startActivity(intent);
+                return true;
+            case android.R.id.home:
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -14,12 +14,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.UserProductAdapter;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
+import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserCategoryProductsBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,6 +54,9 @@ public class UserCategoryProductsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityUserCategoryProductsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading data...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -189,6 +194,16 @@ public class UserCategoryProductsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

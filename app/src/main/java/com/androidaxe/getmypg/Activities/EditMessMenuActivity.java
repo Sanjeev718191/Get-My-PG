@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,6 +43,9 @@ public class EditMessMenuActivity extends AppCompatActivity {
         binding = ActivityEditMessMenuBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().setTitle("Add your mess menu");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         binding.menuImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,6 +211,16 @@ public class EditMessMenuActivity extends AppCompatActivity {
             Toast.makeText(this, "Image is not Selected", Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

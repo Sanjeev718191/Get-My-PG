@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
+import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityRoomInfoBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,6 +39,8 @@ public class RoomInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRoomInfoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         roomNum = Integer.parseInt(getIntent().getStringExtra("roomNum"));
         roomId = "Room"+roomNum;
@@ -107,4 +111,15 @@ public class RoomInfoActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

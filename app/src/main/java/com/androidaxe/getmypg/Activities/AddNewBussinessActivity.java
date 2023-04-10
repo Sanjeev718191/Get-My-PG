@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGOwner;
+import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityAddNewBussinessBinding;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
@@ -60,12 +62,22 @@ public class AddNewBussinessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAddNewBussinessBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         type = getIntent().getStringExtra("type");
         id = getIntent().getStringExtra("id");
+        if(id.equals("new")) {
+            if (type.equals("pg")) getSupportActionBar().setTitle("Add new Hostel/PG");
+            else getSupportActionBar().setTitle("Add new Mess");
+        } else {
+            if (type.equals("pg")) getSupportActionBar().setTitle("Edit Hostel/PG Details");
+            else getSupportActionBar().setTitle("Edit Mess Details");
+        }
+
 
         database.getReference().child("PGOwner").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -597,6 +609,16 @@ public class AddNewBussinessActivity extends AppCompatActivity {
             map.put("roomNum",""+x);
             database.getReference("PGRoom").child(newId).child("Room"+x).updateChildren(map);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

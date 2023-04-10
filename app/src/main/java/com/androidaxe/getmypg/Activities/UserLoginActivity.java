@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,6 +47,9 @@ public class UserLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityUserLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setTitle("User Login");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -111,15 +115,7 @@ public class UserLoginActivity extends AppCompatActivity {
             public void onFinish() {
                 if(flag){
                     Toast.makeText(UserLoginActivity.this, "You are already a seller", Toast.LENGTH_SHORT).show();
-                    try {
-                        if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
-                            ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData();
-                        } else {
-                            Runtime.getRuntime().exec("pm clear " + getApplicationContext().getPackageName());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    mGoogleSignInClient.signOut();
                 } else {
                     authWithGoogle(account.getIdToken());
                 }
@@ -185,6 +181,16 @@ public class UserLoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

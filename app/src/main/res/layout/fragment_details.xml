@@ -60,6 +60,7 @@
                             android:text="Status : Active"
                             android:textSize="14dp"
                             android:textStyle="bold"
+                            android:layout_marginTop="4dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/owner_pgmess_details" />
 

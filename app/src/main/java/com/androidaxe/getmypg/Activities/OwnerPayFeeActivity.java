@@ -20,6 +20,7 @@ import android.graphics.RectF;
 import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -66,6 +67,10 @@ public class OwnerPayFeeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOwnerPayFeeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Fee payment");
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Updating Info...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -251,6 +256,16 @@ public class OwnerPayFeeActivity extends AppCompatActivity {
             }
         });
         userDeleteDialog.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 //    private void generateInvoice() {

@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -43,6 +44,10 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOwnerCustomerDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Your customer details");
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading Info...");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -237,4 +242,15 @@ public class OwnerCustomerDetailsActivity extends AppCompatActivity {
         finish();
         super.onBackPressed();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

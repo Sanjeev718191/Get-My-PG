@@ -2,12 +2,17 @@ package com.androidaxe.getmypg.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -44,6 +49,9 @@ public class OwnerLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOwnerLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Seller/Owner Login");
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -60,6 +68,43 @@ public class OwnerLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(intent, RC_SIGN_IN);
+            }
+        });
+
+        binding.ownerLoginNewSellerSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(OwnerLoginActivity.this)
+                        .setTitle("New Seller/Owner Registration")
+                        .setMessage("Mail us your details to verify at get getmypg.help@gmail.com\nMandatory details :-\nSeller gmail, Contact number, Your business name and photos to verify.")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton("Send Email", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+//                                Intent intent = new Intent(Intent.ACTION_SENDTO);
+//                                intent.setData(Uri.parse("mailto:getmypg.help@gmail.com"));
+//                                intent.putExtra(Intent.EXTRA_EMAIL, "getmypg.help@gmail.com");
+//                                intent.putExtra(Intent.EXTRA_SUBJECT, "New Seller Registration Request");
+//                                intent.putExtra(Intent.EXTRA_TEXT, "Hi, I'm ");
+//                                //intent.setType("message/rfc822");
+//                                startActivity(Intent.createChooser(intent, "Choose an email client"));
+
+                                ShareCompat.IntentBuilder.from(OwnerLoginActivity.this)
+                                        .setType("message/rfc822")
+                                        .addEmailTo("getmypg.help@gamil.com")
+                                        .setSubject("New Seller Registration Request")
+                                        .setText("Hi, I'm ")
+                                        .setChooserTitle("Choose an email client")
+                                        .startChooser();
+                                dialog.dismiss();
+                            }
+                        })
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         });
 
@@ -80,7 +125,8 @@ public class OwnerLoginActivity extends AppCompatActivity {
 
     }
 
-    boolean flag = false;
+    boolean userIsCustomer = false;
+    boolean newUser = false;
     private void signInIfNotCustomer(GoogleSignInAccount account){
 
         if (account != null && account.getIdToken() != null)
@@ -88,7 +134,21 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
-                        flag = true;
+                        userIsCustomer = true;
+                    } else {
+                        database.getReference().child("PGOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.getChildrenCount() <= 0){
+                                    newUser = true;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
 
@@ -98,16 +158,20 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 }
             });
 
-        new CountDownTimer(2000, 2000){
+        new CountDownTimer(3000, 3000){
 
             @Override
             public void onTick(long l) { }
 
             @Override
             public void onFinish() {
-                if(flag){
+                if(userIsCustomer){
                     Toast.makeText(OwnerLoginActivity.this, "You are already a customer", Toast.LENGTH_SHORT).show();
-                } else {
+                    mGoogleSignInClient.signOut();
+                } else if(newUser){
+                    Toast.makeText(OwnerLoginActivity.this, "For new seller registration please mail Data to our team.", Toast.LENGTH_SHORT).show();
+                    mGoogleSignInClient.signOut();
+                }else {
                     authWithGoogle(account.getIdToken());
                 }
             }
@@ -131,10 +195,10 @@ public class OwnerLoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             database.getReference()
                                     .child("PGOwner")
-                                    .child(user.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    .child(user.getUid()).child("profile").addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if(snapshot.getValue((String.class)) == null){
+                                            if(snapshot.getValue(String.class) == null){
                                                 PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
                                                 database.getReference()
                                                         .child("PGOwner")
@@ -172,6 +236,16 @@ public class OwnerLoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

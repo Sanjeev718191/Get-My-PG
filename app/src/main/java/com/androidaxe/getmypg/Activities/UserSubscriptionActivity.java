@@ -51,6 +51,8 @@ public class UserSubscriptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityUserSubscriptionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading Info...");
@@ -171,6 +173,9 @@ public class UserSubscriptionActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.qrShow:
                 Intent intent = new Intent(UserSubscriptionActivity.this, ShowQRCodeActivity.class);
                 intent.putExtra("url", subscription.getQrCode());
@@ -278,4 +283,7 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
+
+
+
 }

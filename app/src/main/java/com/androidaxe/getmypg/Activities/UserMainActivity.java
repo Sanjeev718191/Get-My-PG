@@ -70,6 +70,7 @@ public class UserMainActivity extends AppCompatActivity {
     ArrayList<Offers> offers;
     ArrayList<CarouselItem> carouselItems;
     GoogleSignInClient mGoogleSignInClient;
+    NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +92,7 @@ public class UserMainActivity extends AppCompatActivity {
 //            }
 //        });
         DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navViewUser;
+        navigationView = binding.navViewUser;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -127,6 +128,7 @@ public class UserMainActivity extends AppCompatActivity {
         TextView userContact = headerView.findViewById(R.id.UserNavigationBarContactNumber);
         userEmail.setText(auth.getCurrentUser().getEmail());
         ImageView userImage = headerView.findViewById(R.id.UserNavigationBarImage);
+        NavigationMenuOnClick();
         database.getReference("PGUser").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,10 +148,63 @@ public class UserMainActivity extends AppCompatActivity {
             }
         });
 
+        //carousel onclick ==================================================================================================================================================================================
 
+        offerCarousel.setCarouselListener(new CarouselListener() {
+            @Nullable
+            @Override
+            public ViewBinding onCreateViewHolder(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
+                return null;
+            }
 
-        //Setting navigation drawer buttons ======================================================================================================================================================================================================================================
+            @Override
+            public void onBindViewHolder(@NonNull ViewBinding viewBinding, @NonNull CarouselItem carouselItem, int i) {
 
+            }
+
+            @Override
+            public void onClick(int i, @NonNull CarouselItem carouselItem) {
+                if(i < offers.size()){
+                    Offers o = offers.get(i);
+                    if(o.getType().equals("pg") && !o.getId().equals("na")){
+                        Intent intent = new Intent(UserMainActivity.this, ProductPGDetailActivity.class);
+                        intent.putExtra("id", o.getId());
+                        startActivity(intent);
+                    } else if(o.getType().equals("mess") && !o.getId().equals("na")){
+                        Intent intent = new Intent(UserMainActivity.this, ProductMessDetailActivity.class);
+                        intent.putExtra("id", o.getId());
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
+
+            }
+        });
+
+        CategoryPG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
+                intent.putExtra("type", "pg");
+                startActivity(intent);
+            }
+        });
+
+        CategoryMess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
+                intent.putExtra("type", "mess");
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void NavigationMenuOnClick(){
         navigationView.getMenu().findItem(R.id.user_nav_home).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -210,6 +265,15 @@ public class UserMainActivity extends AppCompatActivity {
         navigationView.getMenu().findItem(R.id.share_user).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody =  "http://play.google.com/store/apps/detail?id=" + getPackageName();
+                String shareSub = "Try Get My PG app now";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share using"));
+
                 return false;
             }
         });
@@ -221,61 +285,6 @@ public class UserMainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        //carousel onclick ==================================================================================================================================================================================
-
-        offerCarousel.setCarouselListener(new CarouselListener() {
-            @Nullable
-            @Override
-            public ViewBinding onCreateViewHolder(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
-                return null;
-            }
-
-            @Override
-            public void onBindViewHolder(@NonNull ViewBinding viewBinding, @NonNull CarouselItem carouselItem, int i) {
-
-            }
-
-            @Override
-            public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                if(i < offers.size()){
-                    Offers o = offers.get(i);
-                    if(o.getType().equals("pg") && !o.getId().equals("na")){
-                        Intent intent = new Intent(UserMainActivity.this, ProductPGDetailActivity.class);
-                        intent.putExtra("id", o.getId());
-                        startActivity(intent);
-                    } else if(o.getType().equals("mess") && !o.getId().equals("na")){
-                        Intent intent = new Intent(UserMainActivity.this, ProductMessDetailActivity.class);
-                        intent.putExtra("id", o.getId());
-                        startActivity(intent);
-                    }
-                }
-            }
-
-            @Override
-            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
-
-            }
-        });
-
-        CategoryPG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
-                intent.putExtra("type", "pg");
-                startActivity(intent);
-            }
-        });
-
-        CategoryMess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(UserMainActivity.this, UserCategoryProductsActivity.class);
-                intent.putExtra("type", "mess");
-                startActivity(intent);
-            }
-        });
-
     }
 
     private void loadOffers() {

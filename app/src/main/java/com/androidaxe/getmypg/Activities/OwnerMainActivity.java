@@ -65,6 +65,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     TextView messtext;
     GoogleSignInClient mGoogleSignInClient;
     ProgressDialog progressDialog;
+    NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +88,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 //            }
 //        });
         DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navViewOwner;
+        navigationView = binding.navViewOwner;
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -125,6 +126,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         messRecycler.setVisibility(View.GONE);
 
         checkData();
+        NavigationMenuOnClick();
 
         View headerView = navigationView.getHeaderView(0);
         TextView ownerName = headerView.findViewById(R.id.OwnerNavigationBarName);
@@ -220,8 +222,9 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             }
         });
 
-        // Setting navigation drawer buttons ==========================================================================================================
+    }
 
+    private void NavigationMenuOnClick(){
         navigationView.getMenu().findItem(R.id.nav_home).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -286,6 +289,15 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.share_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody =  "http://play.google.com/store/apps/detail?id=" + getPackageName();
+                String shareSub = "Try Get My PG app now";
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share using"));
+
                 return false;
             }
         });
@@ -296,8 +308,6 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                 return false;
             }
         });
-
-
     }
 
     @Override

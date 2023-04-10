@@ -80,4 +80,17 @@
         app:layout_constraintStart_toStartOf="@+id/customer_image"
         app:layout_constraintTop_toBottomOf="@+id/customer_image" />
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="70dp"
+        android:gravity="center"
+        android:text="By continuing, you are agreeing to our Terms and Privacy Policy."
+        android:textColor="@color/primary_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
