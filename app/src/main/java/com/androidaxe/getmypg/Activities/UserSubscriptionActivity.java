@@ -9,6 +9,7 @@ import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -162,6 +163,19 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             }
         });
 
+        binding.userSubscriptionViewMessMenuPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mess != null && mess.getMenuPDF() != null && !mess.getMenuPDF().equals("na")){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mess.getMenuPDF()));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(UserSubscriptionActivity.this, "Seller not added menu.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -220,6 +234,7 @@ public class UserSubscriptionActivity extends AppCompatActivity {
         } else {
             binding.userSubscriptionRoomNumber.setVisibility(View.GONE);
             binding.userSubscriptionRoomType.setVisibility(View.GONE);
+            binding.userSubscriptionViewMessMenuPdf.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle(mess.getName());
             binding.userSubscriptionDetails.setText("Your Mess Subscription Details");
             if(subscription.getNotice().equals("na")){

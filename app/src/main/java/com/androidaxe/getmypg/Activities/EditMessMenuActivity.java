@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -17,6 +20,8 @@ import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityEditMessMenuBinding;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,16 +31,24 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class EditMessMenuActivity extends AppCompatActivity {
 
     ActivityEditMessMenuBinding binding;
     //String[] week = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
-    String Clicked = "No";
+    String imageSelected = "No", pdfSelected = "No";
     int SELECT_MENU = 1;
+    final int SELECT_PDF = 2;
     Uri imageUri;
+    Uri pdfData;
+    String pdfName ;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    String MessID;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +59,14 @@ public class EditMessMenuActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        MessID = getIntent().getStringExtra("Mess Id");
+        progressDialog = new ProgressDialog(this);
+
+
         binding.menuImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Clicked = "Yes";
+                imageSelected = "Yes";
                 Intent i = new Intent();
                 i.setType("image/*");
                 i.setAction(Intent.ACTION_GET_CONTENT);
@@ -57,16 +74,76 @@ public class EditMessMenuActivity extends AppCompatActivity {
             }
         });
 
+        binding.selectMessMenuPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pdfSelected = "Yes";
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/pdf");
+                startActivityForResult(Intent.createChooser(intent ,"Select Menu PDF File"), SELECT_PDF);
+            }
+        });
+
         binding.AddMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //checkText();
-                if(Clicked.equals("Yes"))
-                    uploadImage();
-                else
-                    Toast.makeText(EditMessMenuActivity.this, "Please Select an Image", Toast.LENGTH_SHORT).show();
+                if(pdfSelected.equals("No"))
+                    Toast.makeText(EditMessMenuActivity.this, "Please Select menu pdf", Toast.LENGTH_SHORT).show();
+                else if(imageSelected.equals("No")){
+                    Toast.makeText(EditMessMenuActivity.this, "Please Select menu Image", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    uploadPDF();
+                }
             }
         });
+
+    }
+
+    private void uploadPDF() {
+
+        progressDialog.setTitle("Uploading PDF...");
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        if(pdfData != null){
+            progressDialog.show();
+            final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("MessMenu").child("pdf").child(MessID+"pdf"+".pdf");
+            fileRef.putFile(pdfData).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                    while (!uriTask.isComplete());
+                    Uri uri = uriTask.getResult();
+                    String url = String.valueOf(uri);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Mess");
+                    HashMap<String, Object> pgUserMap = new HashMap<>();
+                    pgUserMap.put("menuPDF",url);
+                    ref.child(MessID).updateChildren(pgUserMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(EditMessMenuActivity.this, "PDF uploaded successfully", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            uploadImage();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EditMessMenuActivity.this, "Unable to upload pdf", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.show();
+                    Toast.makeText(EditMessMenuActivity.this, "Unable to upload pdf try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "Please select menu pdf file", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -155,6 +232,7 @@ public class EditMessMenuActivity extends AppCompatActivity {
 //    }
 
 
+    @SuppressLint("Range")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -163,21 +241,39 @@ public class EditMessMenuActivity extends AppCompatActivity {
                 imageUri = data.getData();
                 if(imageUri != null){
                     binding.menuImageView.setImageURI(imageUri);
+                    binding.menuImageView.setBackgroundDrawable(getDrawable(R.drawable.input_background));
                 }
+            } else if (requestCode == SELECT_PDF){
+                pdfData = data.getData();
+                if(pdfData.toString().startsWith("content://")){
+                    Cursor cursor = null;
+                    try {
+                        cursor = EditMessMenuActivity.this.getContentResolver().query(pdfData, null, null, null, null);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            pdfName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (pdfData.toString().startsWith("file://")){
+                    pdfName = new File(pdfData.toString()).getName();
+                }
+                binding.editMessMenuSelectPdfText.setTextColor(getColor(R.color.dark_blue));
+                binding.selectMessMenuPdf.setBackgroundDrawable(getDrawable(R.drawable.input_background));
+                binding.editMessMenuSelectPdfText.setText(pdfName);
             }
         }
     }
 
     private void uploadImage(){
-        String MessID = getIntent().getStringExtra("Mess Id");
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Adding Info...");
-        progressDialog.setMessage("Please wait, while we are adding data");
+
+        progressDialog.setTitle("Uploading image...");
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
 
         if(imageUri != null){
-            final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("MessMenu").child(MessID+".jpg");
+            progressDialog.show();
+            final StorageReference fileRef = FirebaseStorage.getInstance().getReference().child("MessMenu").child("image").child(MessID+".jpg");
 
             StorageTask uploadTask = fileRef.putFile(imageUri);
             uploadTask.continueWithTask(new Continuation() {
@@ -201,6 +297,7 @@ public class EditMessMenuActivity extends AppCompatActivity {
                         ref.child(MessID).updateChildren(pgUserMap);
                         startActivity(new Intent(EditMessMenuActivity.this, OwnerMainActivity.class));
                         finishAffinity();
+                        progressDialog.dismiss();
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(EditMessMenuActivity.this, "Error, Please try again", Toast.LENGTH_SHORT).show();
@@ -208,8 +305,8 @@ public class EditMessMenuActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(this, "Image is not Selected", Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
+            Toast.makeText(this, "Image is not Selected", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -3,6 +3,7 @@ package com.androidaxe.getmypg.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.androidaxe.getmypg.R;
@@ -23,7 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 public class WelcomeActivity extends AppCompatActivity {
 
     Button startButton;
+    ImageButton refreshButton;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +36,13 @@ public class WelcomeActivity extends AppCompatActivity {
 
         startButton = findViewById(R.id.getStartButton);
         startButton.setVisibility(View.GONE);
+        refreshButton = findViewById(R.id.welcome_refresh);
+        refreshButton.setVisibility(View.GONE);
 
         if (haveNetworkConnection()) {
 
             startButton.setVisibility(View.VISIBLE);
+            refreshButton.setVisibility(View.GONE);
             startButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -91,7 +98,17 @@ public class WelcomeActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "Network connection not available!", Toast.LENGTH_SHORT).show();
+            refreshButton.setVisibility(View.VISIBLE);
+            startButton.setVisibility(View.GONE);
         }
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(WelcomeActivity.this, WelcomeActivity.class));
+                finish();
+            }
+        });
 
     }
 

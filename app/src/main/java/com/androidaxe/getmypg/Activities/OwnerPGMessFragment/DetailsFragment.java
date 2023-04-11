@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.androidaxe.getmypg.Activities.EditMessMenuActivity;
 import com.androidaxe.getmypg.Activities.ImageZoomViewActivity;
 import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
 import com.androidaxe.getmypg.Activities.OwnerPayFeeActivity;
+import com.androidaxe.getmypg.Activities.UserSubscriptionActivity;
 import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
@@ -124,6 +126,7 @@ public class DetailsFragment extends Fragment {
                         binding.ownerPgmessStatus.setText("Status : You are currently not Accepting Requests");
                     }
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(pg.getImage()));
+                    binding.ownerPrmessViewMessMenuPdf.setVisibility(View.GONE);
                     binding.ownerPgmessName.setText("Name : "+pg.getName());
                     binding.ownerPgmessDescription.setText("Description : "+pg.getDescription());
                     binding.ownerPgmessMessPrice.setVisibility(View.GONE);
@@ -159,8 +162,16 @@ public class DetailsFragment extends Fragment {
                     mess = snapshot.getValue(OwnerMess.class);
                     int unpaidUsers = Integer.parseInt(mess.getTotalUsers()) - Integer.parseInt(mess.getPaidUsers());
                     binding.ownerPgmessDetails.setText("Mess Details");
+                    if(mess.getStopRequests().equals("false")){
+                        binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.primary));
+                        binding.ownerPgmessStatus.setText("Status : Active");
+                    } else {
+                        binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.red));
+                        binding.ownerPgmessStatus.setText("Status : You are currently not Accepting Requests");
+                    }
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getImage()));
                     binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getMenu()));
+                    binding.ownerPrmessViewMessMenuPdf.setVisibility(View.VISIBLE);
                     binding.ownerPgmessName.setText("Name : "+mess.getName());
                     binding.ownerPgmessDescription.setText("Description : "+mess.getDescription());
                     binding.ownerPgmessMessPrice.setText("Price(per month) : Rs."+mess.getFeeMonthly());
@@ -216,7 +227,7 @@ public class DetailsFragment extends Fragment {
                 }
                 if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(context, ImageZoomViewActivity.class);
-                    intent.putExtra("name", pg.getName());
+                    intent.putExtra("name", pg != null ? pg.getName() : mess.getName());
                     intent.putExtra("link", Image);
                     startActivity(intent);
                 }
@@ -249,6 +260,18 @@ public class DetailsFragment extends Fragment {
             }
         });
 
+        binding.ownerPrmessViewMessMenuPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mess != null && mess.getMenuPDF() != null && !mess.getMenuPDF().equals("na")){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mess.getMenuPDF()));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(context, "You have not added menu.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         return binding.getRoot();
     }
@@ -478,21 +501,27 @@ public class DetailsFragment extends Fragment {
     String message = "";
     String businessType = "";
     private void toggleGettingRequest(){
-
+        String warning = "";
         if(type.equals("pg")){
             businessType = "PGs";
+            if(pg.getStopRequests().equals("false")) {
+                message = "true";
+                warning = "If you do so, Customers will not able to send you request.";
+            }
+            else {
+                message = "false";
+                warning = "If you do so, Customers will able to send you request.";
+            }
         } else {
             businessType = "Mess";
-        }
-
-        String warning = "";
-        if(pg.getStopRequests().equals("false")) {
-            message = "true";
-            warning = "If you do so, Customers will not able to send you request.";
-        }
-        else {
-            message = "false";
-            warning = "If you do so, Customers will able to send you request.";
+            if(mess.getStopRequests().equals("false")) {
+                message = "true";
+                warning = "If you do so, Customers will not able to send you request.";
+            }
+            else {
+                message = "false";
+                warning = "If you do so, Customers will able to send you request.";
+            }
         }
 
         ProgressDialog userDeleteDialog = new ProgressDialog(context);

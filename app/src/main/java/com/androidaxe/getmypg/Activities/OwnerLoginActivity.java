@@ -135,12 +135,21 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
                         userIsCustomer = true;
+                        Toast.makeText(OwnerLoginActivity.this, "You are already a customer.", Toast.LENGTH_SHORT).show();
+                        mGoogleSignInClient.signOut();
                     } else {
-                        database.getReference().child("PGOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+                        database.getReference().child("PGOwner").child("NewOwner").child(account.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if(snapshot.getChildrenCount() <= 0){
+                                String val = snapshot.getValue(String.class);
+                                if(val != null && !val.equals("")){
                                     newUser = true;
+                                }
+                                if(newUser){
+                                    Toast.makeText(OwnerLoginActivity.this, "For new seller registration please mail Data to our team.", Toast.LENGTH_SHORT).show();
+                                    mGoogleSignInClient.signOut();
+                                } else {
+                                    authWithGoogle(account.getIdToken());
                                 }
                             }
 
@@ -157,25 +166,6 @@ public class OwnerLoginActivity extends AppCompatActivity {
 
                 }
             });
-
-        new CountDownTimer(3000, 3000){
-
-            @Override
-            public void onTick(long l) { }
-
-            @Override
-            public void onFinish() {
-                if(userIsCustomer){
-                    Toast.makeText(OwnerLoginActivity.this, "You are already a customer", Toast.LENGTH_SHORT).show();
-                    mGoogleSignInClient.signOut();
-                } else if(newUser){
-                    Toast.makeText(OwnerLoginActivity.this, "For new seller registration please mail Data to our team.", Toast.LENGTH_SHORT).show();
-                    mGoogleSignInClient.signOut();
-                }else {
-                    authWithGoogle(account.getIdToken());
-                }
-            }
-        }.start();
     }
 
     private void authWithGoogle(String idToken) {
@@ -199,6 +189,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if(snapshot.getValue(String.class) == null){
+                                                database.getReference().child("PGOwner").child("NewOwner").child(user.getEmail()).removeValue();
                                                 PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
                                                 database.getReference()
                                                         .child("PGOwner")

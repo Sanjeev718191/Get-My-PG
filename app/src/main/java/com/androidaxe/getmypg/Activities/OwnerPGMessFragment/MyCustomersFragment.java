@@ -142,7 +142,6 @@ public class MyCustomersFragment extends Fragment {
                         subscribers.clear();
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
-                            subIds.add(subscriptionId);
                             database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {

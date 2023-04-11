@@ -7,6 +7,7 @@ import androidx.viewbinding.ViewBinding;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -150,6 +151,19 @@ public class ProductMessDetailActivity extends AppCompatActivity {
             @Override
             public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
 
+            }
+        });
+
+        binding.productMessViewMessMenuPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mess.getMenuPDF() != null && !mess.getMenuPDF().equals("na")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(mess.getMenuPDF()));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(ProductMessDetailActivity.this, "Seller not added menu.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

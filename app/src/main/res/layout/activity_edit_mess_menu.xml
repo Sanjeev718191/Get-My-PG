@@ -797,6 +797,35 @@
         </LinearLayout>
 
     </ScrollView>-->
+    <LinearLayout
+        android:id="@+id/select_mess_menu_pdf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center"
+        android:background="@drawable/input_backround_highlighted">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/pdf_icon"/>
+
+        <TextView
+            android:id="@+id/edit_mess_menu_select_pdf_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Your mess menu pdf"
+            android:layout_marginLeft="8dp"/>
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/menuImageView"
         android:layout_width="0dp"
@@ -804,21 +833,21 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/input_background"
+        android:background="@drawable/input_backround_highlighted"
         android:padding="4dp"
         android:src="@drawable/add_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/select_mess_menu_pdf"/>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Click To add Menu"
+        android:text="Click To add Menu Image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

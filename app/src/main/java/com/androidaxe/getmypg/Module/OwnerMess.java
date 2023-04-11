@@ -1,12 +1,12 @@
 package com.androidaxe.getmypg.Module;
 
 public class OwnerMess {
-    String name, description, locality, city, state, pin, feeMonthly, image, menu, totalUsers, paidUsers, revenue, search, id, oid, contact, deleted, stopRequests, deactivated;
+    String name, description, locality, city, state, pin, feeMonthly, image, menu, totalUsers, paidUsers, revenue, search, id, oid, contact, deleted, stopRequests, deactivated, menuPDF;
 
     public OwnerMess() {
     }
 
-    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String menu, String totalUsers, String paidUsers, String revenue, String search, String id, String oid, String contact, String deleted, String stopRequests, String deactivated) {
+    public OwnerMess(String name, String description, String locality, String city, String state, String pin, String feeMonthly, String image, String menu, String totalUsers, String paidUsers, String revenue, String search, String id, String oid, String contact, String deleted, String stopRequests, String deactivated, String menuPDF) {
         this.name = name;
         this.description = description;
         this.locality = locality;
@@ -26,6 +26,7 @@ public class OwnerMess {
         this.deleted = deleted;
         this.stopRequests = stopRequests;
         this.deactivated = deactivated;
+        this.menuPDF = menuPDF;
     }
 
     public String getMenu() {
@@ -178,5 +179,13 @@ public class OwnerMess {
 
     public void setDeactivated(String deactivated) {
         this.deactivated = deactivated;
+    }
+
+    public String getMenuPDF() {
+        return menuPDF;
+    }
+
+    public void setMenuPDF(String menuPDF) {
+        this.menuPDF = menuPDF;
     }
 }
