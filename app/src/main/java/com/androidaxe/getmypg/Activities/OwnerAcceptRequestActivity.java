@@ -481,7 +481,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                                             binding.acceptRequestSetUserButton.setEnabled(false);
                                             binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
                                             startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
-                                            finishAffinity();
+                                            finish();
                                         }
 
                                         @Override
