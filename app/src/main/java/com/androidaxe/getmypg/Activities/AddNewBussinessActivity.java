@@ -282,17 +282,19 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("seater3",binding.PG3seaterEditText.getText().toString());
                         pgUserMap.put("image",myUrl);
                         pgUserMap.put("electricityBill",selectedBill);
-                        pgUserMap.put("totalUsers","0");
-                        pgUserMap.put("paidUsers","0");
-                        pgUserMap.put("revenue","0");
                         pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
                         pgUserMap.put("id", newId);
                         pgUserMap.put("oid", auth.getUid());
                         pgUserMap.put("contact", owner.getContact());
-                        pgUserMap.put("deleted", "false");
-                        pgUserMap.put("stopRequests", "false");
-                        pgUserMap.put("deactivated", "false");
-                        pgUserMap.put("roomCount", ""+Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
+                        if(id.equals("new")) {
+                            pgUserMap.put("deleted", "false");
+                            pgUserMap.put("stopRequests", "false");
+                            pgUserMap.put("deactivated", "false");
+                            pgUserMap.put("roomCount", "" + Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
+                            pgUserMap.put("totalUsers", "0");
+                            pgUserMap.put("paidUsers", "0");
+                            pgUserMap.put("revenue", "0");
+                        }
 
                         ref.child(newId).updateChildren(pgUserMap);
 
@@ -315,9 +317,17 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         }
 
                         progressDialog.dismiss();
-                        startActivity(new Intent(AddNewBussinessActivity.this, OwnerMainActivity.class));
                         Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
-                        finishAffinity();
+                        Intent intent = new Intent(AddNewBussinessActivity.this, AddAdditionalImagesActivity.class);
+                        intent.putExtra("name", binding.PGNameEditText.getText().toString());
+                        intent.putExtra("id", newId);
+                        intent.putExtra("type", "pg");
+                        if(id.equals("new"))
+                            intent.putExtra("isNew", "Yes");
+                        else
+                            intent.putExtra("isNew", "No");
+                        startActivity(intent);
+                        finish();
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(AddNewBussinessActivity.this, "Error, Please try again", Toast.LENGTH_SHORT).show();
@@ -369,16 +379,18 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         pgUserMap.put("pin",binding.MessAddressPinCodeEditText.getText().toString());
                         pgUserMap.put("feeMonthly",binding.MessMonthlyEditText.getText().toString());
                         pgUserMap.put("image",myUrl);
-                        pgUserMap.put("totalUsers","0");
-                        pgUserMap.put("paidUsers","0");
-                        pgUserMap.put("revenue","0");
                         pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
                         pgUserMap.put("id", newId);
                         pgUserMap.put("oid", auth.getUid());
                         pgUserMap.put("contact", owner.getContact());
-                        pgUserMap.put("deleted", "false");
-                        pgUserMap.put("stopRequests", "false");
-                        pgUserMap.put("deactivated", "false");
+                        if(id.equals("new")){
+                            pgUserMap.put("deleted", "false");
+                            pgUserMap.put("stopRequests", "false");
+                            pgUserMap.put("deactivated", "false");
+                            pgUserMap.put("totalUsers", "0");
+                            pgUserMap.put("paidUsers", "0");
+                            pgUserMap.put("revenue", "0");
+                        }
 
                         ref.child(newId).updateChildren(pgUserMap);
 
@@ -400,11 +412,17 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                         }
 
                         progressDialog.dismiss();
-                        Intent intent = new Intent(AddNewBussinessActivity.this, EditMessMenuActivity.class);
-                        intent.putExtra("Mess Id", ""+newId);
-                        startActivity(intent);
                         Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
-                        finishAffinity();
+                        Intent intent = new Intent(AddNewBussinessActivity.this, AddAdditionalImagesActivity.class);
+                        intent.putExtra("name", binding.MessNameEditText.getText().toString());
+                        intent.putExtra("id", newId);
+                        intent.putExtra("type", "mess");
+                        if(id.equals("new"))
+                            intent.putExtra("isNew", "Yes");
+                        else
+                            intent.putExtra("isNew", "No");
+                        startActivity(intent);
+                        finish();
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(AddNewBussinessActivity.this, "Error, Please try again", Toast.LENGTH_SHORT).show();
@@ -479,17 +497,19 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("seater2",binding.PG2seaterEditText.getText().toString());
                 pgUserMap.put("seater3",binding.PG3seaterEditText.getText().toString());
                 pgUserMap.put("electricityBill",selectedBill);
-                pgUserMap.put("totalUsers","0");
-                pgUserMap.put("paidUsers","0");
-                pgUserMap.put("revenue","0");
                 pgUserMap.put("search", binding.PGNameEditText.getText().toString().toLowerCase()+" pg hostel");
                 pgUserMap.put("id", newId);
                 pgUserMap.put("oid", auth.getUid());
                 pgUserMap.put("contact", owner.getContact());
-                pgUserMap.put("deleted", "false");
-                pgUserMap.put("stopRequests", "false");
-                pgUserMap.put("deactivated", "false");
-                pgUserMap.put("roomCount", ""+Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
+                if(id.equals("new")) {
+                    pgUserMap.put("deleted", "false");
+                    pgUserMap.put("stopRequests", "false");
+                    pgUserMap.put("deactivated", "false");
+                    pgUserMap.put("roomCount", "" + Integer.parseInt(binding.PGRoomCountEditText.getText().toString()));
+                    pgUserMap.put("totalUsers", "0");
+                    pgUserMap.put("paidUsers", "0");
+                    pgUserMap.put("revenue", "0");
+                }
 
                 ref.child(newId).updateChildren(pgUserMap);
 
@@ -512,9 +532,17 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 }
 
                 progressDialog.dismiss();
-                startActivity(new Intent(AddNewBussinessActivity.this, OwnerMainActivity.class));
                 Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
-                finishAffinity();
+                Intent intent = new Intent(AddNewBussinessActivity.this, AddAdditionalImagesActivity.class);
+                intent.putExtra("name", binding.PGNameEditText.getText().toString());
+                intent.putExtra("id", newId);
+                intent.putExtra("type", "pg");
+                if(id.equals("new"))
+                    intent.putExtra("isNew", "Yes");
+                else
+                    intent.putExtra("isNew", "No");
+                startActivity(intent);
+                finish();
             }
         }
     }
@@ -563,16 +591,18 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                 pgUserMap.put("state",binding.MessAddressStateEditText.getText().toString());
                 pgUserMap.put("pin",binding.MessAddressPinCodeEditText.getText().toString());
                 pgUserMap.put("feeMonthly",binding.MessMonthlyEditText.getText().toString());
-                pgUserMap.put("totalUsers","0");
-                pgUserMap.put("paidUsers","0");
-                pgUserMap.put("revenue","0");
                 pgUserMap.put("search", binding.MessNameEditText.getText().toString().toLowerCase()+" mess");
                 pgUserMap.put("id", newId);
                 pgUserMap.put("oid", owner.getuId());
                 pgUserMap.put("contact", owner.getContact());
-                pgUserMap.put("deleted", "false");
-                pgUserMap.put("stopRequests", "false");
-                pgUserMap.put("deactivated", "false");
+                if(id.equals("new")){
+                    pgUserMap.put("deleted", "false");
+                    pgUserMap.put("stopRequests", "false");
+                    pgUserMap.put("deactivated", "false");
+                    pgUserMap.put("totalUsers", "0");
+                    pgUserMap.put("paidUsers", "0");
+                    pgUserMap.put("revenue", "0");
+                }
 
                 ref.child(newId).updateChildren(pgUserMap);
 
@@ -593,11 +623,17 @@ public class AddNewBussinessActivity extends AppCompatActivity {
                     });
                 }
                 progressDialog.dismiss();
-                Intent intent = new Intent(AddNewBussinessActivity.this, EditMessMenuActivity.class);
-                intent.putExtra("Mess Id", ""+newId);
-                startActivity(intent);
                 Toast.makeText(AddNewBussinessActivity.this, "Info added successfully", Toast.LENGTH_SHORT).show();
-                finishAffinity();
+                Intent intent = new Intent(AddNewBussinessActivity.this, AddAdditionalImagesActivity.class);
+                intent.putExtra("name", binding.MessNameEditText.getText().toString());
+                intent.putExtra("id", newId);
+                intent.putExtra("type", "mess");
+                if(id.equals("new"))
+                    intent.putExtra("isNew", "Yes");
+                else
+                    intent.putExtra("isNew", "No");
+                startActivity(intent);
+                finish();
             }
         }
     }

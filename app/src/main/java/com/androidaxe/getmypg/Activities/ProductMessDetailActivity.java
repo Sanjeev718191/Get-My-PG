@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.AdditionalImages;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.R;
@@ -59,8 +60,12 @@ public class ProductMessDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mess = snapshot.getValue(OwnerMess.class);
-                binding.productMessCarousel.addData(new CarouselItem(mess.getImage()));
-                binding.productMessCarousel.addData(new CarouselItem(mess.getMenu()));
+                if(mess.getImage() != null) {
+                    binding.productMessCarousel.addData(new CarouselItem(mess.getImage()));
+                }
+                if(mess.getMenu() != null) {
+                    binding.productMessCarousel.addData(new CarouselItem(mess.getMenu()));
+                }
                 binding.productMessTitle.setText(mess.getName());
                 binding.productMessDescription.setText(mess.getDescription());
                 binding.productMessPrice.setText("Rs. "+mess.getFeeMonthly());
@@ -100,7 +105,8 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                                 }
                             }
                         } else {
-                            activateButton();
+                            if(mess.getStopRequests().equals("true")) deactivateButton();
+                            else activateButton();
                             progressDialog.dismiss();
                         }
                     }
@@ -109,6 +115,31 @@ public class ProductMessDetailActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {
                         progressDialog.dismiss();
                         Toast.makeText(ProductMessDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                database.getReference("BusinessAdditionalImages").child(mess.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                        if(additionalImages != null){
+                            if(additionalImages.getImg1() != null){
+                                binding.productMessCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                            }
+                            if(additionalImages.getImg2() != null){
+                                binding.productMessCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                            }
+                            if(additionalImages.getImg3() != null){
+                                binding.productMessCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                            }
+                            if(additionalImages.getImg4() != null){
+                                binding.productMessCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
             }
@@ -134,12 +165,7 @@ public class ProductMessDetailActivity extends AppCompatActivity {
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                String Image;
-                if(i == 0){
-                    Image = mess.getImage();
-                } else {
-                    Image = mess.getMenu();
-                }
+                String Image = carouselItem.getImageUrl();
                 if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(ProductMessDetailActivity.this, ImageZoomViewActivity.class);
                     intent.putExtra("name", mess.getName());

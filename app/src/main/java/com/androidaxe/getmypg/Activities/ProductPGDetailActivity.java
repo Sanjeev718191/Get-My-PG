@@ -1,14 +1,19 @@
 package com.androidaxe.getmypg.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewbinding.ViewBinding;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.AdditionalImages;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityProductPgdetailBinding;
@@ -18,6 +23,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener;
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
 
 public class ProductPGDetailActivity extends AppCompatActivity {
 
@@ -49,7 +57,9 @@ public class ProductPGDetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 pg = snapshot.getValue(OwnerPG.class);
-                Glide.with(ProductPGDetailActivity.this).load(pg.getImage()).into(binding.productPgImage);
+                if(pg.getImage() != null) {
+                    binding.productPgImageCarousel.addData(new CarouselItem(pg.getImage()));
+                }
                 binding.productPgTitle.setText(pg.getName());
                 binding.productPgDescription.setText(pg.getDescription());
                 binding.productPgSingleSeaterPrice.setText("Rs. "+pg.getSeater1());
@@ -106,6 +116,31 @@ public class ProductPGDetailActivity extends AppCompatActivity {
                     }
                 });
 
+                database.getReference("BusinessAdditionalImages").child(pg.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                        if(additionalImages != null){
+                            if(additionalImages.getImg1() != null){
+                                binding.productPgImageCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                            }
+                            if(additionalImages.getImg2() != null){
+                                binding.productPgImageCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                            }
+                            if(additionalImages.getImg3() != null){
+                                binding.productPgImageCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                            }
+                            if(additionalImages.getImg4() != null){
+                                binding.productPgImageCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
             }
 
@@ -116,15 +151,32 @@ public class ProductPGDetailActivity extends AppCompatActivity {
             }
         });
 
-        binding.productPgImage.setOnClickListener(new View.OnClickListener() {
+        binding.productPgImageCarousel.setCarouselListener(new CarouselListener() {
+            @Nullable
             @Override
-            public void onClick(View view) {
-                if(pg.getImage() != null && !pg.getImage().equals("na")){
+            public ViewBinding onCreateViewHolder(@NonNull LayoutInflater layoutInflater, @NonNull ViewGroup viewGroup) {
+                return null;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull ViewBinding viewBinding, @NonNull CarouselItem carouselItem, int i) {
+
+            }
+
+            @Override
+            public void onClick(int i, @NonNull CarouselItem carouselItem) {
+                String Image = carouselItem.getImageUrl();
+                if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(ProductPGDetailActivity.this, ImageZoomViewActivity.class);
                     intent.putExtra("name", pg.getName());
-                    intent.putExtra("link", pg.getImage());
+                    intent.putExtra("link", Image);
                     startActivity(intent);
                 }
+            }
+
+            @Override
+            public void onLongClick(int i, @NonNull CarouselItem carouselItem) {
+
             }
         });
 

@@ -108,7 +108,6 @@ public class UserMainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        offers = new ArrayList<>();
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         userPGText = findViewById(R.id.user_main_pg_text);
@@ -120,7 +119,10 @@ public class UserMainActivity extends AppCompatActivity {
         CategoryMess = findViewById(R.id.mess_near_me);
         pgAdapter = new UserSubscribedItemAdapter(this);
         messAdapter = new UserSubscribedItemAdapter(this);
+
+        offers = new ArrayList<>();
         carouselItems = new ArrayList<>();
+
 
         View headerView = navigationView.getHeaderView(0);
         TextView userName = headerView.findViewById(R.id.UserNavigationBarName);
@@ -281,7 +283,9 @@ public class UserMainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 binding.drawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(new Intent(UserMainActivity.this, AboutUsActivity.class));
+                Intent intent = new Intent(UserMainActivity.this, AboutUsActivity.class);
+                intent.putExtra("isSeller", "No");
+                startActivity(intent);
                 return false;
             }
         });
@@ -289,7 +293,7 @@ public class UserMainActivity extends AppCompatActivity {
 
     private void loadOffers() {
 
-        database.getReference("offers").addValueEventListener(new ValueEventListener() {
+        database.getReference("Offers").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getChildrenCount() > 0){
@@ -297,12 +301,12 @@ public class UserMainActivity extends AppCompatActivity {
                     carouselItems.clear();
                     for(DataSnapshot ds : snapshot.getChildren()){
                         Offers offer = ds.getValue(Offers.class);
-                        if(offer != null){
+                        if(offer != null && !offer.getImage().equals("na")){
                             offers.add(offer);
                             carouselItems.add(new CarouselItem(offer.getImage()));
-                            offerCarousel.addData(carouselItems);
                         }
                     }
+                    offerCarousel.addData(carouselItems);
                 }
             }
 

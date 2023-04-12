@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.AdditionalImages;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.UserSubscribedItem;
@@ -136,22 +137,10 @@ public class UserSubscriptionActivity extends AppCompatActivity {
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                String Image;
-                String name;
-                if(type.equals("pg")){
-                    Image = pg.getImage();
-                    name = pg.getName();
-                } else {
-                    if(i == 0){
-                        Image = mess.getImage();
-                    } else {
-                        Image = mess.getMenu();
-                    }
-                    name = mess.getName();
-                }
+                String Image = carouselItem.getImageUrl();
                 if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(UserSubscriptionActivity.this, ImageZoomViewActivity.class);
-                    intent.putExtra("name", name);
+                    intent.putExtra("name", pg != null ? pg.getName() : mess.getName());
                     intent.putExtra("link", Image);
                     startActivity(intent);
                 }
@@ -210,7 +199,9 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             } else {
                 binding.userSubscriptionNotice.setText("Notice : "+subscription.getNotice());
             }
-            binding.userSubscriptionImageCarousel.addData(new CarouselItem(pg.getImage()));
+            if(pg.getImage() != null) {
+                binding.userSubscriptionImageCarousel.addData(new CarouselItem(pg.getImage()));
+            }
             binding.userSubscriptionNote.setText(subscription.getNote());
             binding.userSubscriptionFromDate.setText("From date : "+subscription.getFromDate());
             binding.userSubscriptionToDate.setText("To date : "+subscription.getToDate());
@@ -231,6 +222,31 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             binding.userSubscriptionRoomNumber.setText("Room No. : "+subscription.getRoomNumber());
             binding.userSubscriptionProductDetailsButton.setText("View Hostel/PG details");
             binding.userSubscriptionSellerContact.setText("Seller Contact No. : "+pg.getContact());
+            database.getReference("BusinessAdditionalImages").child(pg.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                    if(additionalImages != null){
+                        if(additionalImages.getImg1() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                        }
+                        if(additionalImages.getImg2() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                        }
+                        if(additionalImages.getImg3() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                        }
+                        if(additionalImages.getImg4() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         } else {
             binding.userSubscriptionRoomNumber.setVisibility(View.GONE);
             binding.userSubscriptionRoomType.setVisibility(View.GONE);
@@ -242,8 +258,12 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             } else {
                 binding.userSubscriptionNotice.setText("Notice : "+subscription.getNotice());
             }
-            binding.userSubscriptionImageCarousel.addData(new CarouselItem(mess.getImage()));
-            binding.userSubscriptionImageCarousel.addData(new CarouselItem(mess.getMenu()));
+            if(mess.getImage() != null) {
+                binding.userSubscriptionImageCarousel.addData(new CarouselItem(mess.getImage()));
+            }
+            if(mess.getMenu() != null) {
+                binding.userSubscriptionImageCarousel.addData(new CarouselItem(mess.getMenu()));
+            }
             binding.userSubscriptionNote.setText(subscription.getNote());
             binding.userSubscriptionFromDate.setText("From date : "+subscription.getFromDate());
             binding.userSubscriptionToDate.setText("To date : "+subscription.getToDate());
@@ -262,6 +282,31 @@ public class UserSubscriptionActivity extends AppCompatActivity {
             binding.userSubscriptionPrice.setText("Price : Rs."+subscription.getPrice());
             binding.userSubscriptionProductDetailsButton.setText("View Mess details");
             binding.userSubscriptionSellerContact.setText("Seller Contact No. : "+mess.getContact());
+            database.getReference("BusinessAdditionalImages").child(mess.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                    if(additionalImages != null){
+                        if(additionalImages.getImg1() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                        }
+                        if(additionalImages.getImg2() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                        }
+                        if(additionalImages.getImg3() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                        }
+                        if(additionalImages.getImg4() != null){
+                            binding.userSubscriptionImageCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
     private void setRemaningDaysInfo(){

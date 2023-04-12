@@ -295,8 +295,7 @@ public class EditMessMenuActivity extends AppCompatActivity {
                         HashMap<String, Object> pgUserMap = new HashMap<>();
                         pgUserMap.put("menu",myUrl);
                         ref.child(MessID).updateChildren(pgUserMap);
-                        startActivity(new Intent(EditMessMenuActivity.this, OwnerMainActivity.class));
-                        finishAffinity();
+                        finish();
                         progressDialog.dismiss();
                     } else {
                         progressDialog.dismiss();

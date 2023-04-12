@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.AdminAddNewSellerActivity">
+
+    <EditText
+        android:id="@+id/new_seller_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="New seller Gmail"
+        android:inputType="textEmailAddress"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="12dp"
+        android:background="@drawable/input_background"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_new_seller_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add Seller"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_seller_email" />
+
+    <ImageView
+        android:id="@+id/add_new_offer_image"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/input_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_new_seller_button" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_new_offer_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add Offer"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_new_offer_image" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/update_about_us_activity_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Update about us"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_new_offer_button" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,6 +26,7 @@ import com.androidaxe.getmypg.Activities.OwnerPGMessActivity;
 import com.androidaxe.getmypg.Activities.OwnerPayFeeActivity;
 import com.androidaxe.getmypg.Activities.UserSubscriptionActivity;
 import com.androidaxe.getmypg.Adapters.MyCustomerAdapter;
+import com.androidaxe.getmypg.Module.AdditionalImages;
 import com.androidaxe.getmypg.Module.OwnerMess;
 import com.androidaxe.getmypg.Module.OwnerPG;
 import com.androidaxe.getmypg.Module.PGUser;
@@ -61,7 +62,6 @@ public class DetailsFragment extends Fragment {
     FirebaseDatabase database;
     ProgressDialog progressDialog;
     Context context;
-
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -112,10 +112,11 @@ public class DetailsFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         if(type.equals("pg")){
             progressDialog.show();
-            database.getReference("PGs").child(id).addValueEventListener(new ValueEventListener() {
+            database.getReference("PGs").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     pg = snapshot.getValue(OwnerPG.class);
+
                     int unpaidUsers = Integer.parseInt(pg.getTotalUsers()) - Integer.parseInt(pg.getPaidUsers());
                     binding.ownerPgmessDetails.setText("Hostel/PG Details");
                     if(pg.getStopRequests().equals("false")){
@@ -125,7 +126,9 @@ public class DetailsFragment extends Fragment {
                         binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.red));
                         binding.ownerPgmessStatus.setText("Status : You are currently not Accepting Requests");
                     }
-                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(pg.getImage()));
+                    if(pg.getImage() != null) {
+                        binding.ownerPrmessImageCarousel.addData(new CarouselItem(pg.getImage()));
+                    }
                     binding.ownerPrmessViewMessMenuPdf.setVisibility(View.GONE);
                     binding.ownerPgmessName.setText("Name : "+pg.getName());
                     binding.ownerPgmessDescription.setText("Description : "+pg.getDescription());
@@ -144,6 +147,31 @@ public class DetailsFragment extends Fragment {
                         binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_background));
                         binding.stopGettingRequests.setText("Start Getting Requests");
                     }
+                    database.getReference("BusinessAdditionalImages").child(pg.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                            if(additionalImages != null){
+                                if(additionalImages.getImg1() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                                }
+                                if(additionalImages.getImg2() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                                }
+                                if(additionalImages.getImg3() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                                }
+                                if(additionalImages.getImg4() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     calculateDetails();
                     deleteUselessSubscriptions();
                 }
@@ -156,7 +184,7 @@ public class DetailsFragment extends Fragment {
             });
         } else {
             progressDialog.show();
-            database.getReference("Mess").child(id).addValueEventListener(new ValueEventListener() {
+            database.getReference("Mess").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     mess = snapshot.getValue(OwnerMess.class);
@@ -169,8 +197,12 @@ public class DetailsFragment extends Fragment {
                         binding.ownerPgmessStatus.setTextColor(context.getColor(R.color.red));
                         binding.ownerPgmessStatus.setText("Status : You are currently not Accepting Requests");
                     }
-                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getImage()));
-                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getMenu()));
+                    if(mess.getImage() != null) {
+                        binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getImage()));
+                    }
+                    if(mess.getMenu() != null) {
+                        binding.ownerPrmessImageCarousel.addData(new CarouselItem(mess.getMenu()));
+                    }
                     binding.ownerPrmessViewMessMenuPdf.setVisibility(View.VISIBLE);
                     binding.ownerPgmessName.setText("Name : "+mess.getName());
                     binding.ownerPgmessDescription.setText("Description : "+mess.getDescription());
@@ -189,6 +221,31 @@ public class DetailsFragment extends Fragment {
                         binding.stopGettingRequests.setBackgroundDrawable(context.getDrawable(R.drawable.button_background));
                         binding.stopGettingRequests.setText("Start Getting Requests");
                     }
+                    database.getReference("BusinessAdditionalImages").child(mess.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            AdditionalImages additionalImages = snapshot.getValue(AdditionalImages.class);
+                            if(additionalImages != null){
+                                if(additionalImages.getImg1() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg1()));
+                                }
+                                if(additionalImages.getImg2() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg2()));
+                                }
+                                if(additionalImages.getImg3() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg3()));
+                                }
+                                if(additionalImages.getImg4() != null){
+                                    binding.ownerPrmessImageCarousel.addData(new CarouselItem(additionalImages.getImg4()));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                     calculateDetails();
                     deleteUselessSubscriptions();
                 }
@@ -215,16 +272,7 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                String Image;
-                if(type.equals("pg")){
-                    Image = pg.getImage();
-                } else {
-                    if(i == 0){
-                        Image = mess.getImage();
-                    } else {
-                        Image = mess.getMenu();
-                    }
-                }
+                String Image = carouselItem.getImageUrl();
                 if(Image != null && !Image.equals("na")){
                     Intent intent = new Intent(context, ImageZoomViewActivity.class);
                     intent.putExtra("name", pg != null ? pg.getName() : mess.getName());

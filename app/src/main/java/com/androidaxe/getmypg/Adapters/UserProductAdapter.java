@@ -72,6 +72,13 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
             });
         } else {
             OwnerMess mess = messes.get(position);
+            if(mess.getStopRequests().equals("false")){
+                holder.binding.userProductStatus.setTextColor(context.getColor(R.color.primary));
+                holder.binding.userProductStatus.setText("Available");
+            } else {
+                holder.binding.userProductStatus.setTextColor(context.getColor(R.color.red));
+                holder.binding.userProductStatus.setText("Unavailable");
+            }
             if(mess.getImage() != null && !mess.getImage().equals("na"))
                 Glide.with(context).load(mess.getImage()).into(holder.binding.userProductImage);
             holder.binding.userProductLabel.setText(mess.getName());

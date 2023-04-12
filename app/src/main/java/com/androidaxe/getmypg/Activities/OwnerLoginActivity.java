@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.NewSeller;
 import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.R;
@@ -43,6 +44,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     int RC_SIGN_IN = 11;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,11 @@ public class OwnerLoginActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Seller/Owner Login");
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Checking Info");
+        progressDialog.setMessage("Please wait, while we are checking info...");
+        progressDialog.setCanceledOnTouchOutside(false);
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -125,37 +132,66 @@ public class OwnerLoginActivity extends AppCompatActivity {
 
     }
 
+
     boolean userIsCustomer = false;
     boolean newUser = false;
     private void signInIfNotCustomer(GoogleSignInAccount account){
-
+        progressDialog.show();
         if (account != null && account.getIdToken() != null)
             database.getReference().child("PGUser").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
-                        userIsCustomer = true;
                         Toast.makeText(OwnerLoginActivity.this, "You are already a customer.", Toast.LENGTH_SHORT).show();
                         mGoogleSignInClient.signOut();
                     } else {
-                        database.getReference().child("PGOwner").child("NewOwner").child(account.getEmail()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        database.getReference().child("PGOwner").child("NewOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                String val = snapshot.getValue(String.class);
-                                if(val != null && !val.equals("")){
-                                    newUser = true;
-                                }
-                                if(newUser){
-                                    Toast.makeText(OwnerLoginActivity.this, "For new seller registration please mail Data to our team.", Toast.LENGTH_SHORT).show();
-                                    mGoogleSignInClient.signOut();
+                                if(snapshot.getChildrenCount() > 0){
+                                    for (DataSnapshot ds : snapshot.getChildren()){
+                                        NewSeller newSeller = ds.getValue(NewSeller.class);
+                                        if(newSeller != null && newSeller.getEmail() != null && newSeller.getEmail().equals(account.getEmail())){
+                                            authWithGoogle(account.getIdToken());
+                                            database.getReference().child("PGOwner").child("NewOwner").child(newSeller.getId()).removeValue();
+                                            Toast.makeText(OwnerLoginActivity.this, snapshot.getKey(), Toast.LENGTH_SHORT).show();
+                                            return;
+                                        } else {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(OwnerLoginActivity.this, "Unable to get data", Toast.LENGTH_SHORT).show();
+                                            mGoogleSignInClient.signOut();
+                                        }
+                                    }
+
                                 } else {
-                                    authWithGoogle(account.getIdToken());
+                                    database.getReference().child("PGOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.getChildrenCount() > 0){
+                                                authWithGoogle(account.getIdToken());
+                                            } else {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(OwnerLoginActivity.this, "For new seller registration please mail Data to our team.", Toast.LENGTH_SHORT).show();
+                                                mGoogleSignInClient.signOut();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            progressDialog.dismiss();
+                                            mGoogleSignInClient.signOut();
+                                            Toast.makeText(OwnerLoginActivity.this, "Unable to get data.", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                progressDialog.dismiss();
+                                mGoogleSignInClient.signOut();
+                                Toast.makeText(OwnerLoginActivity.this, "Unable to get data.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -163,18 +199,19 @@ public class OwnerLoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    progressDialog.dismiss();
+                    mGoogleSignInClient.signOut();
+                    Toast.makeText(OwnerLoginActivity.this, "Unable to get data.", Toast.LENGTH_SHORT).show();
                 }
             });
+        else {
+            progressDialog.dismiss();
+            mGoogleSignInClient.signOut();
+            Toast.makeText(this, "Unable to get data.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void authWithGoogle(String idToken) {
-
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Checking Info");
-        progressDialog.setMessage("Please wait, while we are checking info...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -189,7 +226,6 @@ public class OwnerLoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if(snapshot.getValue(String.class) == null){
-                                                database.getReference().child("PGOwner").child("NewOwner").child(user.getEmail()).removeValue();
                                                 PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
                                                 database.getReference()
                                                         .child("PGOwner")

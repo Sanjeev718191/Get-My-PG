@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -36,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -66,6 +68,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     GoogleSignInClient mGoogleSignInClient;
     ProgressDialog progressDialog;
     NavigationView navigationView;
+    PGOwner curr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +130,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
         checkData();
         NavigationMenuOnClick();
+        getNewRequestNotification();
 
         View headerView = navigationView.getHeaderView(0);
         TextView ownerName = headerView.findViewById(R.id.OwnerNavigationBarName);
@@ -137,7 +141,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         database.getReference("PGOwner").child(auth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                PGOwner curr = snapshot.getValue(PGOwner.class);
+                curr = snapshot.getValue(PGOwner.class);
                 ownerName.setText(curr.getName());
                 ownerContact.setText("Contact : "+curr.getContact());
                 Glide.with(OwnerMainActivity.this)
@@ -304,7 +308,9 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         navigationView.getMenu().findItem(R.id.about_up_owner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                startActivity(new Intent(OwnerMainActivity.this, AboutUsActivity.class));
+                Intent intent = new Intent(OwnerMainActivity.this, AboutUsActivity.class);
+                intent.putExtra("isSeller", "Yes");
+                startActivity(intent);
                 return false;
             }
         });
@@ -393,6 +399,76 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
 
             }
         });
+
+    }
+
+    private void getNewRequestNotification(){
+        database.getReference().child("Requests").child("OwnerMessRequests").child(auth.getUid()).child("newRequest").child("NewRequest").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String s = snapshot.getValue(String.class);
+                if(s.equals("Yes")){
+                    setNewRequestNotice();
+                    database.getReference().child("Requests").child("OwnerMessRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
+                    database.getReference().child("Requests").child("OwnerPGRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
+                } else {
+                    database.getReference().child("Requests").child("OwnerPGRequests").child(auth.getUid()).child("newRequest").child("NewRequest").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String s1 = snapshot.getValue(String.class);
+                            if(s1.equals("Yes")){
+                                setNewRequestNotice();
+                                database.getReference().child("Requests").child("OwnerPGRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
+                            } else {
+                                findViewById(R.id.com_notification_card).setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    boolean colorFlag;
+    private void setNewRequestNotice(){
+        findViewById(R.id.com_notification_card).setVisibility(View.VISIBLE);
+        TextView textView = findViewById(R.id.com_notification_text);
+        colorFlag = false;
+        textView.setText("You have new Requests click to see details.");
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(OwnerMainActivity.this, OwnerRequestsActivity.class));
+            }
+        });
+        new CountDownTimer(3200, 400){
+
+            @Override
+            public void onTick(long l) {
+                if(colorFlag){
+                    findViewById(R.id.com_notification_card).setBackgroundDrawable(getDrawable(R.drawable.input_background));
+                    colorFlag = !colorFlag;
+                } else {
+                    findViewById(R.id.com_notification_card).setBackgroundDrawable(getDrawable(R.drawable.input_backround_highlighted));
+                    colorFlag = !colorFlag;
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                findViewById(R.id.com_notification_card).setBackgroundDrawable(getDrawable(R.drawable.input_background));
+            }
+        }.start();
 
     }
 

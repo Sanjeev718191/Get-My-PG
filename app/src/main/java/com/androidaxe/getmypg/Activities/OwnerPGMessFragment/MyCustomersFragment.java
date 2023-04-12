@@ -132,7 +132,7 @@ public class MyCustomersFragment extends Fragment {
     private void getAllUsers(){
         if(type.equals("pg")){
             progressDialog.show();
-            database.getReference("BusinessSubscriber").child("HostelUser").child(id).addValueEventListener(new ValueEventListener() {
+            database.getReference("BusinessSubscriber").child("HostelUser").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
@@ -142,7 +142,7 @@ public class MyCustomersFragment extends Fragment {
                         subscribers.clear();
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
-                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                            database.getReference("Subscription").child(subscriptionId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
@@ -157,7 +157,7 @@ public class MyCustomersFragment extends Fragment {
                                     } else {
                                         subIds.add(item.getSubscriptionId());
                                         subscribers.add(item);
-                                        FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 PGUser user = snapshot.getValue(PGUser.class);
@@ -196,7 +196,7 @@ public class MyCustomersFragment extends Fragment {
 
         } else {
             progressDialog.show();
-           database.getReference("BusinessSubscriber").child("MessUser").child(id).addValueEventListener(new ValueEventListener() {
+           database.getReference("BusinessSubscriber").child("MessUser").child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.getChildrenCount() > 0){
@@ -207,7 +207,7 @@ public class MyCustomersFragment extends Fragment {
                         for(DataSnapshot ds : snapshot.getChildren()){
                             String subscriptionId = ds.getValue(String.class);
                             subIds.add(subscriptionId);
-                            database.getReference("Subscription").child(subscriptionId).addValueEventListener(new ValueEventListener() {
+                            database.getReference("Subscription").child(subscriptionId).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     UserSubscribedItem item = snapshot.getValue(UserSubscribedItem.class);
@@ -222,7 +222,7 @@ public class MyCustomersFragment extends Fragment {
                                     } else {
                                         subIds.add(item.getSubscriptionId());
                                         subscribers.add(item);
-                                        FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addValueEventListener(new ValueEventListener() {
+                                        FirebaseDatabase.getInstance().getReference("PGUser").child(item.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 PGUser user = snapshot.getValue(PGUser.class);
