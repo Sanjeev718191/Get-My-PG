@@ -46,11 +46,11 @@ public class SelectUserActivity extends AppCompatActivity {
             }
         });
 
-        binding.selectAdminText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SelectUserActivity.this, AdminLoginActivity.class));
-            }
-        });
+//        binding.selectAdminText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivity(new Intent(SelectUserActivity.this, AdminLoginActivity.class));
+//            }
+//        });
     }
 }

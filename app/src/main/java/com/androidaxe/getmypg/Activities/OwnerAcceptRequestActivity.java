@@ -480,7 +480,7 @@ public class OwnerAcceptRequestActivity extends AppCompatActivity {
                                             binding.acceptRequestRejectUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
                                             binding.acceptRequestSetUserButton.setEnabled(false);
                                             binding.acceptRequestSetUserButton.setBackgroundDrawable(getDrawable(R.drawable.button_deactive_background));
-                                            startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
+//                                            startActivity(new Intent(OwnerAcceptRequestActivity.this, OwnerRequestsActivity.class));
                                             finish();
                                         }
 
