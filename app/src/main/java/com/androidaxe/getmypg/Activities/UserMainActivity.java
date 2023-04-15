@@ -3,6 +3,7 @@ package com.androidaxe.getmypg.Activities;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,13 @@ import com.androidaxe.getmypg.Module.UserSubscribedItem;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityUserMainBinding;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -71,6 +79,7 @@ public class UserMainActivity extends AppCompatActivity {
     ArrayList<CarouselItem> carouselItems;
     GoogleSignInClient mGoogleSignInClient;
     NavigationView navigationView;
+    InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +140,7 @@ public class UserMainActivity extends AppCompatActivity {
         userEmail.setText(auth.getCurrentUser().getEmail());
         ImageView userImage = headerView.findViewById(R.id.UserNavigationBarImage);
         NavigationMenuOnClick();
+        showUserCloseAppAd();
         database.getReference("PGUser").child(auth.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -358,6 +368,7 @@ public class UserMainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snap) {
                 if(snap.getChildrenCount() > 0){
                     c1 = 0;
+                    pgAdapter.clear();
                     userPGText.setVisibility(View.VISIBLE);
                     userPGRecycler.setVisibility(View.VISIBLE);
                     for(DataSnapshot ds : snap.getChildren()){
@@ -374,18 +385,17 @@ public class UserMainActivity extends AppCompatActivity {
                                     } else {
                                         curr.addLast(item);
                                     }
-                                    if (c1 == snap.getChildrenCount()) {
-                                        pgAdapter.clear();
-                                        for (UserSubscribedItem i : curr) {
-                                            pgAdapter.add(i);
-                                        }
+                                }
+                                if (c1 == snap.getChildrenCount()) {
+                                    while (!curr.isEmpty()){
+                                        pgAdapter.add(curr.removeFirst());
                                     }
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Toast.makeText(UserMainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -397,7 +407,9 @@ public class UserMainActivity extends AppCompatActivity {
                 }
             }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) { }
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserMainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         LinearLayoutManager messLayoutManager = new LinearLayoutManager(this);
@@ -410,6 +422,7 @@ public class UserMainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snap) {
                 if(snap.getChildrenCount() > 0){
                     c2 = 0;
+                    messAdapter.clear();
                     userMessText.setVisibility(View.VISIBLE);
                     userMessRecycle.setVisibility(View.VISIBLE);
                     for(DataSnapshot ds : snap.getChildren()){
@@ -427,9 +440,8 @@ public class UserMainActivity extends AppCompatActivity {
                                         curr.addLast(item);
                                     }
                                     if (c2 == snap.getChildrenCount()) {
-                                        messAdapter.clear();
-                                        for (UserSubscribedItem i : curr) {
-                                            messAdapter.add(i);
+                                        while (!curr.isEmpty()){
+                                            messAdapter.add(curr.removeFirst());
                                         }
                                     }
                                 }
@@ -437,7 +449,7 @@ public class UserMainActivity extends AppCompatActivity {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Toast.makeText(UserMainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -447,7 +459,7 @@ public class UserMainActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(UserMainActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -479,6 +491,68 @@ public class UserMainActivity extends AppCompatActivity {
 //            @Override
 //            public void onCancelled(@NonNull DatabaseError error) { }
 //        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(mInterstitialAd != null){
+            mInterstitialAd.show(UserMainActivity.this);
+        } else {
+            Log.e("AdPending", "Ad not shown");
+            finish();
+        }
+    }
+
+    private void showUserCloseAppAd(){
+        MobileAds.initialize(this);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, getString(R.string.user_close_screen_inter_ad), adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.e("Error", loadAdError.toString());
+            }
+
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+                mInterstitialAd = interstitialAd;
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                        super.onAdFailedToShowFullScreenContent(adError);
+                        Log.e("AdFail", adError.toString());
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdImpression() {
+                        super.onAdImpression();
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent();
+                        mInterstitialAd = null;
+                        finish();
+                    }
+                });
+
+            }
+        });
     }
 
 }

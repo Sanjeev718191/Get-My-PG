@@ -20,4 +20,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pay_fee_alert">Please Pay Fee to Continue</string>
 
+    <string name="app_id">ca-app-pub-2300470009706916~7684652315</string>
+    <string name="user_close_screen_inter_ad">ca-app-pub-2300470009706916/4478537491</string>
+    <string name="owner_close_screen_inter_ad">ca-app-pub-2300470009706916/4095394115</string>
+
 </resources>

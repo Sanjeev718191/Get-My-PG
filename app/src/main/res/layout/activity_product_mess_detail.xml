@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Location : "
-                    android:textColor="@color/black"
+                    android:textColor="#505050"
                     android:fontFamily="@font/roboto_medium"/>
 
                 <TextView
@@ -145,7 +145,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Contact : "
-                    android:textColor="@color/black"
+                    android:textColor="#505050"
                     android:fontFamily="@font/roboto_medium"/>
 
                 <TextView

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -21,6 +22,13 @@ import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.R;
 import com.androidaxe.getmypg.databinding.ActivityOwnerMainBinding;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -69,6 +77,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
     ProgressDialog progressDialog;
     NavigationView navigationView;
     PGOwner curr;
+    InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +140,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
         checkData();
         NavigationMenuOnClick();
         getNewRequestNotification();
+        showUserCloseAppAd();
 
         View headerView = navigationView.getHeaderView(0);
         TextView ownerName = headerView.findViewById(R.id.OwnerNavigationBarName);
@@ -407,7 +417,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String s = snapshot.getValue(String.class);
-                if(s.equals("Yes")){
+                if(s != null && s.equals("Yes")){
                     setNewRequestNotice();
                     database.getReference().child("Requests").child("OwnerMessRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
                     database.getReference().child("Requests").child("OwnerPGRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
@@ -416,7 +426,7 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             String s1 = snapshot.getValue(String.class);
-                            if(s1.equals("Yes")){
+                            if(s1 != null && s1.equals("Yes")){
                                 setNewRequestNotice();
                                 database.getReference().child("Requests").child("OwnerPGRequests").child(auth.getUid()).child("newRequest").child("NewRequest").setValue("No");
                             } else {
@@ -478,7 +488,64 @@ public class OwnerMainActivity extends AppCompatActivity implements NavigationVi
             binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            if(mInterstitialAd != null){
+                mInterstitialAd.show(OwnerMainActivity.this);
+            } else {
+                Log.e("AdPending", "Ad not shown");
+                finish();
+            }
         }
+    }
+
+    private void showUserCloseAppAd(){
+        MobileAds.initialize(this);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, getString(R.string.owner_close_screen_inter_ad), adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                Log.e("Error", loadAdError.toString());
+            }
+
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+                mInterstitialAd = interstitialAd;
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                        super.onAdFailedToShowFullScreenContent(adError);
+                        Log.e("AdFail", adError.toString());
+                        finish();
+                    }
+
+                    @Override
+                    public void onAdImpression() {
+                        super.onAdImpression();
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        super.onAdShowedFullScreenContent();
+                        mInterstitialAd = null;
+                        finish();
+                    }
+                });
+
+            }
+        });
     }
 
 }

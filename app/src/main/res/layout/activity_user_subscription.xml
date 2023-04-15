@@ -133,7 +133,8 @@
                                 android:id="@+id/textView114"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Subscription Left :"/>
+                                android:text="Subscription Left :"
+                                android:textColor="#505050"/>
 
                             <com.mckrpk.animatedprogressbar.AnimatedProgressBar
                                 android:id="@+id/user_subscription_ProgressBar"
@@ -157,6 +158,7 @@
                                 android:layout_marginTop="8dp"
                                 android:fontFamily="@font/roboto_medium"
                                 android:text="Status : xx days remain to end Subscription"
+                                android:textColor="#505050"
                                 android:textSize="16sp" />
 
                             <TextView

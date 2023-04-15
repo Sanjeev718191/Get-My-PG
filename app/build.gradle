@@ -11,8 +11,8 @@ android {
         applicationId "com.androidaxe.getmypg"
         minSdk 23
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -96,5 +96,8 @@ dependencies {
 
     //circular progress bar
     implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.3.0'
+
+    //AD MOB
+    implementation 'com.google.android.gms:play-services-ads:22.0.0'
 
 }
