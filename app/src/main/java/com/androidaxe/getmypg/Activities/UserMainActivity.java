@@ -343,6 +343,7 @@ public class UserMainActivity extends AppCompatActivity {
                 return true;
             case R.id.user_main_action_refresh:
                 startActivity(new Intent(UserMainActivity.this, UserMainActivity.class));
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
