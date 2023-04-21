@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,8 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.R;
+import com.androidaxe.getmypg.Utils.Constants;
 import com.androidaxe.getmypg.databinding.ActivityUserLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -41,6 +44,8 @@ public class UserLoginActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     int RC_SIGN_IN = 10;
+    String demoLogin;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,12 @@ public class UserLoginActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("User Login");
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Checking Info");
+        progressDialog.setMessage("Please wait, while we are checking info...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -61,6 +72,24 @@ public class UserLoginActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        database.getReference("DemoLogin").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                demoLogin = snapshot.getValue(String.class);
+                if(demoLogin != null){
+                    setUserLogin();
+                } else {
+                    Toast.makeText(UserLoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.UserloginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +98,47 @@ public class UserLoginActivity extends AppCompatActivity {
             }
         });
 
+        binding.privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(Constants.privacyPolicy));
+                startActivity(intent);
+            }
+        });
+
+        binding.userDemoLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.demoEmail.getText().toString().equals("")){
+                    binding.demoEmail.setError("Please enter your email id");
+                } else if(binding.demoPassword.getText().toString().equals("")){
+                    binding.demoPassword.setError("Please enter your password");
+                } else {
+                    loginWithEmailPassword();
+                }
+            }
+        });
+
+    }
+
+    private void setUserLogin() {
+        if(demoLogin.equals("enable")){
+            binding.demoEmail.setVisibility(View.VISIBLE);
+            binding.demoPassword.setVisibility(View.VISIBLE);
+            binding.userDemoLoginButton.setVisibility(View.VISIBLE);
+
+            binding.userLoginMainIcon.setVisibility(View.GONE);
+            binding.UserloginBtn.setVisibility(View.GONE);
+        } else {
+            binding.demoEmail.setVisibility(View.GONE);
+            binding.demoPassword.setVisibility(View.GONE);
+            binding.userDemoLoginButton.setVisibility(View.GONE);
+
+            binding.userLoginMainIcon.setVisibility(View.VISIBLE);
+            binding.UserloginBtn.setVisibility(View.VISIBLE);
+        }
+        progressDialog.dismiss();
     }
 
     @Override
@@ -181,6 +251,68 @@ public class UserLoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void loginWithEmailPassword() {
+        String email = binding.demoEmail.getText().toString().trim();
+        String password = binding.demoPassword.getText().toString().trim();
+        progressDialog.show();
+        database.getReference("PGUser").child("DemoUser").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!email.equals(snapshot.child("email").getValue(String.class))){
+                    Toast.makeText(UserLoginActivity.this, "Enter correct email", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                } else if (!password.equals(snapshot.child("password").getValue(String.class))) {
+                    Toast.makeText(UserLoginActivity.this, "Enter correct password", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                } else {
+                    if(snapshot.child("firstTime").getValue(String.class).equals("No")){
+                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    progressDialog.dismiss();
+                                    startActivity(new Intent(UserLoginActivity.this, UserMainActivity.class));
+                                    finishAffinity();
+                                } else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(UserLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                PGUser firebaseUser = new PGUser(user.getUid(), user.getDisplayName(), "", "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
+                                database.getReference().child("PGUser").child(user.getUid()).setValue(firebaseUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            database.getReference("PGUser").child("DemoUser").child("firstTime").setValue("No");
+                                            progressDialog.dismiss();
+                                            startActivity(new Intent(UserLoginActivity.this, UserSetProfileActivity.class));
+                                            finishAffinity();
+                                        } else {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(UserLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

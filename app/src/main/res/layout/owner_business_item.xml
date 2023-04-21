@@ -121,7 +121,7 @@
                 android:fontFamily="@font/roboto_medium"
                 android:text="Mess or PG/Hostel Name"
                 android:maxLines="1"
-                android:textColor="@color/black"
+                android:textColor="@color/primary_dark"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

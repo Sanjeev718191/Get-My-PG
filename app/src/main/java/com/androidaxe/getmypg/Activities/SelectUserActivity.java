@@ -3,9 +3,11 @@ package com.androidaxe.getmypg.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.androidaxe.getmypg.Utils.Constants;
 import com.androidaxe.getmypg.databinding.ActivitySelectUserBinding;
 
 public class SelectUserActivity extends AppCompatActivity {
@@ -43,6 +45,15 @@ public class SelectUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SelectUserActivity.this, OwnerLoginActivity.class));
+            }
+        });
+
+        binding.privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(Constants.privacyPolicy));
+                startActivity(intent);
             }
         });
 

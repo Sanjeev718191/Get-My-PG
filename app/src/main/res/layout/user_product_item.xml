@@ -53,7 +53,7 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:ellipsize="end"
-                android:textColor="@color/primary_dark"
+                android:textColor="@color/primary"
                 android:textStyle="bold"
                 android:fontFamily="@font/roboto_medium"
                 android:textSize="16sp"/>

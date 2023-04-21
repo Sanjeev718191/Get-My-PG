@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:text="Mess Name"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@color/primary_dark"
+                    android:textColor="@color/primary"
                     android:textSize="16sp"/>
 
                 <TextView
@@ -275,7 +275,7 @@
                     android:layout_height="wrap_content"
                     android:text="Hostel Name"
                     android:fontFamily="@font/roboto_medium"
-                    android:textColor="@color/primary_dark"
+                    android:textColor="@color/primary"
                     android:textSize="16sp"/>
 
                 <TextView

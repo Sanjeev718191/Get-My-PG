@@ -65,9 +65,11 @@ public class UserSetProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         pgUser = snapshot.getValue(PGUser.class);
-                        Glide.with(UserSetProfileActivity.this)
-                                .load(pgUser.getProfile())
-                                .into(binding.resetUserImage);
+                        if(!pgUser.getProfile().equals("")) {
+                            Glide.with(UserSetProfileActivity.this)
+                                    .load(pgUser.getProfile())
+                                    .into(binding.resetUserImage);
+                        }
 
                         binding.editUserName.setText(pgUser.getName());
                         if(!pgUser.getContact().equals("+91 XXXXXXXXXX"))

@@ -81,18 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/customer_image" />
 
     <TextView
-        android:id="@+id/selectAdminText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="I'm Admin"
-        app:layout_constraintBottom_toTopOf="@+id/textView11"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/privacy_policy_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -100,7 +89,7 @@
         android:layout_marginBottom="70dp"
         android:gravity="center"
         android:text="By continuing, you are agreeing to our Terms and Privacy Policy."
-        android:textColor="@color/primary_dark"
+        android:textColor="@color/dark_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

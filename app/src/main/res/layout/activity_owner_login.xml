@@ -7,7 +7,7 @@
     tools:context=".Activities.OwnerLoginActivity">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/owner_login_main_icon"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="100dp"
@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/OwnerloginBtn"
@@ -31,7 +32,8 @@
         app:layout_constraintBottom_toTopOf="@id/owner_login_new_seller_signup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView111"
@@ -61,12 +63,13 @@
         android:textColor="@color/dark_blue"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView113"
+        app:layout_constraintBottom_toTopOf="@+id/privacy_policy_text_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"/>
 
     <TextView
-        android:id="@+id/textView113"
+        android:id="@+id/privacy_policy_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -74,9 +77,57 @@
         android:layout_marginBottom="70dp"
         android:gravity="center"
         android:text="By continuing, you are agreeing to our Terms and Privacy Policy."
-        android:textColor="@color/primary_dark"
+        android:textColor="@color/dark_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/demo_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter email"
+        android:inputType="textEmailAddress"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="12dp"
+        android:background="@drawable/input_background"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/demo_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/demo_email"
+        android:padding="12dp"
+        android:background="@drawable/input_background"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/owner_demo_login_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/demo_password"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,18 +25,6 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".Activities.AdminEditAboutUsActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activities.AdminAddNewSellerActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activities.AdminLoginActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".Activities.AddAdditionalImagesActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

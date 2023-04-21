@@ -22,7 +22,7 @@
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
             android:text="Name of Mess"
-            android:textColor="@color/primary_dark"
+            android:textColor="@color/primary"
             android:textSize="20dp" />
 
     </androidx.cardview.widget.CardView>
@@ -97,7 +97,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Price per Month(30 days) : "
-                        android:textColor="@color/black"
+                        android:textColor="@color/black_shade_1"
                         android:fontFamily="@font/roboto_medium"/>
 
                     <TextView

@@ -67,9 +67,11 @@ public class OwnerSetProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         pgOwner = snapshot.getValue(PGOwner.class);
-                        Glide.with(OwnerSetProfileActivity.this)
-                                .load(pgOwner.getProfile())
-                                .into(binding.resetOwnerImage);
+                        if(!pgOwner.getProfile().equals("")) {
+                            Glide.with(OwnerSetProfileActivity.this)
+                                    .load(pgOwner.getProfile())
+                                    .into(binding.resetOwnerImage);
+                        }
 
                         binding.editOwnerName.setText(pgOwner.getName());
                         if(!pgOwner.getContact().equals("+91 XXXXXXXXXX"))

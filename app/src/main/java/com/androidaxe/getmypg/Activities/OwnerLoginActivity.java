@@ -20,6 +20,7 @@ import com.androidaxe.getmypg.Module.NewSeller;
 import com.androidaxe.getmypg.Module.PGOwner;
 import com.androidaxe.getmypg.Module.PGUser;
 import com.androidaxe.getmypg.R;
+import com.androidaxe.getmypg.Utils.Constants;
 import com.androidaxe.getmypg.databinding.ActivityOwnerLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -45,6 +46,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
     FirebaseDatabase database;
     int RC_SIGN_IN = 11;
     ProgressDialog progressDialog;
+    String restrictSeller, demoLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
         progressDialog.setTitle("Checking Info");
         progressDialog.setMessage("Please wait, while we are checking info...");
         progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -69,6 +72,49 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        database.getReference("DemoLogin").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                demoLogin = snapshot.getValue(String.class);
+                if(demoLogin != null){
+                    if(demoLogin.equals("enable")){
+                        setDemoLogin();
+                    } else {
+                        restrictSeller = "disable";
+                        database.getReference("RestrictSellerLogin").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                restrictSeller = snapshot.getValue(String.class);
+                                setSellerLoginMethod();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(OwnerLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(OwnerLoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(OwnerLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(Constants.privacyPolicy));
+                startActivity(intent);
+            }
+        });
 
         binding.OwnerloginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,19 +130,8 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 new AlertDialog.Builder(OwnerLoginActivity.this)
                         .setTitle("New Seller/Owner Registration")
                         .setMessage("Mail us your details to verify at get getmypg.help@gmail.com\nMandatory details :-\nSeller gmail, Contact number, Your business name and photos to verify.")
-
-                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
                         .setPositiveButton("Send Email", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-//                                Intent intent = new Intent(Intent.ACTION_SENDTO);
-//                                intent.setData(Uri.parse("mailto:getmypg.help@gmail.com"));
-//                                intent.putExtra(Intent.EXTRA_EMAIL, "getmypg.help@gmail.com");
-//                                intent.putExtra(Intent.EXTRA_SUBJECT, "New Seller Registration Request");
-//                                intent.putExtra(Intent.EXTRA_TEXT, "Hi, I'm ");
-//                                //intent.setType("message/rfc822");
-//                                startActivity(Intent.createChooser(intent, "Choose an email client"));
-
                                 ShareCompat.IntentBuilder.from(OwnerLoginActivity.this)
                                         .setType("message/rfc822")
                                         .addEmailTo("getmypg.help@gamil.com")
@@ -114,6 +149,51 @@ public class OwnerLoginActivity extends AppCompatActivity {
                         .show();
             }
         });
+
+        binding.ownerDemoLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.demoEmail.getText().toString().equals("")){
+                    binding.demoEmail.setError("Please enter your email id");
+                } else if(binding.demoPassword.getText().toString().equals("")){
+                    binding.demoPassword.setError("Please enter your password");
+                } else {
+                    loginWithEmailPassword();
+                }
+            }
+        });
+
+    }
+
+    private void setDemoLogin() {
+
+        binding.demoEmail.setVisibility(View.VISIBLE);
+        binding.demoPassword.setVisibility(View.VISIBLE);
+        binding.ownerDemoLoginButton.setVisibility(View.VISIBLE);
+
+        binding.ownerLoginMainIcon.setVisibility(View.GONE);
+        binding.ownerLoginNewSellerSignup.setVisibility(View.GONE);
+        binding.OwnerloginBtn.setVisibility(View.GONE);
+        progressDialog.dismiss();
+
+    }
+
+    private void setSellerLoginMethod() {
+
+        binding.demoEmail.setVisibility(View.GONE);
+        binding.demoPassword.setVisibility(View.GONE);
+        binding.ownerDemoLoginButton.setVisibility(View.GONE);
+
+        binding.ownerLoginMainIcon.setVisibility(View.VISIBLE);
+        if(restrictSeller.equals("enable")){
+            binding.textView112.setText("Sign in as an existing seller");
+            binding.ownerLoginNewSellerSignup.setVisibility(View.VISIBLE);
+        } else {
+            binding.textView112.setText("Sign in as seller");
+            binding.ownerLoginNewSellerSignup.setVisibility(View.GONE);
+        }
+        binding.OwnerloginBtn.setVisibility(View.VISIBLE);
+        progressDialog.dismiss();
 
     }
 
@@ -133,8 +213,6 @@ public class OwnerLoginActivity extends AppCompatActivity {
     }
 
 
-    boolean userIsCustomer = false;
-    boolean newUser = false;
     private void signInIfNotCustomer(GoogleSignInAccount account){
         progressDialog.show();
         if (account != null && account.getIdToken() != null)
@@ -144,7 +222,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
                     if(snapshot.getChildrenCount() > 0){
                         Toast.makeText(OwnerLoginActivity.this, "You are already a customer.", Toast.LENGTH_SHORT).show();
                         mGoogleSignInClient.signOut();
-                    } else {
+                    } else if(restrictSeller.equals("enable")) {
                         database.getReference().child("PGOwner").child("NewOwner").orderByChild("email").startAt(account.getEmail()).endAt(account.getEmail()+"\uf8ff").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -154,7 +232,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
                                         if(newSeller != null && newSeller.getEmail() != null && newSeller.getEmail().equals(account.getEmail())){
                                             authWithGoogle(account.getIdToken());
                                             database.getReference().child("PGOwner").child("NewOwner").child(newSeller.getId()).removeValue();
-                                            Toast.makeText(OwnerLoginActivity.this, snapshot.getKey(), Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(OwnerLoginActivity.this, snapshot.getKey(), Toast.LENGTH_SHORT).show();
                                             return;
                                         } else {
                                             progressDialog.dismiss();
@@ -191,9 +269,11 @@ public class OwnerLoginActivity extends AppCompatActivity {
                             public void onCancelled(@NonNull DatabaseError error) {
                                 progressDialog.dismiss();
                                 mGoogleSignInClient.signOut();
-                                Toast.makeText(OwnerLoginActivity.this, "Unable to get data.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(OwnerLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
+                    } else {
+                        authWithGoogle(account.getIdToken());
                     }
                 }
 
@@ -201,7 +281,7 @@ public class OwnerLoginActivity extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError error) {
                     progressDialog.dismiss();
                     mGoogleSignInClient.signOut();
-                    Toast.makeText(OwnerLoginActivity.this, "Unable to get data.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OwnerLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         else {
@@ -263,6 +343,69 @@ public class OwnerLoginActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void loginWithEmailPassword() {
+
+        String email = binding.demoEmail.getText().toString().trim();
+        String password = binding.demoPassword.getText().toString().trim();
+        progressDialog.show();
+        database.getReference("PGOwner").child("DemoOwner").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!email.equals(snapshot.child("email").getValue(String.class))){
+                    Toast.makeText(OwnerLoginActivity.this, "Enter correct email", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                } else if (!password.equals(snapshot.child("password").getValue(String.class))) {
+                    Toast.makeText(OwnerLoginActivity.this, "Enter correct password", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                } else {
+                    if(snapshot.child("firstTime").getValue(String.class).equals("No")){
+                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()) {
+                                    progressDialog.dismiss();
+                                    startActivity(new Intent(OwnerLoginActivity.this, OwnerMainActivity.class));
+                                    finishAffinity();
+                                } else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(OwnerLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                PGOwner firebaseUser = new PGOwner(user.getUid(), user.getDisplayName(), "", "+91 XXXXXXXXXX", "PGOwner", user.getEmail());
+                                database.getReference().child("PGOwner").child(user.getUid()).setValue(firebaseUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            database.getReference("PGOwner").child("DemoOwner").child("firstTime").setValue("No");
+                                            progressDialog.dismiss();
+                                            startActivity(new Intent(OwnerLoginActivity.this, OwnerSetProfileActivity.class));
+                                            finishAffinity();
+                                        } else {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(OwnerLoginActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(OwnerLoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

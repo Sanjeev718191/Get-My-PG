@@ -95,7 +95,7 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:text="Name"
-                android:textColor="@color/primary_dark"
+                android:textColor="@color/primary"
                 android:textSize="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
